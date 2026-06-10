@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Каталог кабеля и провода | CentralAsiaEnergetics</title>
+    <meta
+      name="description"
+      content="CentralAsiaEnergetics: каталог кабеля и провода с быстрым подбором по назначению, материалу жилы и типу продукции."
+    >
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="site-header" aria-label="Главная навигация">
+      <a class="brand" href="#top" aria-label="CentralAsiaEnergetics каталог">
+        <span class="brand-mark" aria-hidden="true">CAE</span>
+        <span>
+          <strong>CentralAsiaEnergetics</strong>
+          <small>кабель и провод</small>
+        </span>
+      </a>
+
+      <nav class="nav-links" aria-label="Разделы сайта">
+        <a href="#catalog">Каталог</a>
+        <a href="#selection">Подбор</a>
+        <a href="#request">Заявка</a>
+      </nav>
+
+      <a class="header-action" href="#request">Получить счет</a>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <img class="hero-image" src="assets/hero-cables.png" alt="Бухты кабеля и срезы медных жил на складе">
+        <div class="hero-shade" aria-hidden="true"></div>
+        <div class="hero-content">
+          <p class="eyebrow">электромонтаж, снабжение, проектные поставки</p>
+          <h1 id="hero-title">Каталог кабеля и провода</h1>
+          <p class="hero-copy">
+            Быстрый подбор силовых, гибких, самонесущих и слаботочных кабелей
+            для объекта, склада или тендерной заявки.
+          </p>
+          <div class="hero-actions">
+            <a class="primary-button" href="#catalog">Открыть каталог</a>
+            <a class="ghost-button" href="#request">Собрать заявку</a>
+          </div>
+          <dl class="hero-metrics" aria-label="Ключевые параметры каталога">
+            <div>
+              <dt id="heroProductCount">42</dt>
+              <dd>позиций</dd>
+            </div>
+            <div>
+              <dt>6</dt>
+              <dd>групп</dd>
+            </div>
+            <div>
+              <dt>0,66-10 кВ</dt>
+              <dd>диапазон</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="quick-strip" id="selection" aria-label="Быстрые сценарии подбора">
+        <article>
+          <span>01</span>
+          <h2>Для электромонтажа</h2>
+          <p>ВВГнг, ПВС, ПВ-3 и ШВВП для внутренних сетей, щитов и подключений.</p>
+        </article>
+        <article>
+          <span>02</span>
+          <h2>Для улицы</h2>
+          <p>СИП и гибкий морозостойкий кабель для наружных линий и временного питания.</p>
+        </article>
+        <article>
+          <span>03</span>
+          <h2>Для связи</h2>
+          <p>UTP, FTP и контрольные кабели для слаботочных систем, автоматики и связи.</p>
+        </article>
+      </section>
+
+      <section class="catalog-section" id="catalog" aria-labelledby="catalog-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">каталог CentralAsiaEnergetics</p>
+            <h2 id="catalog-title">Кабели в подборе</h2>
+          </div>
+          <p>
+            Фильтруй по назначению, материалу жилы и запросу. Позже этот же
+            интерфейс можно подключить к Supabase.
+          </p>
+        </div>
+
+        <div class="catalog-shell">
+          <aside class="filters" aria-label="Фильтры каталога">
+            <label class="field">
+              <span>Поиск</span>
+              <input id="searchInput" type="search" placeholder="Например, ВВГ или СИП">
+            </label>
+
+            <div class="filter-group" aria-label="Группа товаров">
+              <span class="filter-title">Группа</span>
+              <div class="chip-row" id="categoryFilters"></div>
+            </div>
+
+            <div class="filter-group" aria-label="Материал жилы">
+              <span class="filter-title">Жила</span>
+              <div class="chip-row" id="conductorFilters"></div>
+            </div>
+
+            <label class="field">
+              <span>Сортировка</span>
+              <select id="sortSelect">
+                <option value="popular">Сначала популярные</option>
+                <option value="name">По названию</option>
+                <option value="voltage">По напряжению</option>
+              </select>
+            </label>
+          </aside>
+
+          <div class="catalog-workspace">
+            <div class="catalog-toolbar">
+              <p id="resultCount" aria-live="polite">0 позиций</p>
+              <button class="text-button" type="button" id="resetFilters">Сбросить фильтры</button>
+            </div>
+            <div class="product-grid" id="productGrid"></div>
+            <p class="empty-state" id="emptyState" hidden>Ничего не найдено. Попробуй другой запрос.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="request-section" id="request" aria-labelledby="request-title">
+        <div class="request-copy">
+          <p class="eyebrow">быстрая заявка</p>
+          <h2 id="request-title">Собери список кабелей</h2>
+          <p>
+            Добавляй позиции из каталога, укажи контакты и комментарий. Сейчас
+            форма работает как прототип, а после подключения Supabase будет
+            сохранять заявки в базу.
+          </p>
+        </div>
+
+        <div class="request-layout">
+          <div class="quote-panel" aria-live="polite">
+            <div class="quote-panel-head">
+              <h3>В заявке</h3>
+              <button class="text-button" type="button" id="clearQuote">Очистить</button>
+            </div>
+            <ul class="quote-list" id="quoteList"></ul>
+            <p class="quote-empty" id="quoteEmpty">Пока пусто. Добавь нужные позиции из каталога.</p>
+          </div>
+
+          <form class="request-form" id="requestForm">
+            <label class="field">
+              <span>Имя</span>
+              <input name="name" type="text" placeholder="Как к вам обращаться" required>
+            </label>
+            <label class="field">
+              <span>Телефон или email</span>
+              <input name="contact" type="text" placeholder="+7 или почта" required>
+            </label>
+            <label class="field">
+              <span>Комментарий</span>
+              <textarea name="comment" rows="5" placeholder="Метраж, сроки, объект, город"></textarea>
+            </label>
+            <button class="primary-button full-width" type="submit">Подготовить заявку</button>
+            <p class="form-status" id="formStatus" role="status"></p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>CentralAsiaEnergetics cable catalog concept</span>
+      <a href="https://pro.ekt.kz/catalog/kabel_provod/">Источник раздела</a>
+    </footer>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>
