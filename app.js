@@ -1350,6 +1350,19 @@ function removeFromQuote(productId) {
   renderQuote();
 }
 
+function updateQuoteQty(productId, delta) {
+  const item = state.quote.find((entry) => entry.id === productId);
+  if (!item) return;
+
+  item.qty += delta;
+  if (item.qty <= 0) {
+    removeFromQuote(productId);
+    return;
+  }
+
+  renderQuote();
+}
+
 function renderQuote() {
   quoteList.innerHTML = "";
   quoteEmpty.hidden = state.quote.length > 0;
@@ -1362,7 +1375,12 @@ function renderQuote() {
         <strong>${item.title}</strong>
         <span>${getProductSection(item)} / ${getProductGroup(item)}, ${item.cores}, ${item.qty} шт.</span>
       </div>
-      <button type="button" aria-label="Удалить ${item.title}" data-remove-id="${item.id}">x</button>
+      <div class="quote-controls" aria-label="Количество ${item.title}">
+        <button class="quote-step" type="button" aria-label="Уменьшить ${item.title}" data-qty-id="${item.id}" data-qty-delta="-1">-</button>
+        <strong class="quote-qty">${item.qty}</strong>
+        <button class="quote-step" type="button" aria-label="Увеличить ${item.title}" data-qty-id="${item.id}" data-qty-delta="1">+</button>
+        <button class="quote-remove" type="button" aria-label="Удалить ${item.title}" data-remove-id="${item.id}">x</button>
+      </div>
     `;
     quoteList.append(row);
   });
@@ -1401,9 +1419,15 @@ productGrid.addEventListener("click", (event) => {
 });
 
 quoteList.addEventListener("click", (event) => {
-  const button = event.target.closest("[data-remove-id]");
-  if (!button) return;
-  removeFromQuote(button.dataset.removeId);
+  const qtyButton = event.target.closest("[data-qty-id]");
+  if (qtyButton) {
+    updateQuoteQty(qtyButton.dataset.qtyId, Number(qtyButton.dataset.qtyDelta));
+    return;
+  }
+
+  const removeButton = event.target.closest("[data-remove-id]");
+  if (!removeButton) return;
+  removeFromQuote(removeButton.dataset.removeId);
 });
 
 clearQuote.addEventListener("click", () => {
