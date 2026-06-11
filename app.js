@@ -651,6 +651,43 @@ function normalizeSession(payload) {
   };
 }
 
+function decodeJwtPayload(token) {
+  try {
+    const base64 = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+    const json = decodeURIComponent(atob(base64).split("").map((char) => {
+      return `%${(`00${char.charCodeAt(0).toString(16)}`).slice(-2)}`;
+    }).join(""));
+    return JSON.parse(json);
+  } catch (error) {
+    console.warn("Auth token decode failed:", error);
+    return null;
+  }
+}
+
+function consumeAuthRedirect() {
+  const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+  const query = new URLSearchParams(window.location.search);
+  const params = hash.has("access_token") ? hash : query;
+  const accessToken = params.get("access_token");
+
+  if (!accessToken) return false;
+
+  const jwt = decodeJwtPayload(accessToken);
+  const session = normalizeSession({
+    access_token: accessToken,
+    refresh_token: params.get("refresh_token"),
+    token_type: params.get("token_type") || "bearer",
+    expires_in: Number(params.get("expires_in") || 3600),
+    user: jwt ? { id: jwt.sub, email: jwt.email } : null
+  });
+
+  if (!session) return false;
+
+  saveSession(session, session.user);
+  window.history.replaceState({}, document.title, window.location.pathname);
+  return true;
+}
+
 async function supabaseAuthRequest(path, options = {}) {
   if (!isSupabaseConfigured()) {
     throw new Error("Supabase URL is not configured.");
@@ -694,7 +731,7 @@ async function refreshAuthSession() {
     if (session) saveSession(session, payload.user);
     return session;
   } catch (error) {
-    console.warn("JWT refresh failed:", error);
+    console.warn("Auth refresh failed:", error);
     clearSession();
     return null;
   }
@@ -715,6 +752,8 @@ async function getAuthToken() {
 }
 
 async function restoreAuthSession() {
+  if (consumeAuthRedirect()) return;
+
   const saved = getSavedSession();
   if (!saved?.session?.access_token) {
     renderAuthState();
@@ -743,8 +782,8 @@ function renderAuthState() {
 
   if (requestAuthNote) {
     requestAuthNote.textContent = isAuthenticated
-      ? `Заявка будет отправлена с JWT пользователя ${email}.`
-      : "Для отправки заявки войдите или зарегистрируйтесь. Запрос уйдет в Supabase с вашим JWT.";
+      ? `Заявка будет отправлена из аккаунта ${email}.`
+      : "Для отправки заявки войдите или зарегистрируйтесь. Заявка будет привязана к вашему аккаунту.";
   }
 }
 
@@ -1053,21 +1092,37 @@ authForm.addEventListener("submit", async (event) => {
   const isRegister = state.auth.mode === "register";
 
   authSubmit.disabled = true;
-  authStatus.textContent = isRegister ? "Создаем аккаунт..." : "Проверяем JWT...";
+  authStatus.textContent = isRegister ? "Создаем аккаунт..." : "Проверяем данные...";
 
   try {
-    const payload = await supabaseAuthRequest(isRegister ? "/auth/v1/signup" : "/auth/v1/token?grant_type=password", {
+    const authPath = isRegister
+      ? `/auth/v1/signup?redirect_to=${encodeURIComponent(window.location.origin + window.location.pathname)}`
+      : "/auth/v1/token?grant_type=password";
+    let payload = await supabaseAuthRequest(authPath, {
       method: "POST",
       body: JSON.stringify({ email, password })
     });
-    const session = normalizeSession(payload);
+    let session = normalizeSession(payload);
+
+    if (isRegister && !session) {
+      try {
+        const loginPayload = await supabaseAuthRequest("/auth/v1/token?grant_type=password", {
+          method: "POST",
+          body: JSON.stringify({ email, password })
+        });
+        payload = loginPayload;
+        session = normalizeSession(loginPayload);
+      } catch (loginError) {
+        console.warn("Auto-login after registration failed:", loginError);
+      }
+    }
 
     if (session) {
       saveSession(session, payload.user);
-      authStatus.textContent = "Готово, JWT сохранен.";
+      authStatus.textContent = isRegister ? "Аккаунт создан, вход выполнен." : "Вход выполнен.";
       setTimeout(() => authDialog.close(), 350);
     } else {
-      authStatus.textContent = "Аккаунт создан. Если Supabase требует подтверждение, проверь почту и потом войди.";
+      authStatus.textContent = "Аккаунт создан. Подтверди почту, затем войди.";
     }
   } catch (error) {
     console.error("Auth error:", error);
@@ -1088,7 +1143,7 @@ requestForm.addEventListener("submit", async (event) => {
   }
 
   if (!state.auth.session?.access_token) {
-    formStatus.textContent = "Сначала войди или зарегистрируйся, чтобы отправить заявку с JWT.";
+    formStatus.textContent = "Сначала войди или зарегистрируйся, чтобы отправить заявку из аккаунта.";
     openAuthDialog("login");
     return;
   }
@@ -1121,11 +1176,11 @@ requestForm.addEventListener("submit", async (event) => {
 
   if (!isSupabaseConfigured()) {
     console.info("Prepared cable request", request);
-    formStatus.textContent = "Supabase почти готов: пришли SUPABASE_URL вида https://xxxx.supabase.co.";
+    formStatus.textContent = "Подключение к базе еще не настроено.";
     return;
   }
 
-  formStatus.textContent = "Отправляем заявку в Supabase...";
+  formStatus.textContent = "Отправляем заявку...";
 
   try {
     await supabaseRequest(`/rest/v1/${SUPABASE_TABLES.requests}`, {
@@ -1141,8 +1196,8 @@ requestForm.addEventListener("submit", async (event) => {
     renderQuote();
     requestForm.reset();
   } catch (error) {
-    console.error("Supabase request error:", error);
-    formStatus.textContent = "Не удалось отправить заявку. Проверь Supabase URL, таблицу и RLS policy.";
+    console.error("Request submit error:", error);
+    formStatus.textContent = "Не удалось отправить заявку. Попробуй еще раз или проверь настройки базы.";
   }
 });
 
