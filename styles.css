@@ -744,7 +744,7 @@ button {
 .quote-item {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 10px;
+  gap: 14px;
   align-items: center;
   border: 1px solid #edf0f1;
   border-radius: var(--radius);
@@ -763,14 +763,45 @@ button {
   font-size: 13px;
 }
 
-.quote-item button {
+.quote-controls {
+  display: grid;
+  grid-template-columns: 34px minmax(28px, auto) 34px 34px;
+  gap: 6px;
+  align-items: center;
+}
+
+.quote-step,
+.quote-remove {
   min-width: 34px;
   min-height: 34px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--white);
-  color: var(--copper);
   font-weight: 900;
+}
+
+.quote-step {
+  color: var(--teal-dark);
+}
+
+.quote-step:hover {
+  border-color: rgba(11, 145, 135, 0.4);
+  background: rgba(11, 145, 135, 0.08);
+}
+
+.quote-remove {
+  color: var(--copper);
+}
+
+.quote-remove:hover {
+  border-color: rgba(191, 97, 50, 0.4);
+  background: rgba(191, 97, 50, 0.08);
+}
+
+.quote-qty {
+  min-width: 28px;
+  text-align: center;
+  color: var(--ink);
 }
 
 .quote-empty {
@@ -899,5 +930,13 @@ button {
 
   .product-card {
     min-height: auto;
+  }
+
+  .quote-item {
+    grid-template-columns: 1fr;
+  }
+
+  .quote-controls {
+    justify-content: start;
   }
 }
