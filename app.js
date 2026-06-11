@@ -732,6 +732,11 @@ const SUPABASE_TABLES = {
   requests: "quote_requests"
 };
 
+const EMAIL_CONFIG = {
+  recipient: "centralasiaenerg@gmail.com",
+  endpoint: "https://formsubmit.co/ajax/centralasiaenerg@gmail.com"
+};
+
 const ASSET_VERSION = "20260611-catalog-groups";
 const AUTH_STORAGE_KEY = "cae_supabase_session";
 
@@ -1037,6 +1042,71 @@ function normalizeProduct(row) {
 function assetUrl(path) {
   if (!path || !path.startsWith("assets/")) return path;
   return `${path}?v=${ASSET_VERSION}`;
+}
+
+function formatQuoteForEmail(items) {
+  return items
+    .map((item, index) => {
+      const product = products.find((entry) => entry.id === item.id) || item;
+      return [
+        `${index + 1}. ${item.title}`,
+        `Раздел: ${getProductSection(product)}`,
+        `Группа: ${getProductGroup(product)}`,
+        `Тип: ${item.type || "по запросу"}`,
+        `Материал: ${item.conductor}`,
+        `Параметр: ${item.voltage}`,
+        `Исполнение: ${item.cores}`,
+        `Количество: ${item.qty} шт.`
+      ].join("\n");
+    })
+    .join("\n\n");
+}
+
+async function sendEmailNotification(request) {
+  const accountEmail = state.auth.user?.email || "не указан";
+  const submittedAt = new Date().toLocaleString("ru-RU", {
+    dateStyle: "medium",
+    timeStyle: "short"
+  });
+
+  const payload = {
+    _subject: "Новая заявка CentralAsiaEnergetics",
+    _template: "table",
+    _captcha: "false",
+    _replyto: request.customer_contact.includes("@") ? request.customer_contact : EMAIL_CONFIG.recipient,
+    "Имя клиента": request.customer_name,
+    "Телефон или email": request.customer_contact,
+    "Комментарий": request.comment || "без комментария",
+    "Аккаунт": accountEmail,
+    "Дата": submittedAt,
+    "Позиций": String(request.items.length),
+    "Состав заявки": formatQuoteForEmail(request.items)
+  };
+
+  const response = await fetch(EMAIL_CONFIG.endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json"
+    },
+    body: JSON.stringify(payload)
+  });
+
+  const text = await response.text();
+  let body = null;
+  if (text) {
+    try {
+      body = JSON.parse(text);
+    } catch {
+      body = { message: text };
+    }
+  }
+
+  if (!response.ok || body?.success === "false") {
+    throw new Error(body?.message || `Email request failed with ${response.status}`);
+  }
+
+  return body;
 }
 
 function getProductSection(product) {
@@ -1420,15 +1490,31 @@ requestForm.addEventListener("submit", async (event) => {
   formStatus.textContent = "Отправляем заявку...";
 
   try {
-    await supabaseRequest(`/rest/v1/${SUPABASE_TABLES.requests}`, {
-      method: "POST",
-      headers: {
-        Prefer: "return=minimal"
-      },
-      body: JSON.stringify(request)
-    });
+    const [databaseResult, emailResult] = await Promise.allSettled([
+      supabaseRequest(`/rest/v1/${SUPABASE_TABLES.requests}`, {
+        method: "POST",
+        headers: {
+          Prefer: "return=minimal"
+        },
+        body: JSON.stringify(request)
+      }),
+      sendEmailNotification(request)
+    ]);
 
-    formStatus.textContent = "Заявка отправлена. Мы скоро свяжемся.";
+    if (databaseResult.status === "rejected" && emailResult.status === "rejected") {
+      throw new Error(`${databaseResult.reason?.message || "Database error"} / ${emailResult.reason?.message || "Email error"}`);
+    }
+
+    if (emailResult.status === "rejected") {
+      console.error("Email notification error:", emailResult.reason);
+      formStatus.textContent = "Заявка сохранена, но письмо не ушло. Проверь подтверждение почты centralasiaenerg@gmail.com.";
+    } else if (databaseResult.status === "rejected") {
+      console.error("Request save error:", databaseResult.reason);
+      formStatus.textContent = "Заявка отправлена на почту, но не сохранилась в базе.";
+    } else {
+      formStatus.textContent = "Заявка отправлена на почту и сохранена.";
+    }
+
     state.quote = [];
     renderQuote();
     requestForm.reset();
