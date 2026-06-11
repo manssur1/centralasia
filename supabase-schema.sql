@@ -21,6 +21,7 @@ create table if not exists public.cable_products (
 
 create table if not exists public.quote_requests (
   id uuid primary key default gen_random_uuid(),
+  user_id uuid default auth.uid(),
   customer_name text not null,
   customer_contact text not null,
   comment text,
@@ -41,15 +42,25 @@ to anon, authenticated
 using (is_active = true);
 
 drop policy if exists "Public can create quote requests" on public.quote_requests;
-create policy "Public can create quote requests"
+drop policy if exists "Authenticated can create quote requests" on public.quote_requests;
+create policy "Authenticated can create quote requests"
 on public.quote_requests
 for insert
-to anon, authenticated
+to authenticated
 with check (
+  auth.uid() is not null
+  and
   customer_name <> ''
   and customer_contact <> ''
   and jsonb_typeof(items) = 'array'
 );
+
+drop policy if exists "Users can read own quote requests" on public.quote_requests;
+create policy "Users can read own quote requests"
+on public.quote_requests
+for select
+to authenticated
+using (user_id = auth.uid());
 
 insert into public.cable_products
   (slug, title, category, type, conductor, voltage, cores, badge, image_url, description, tags, popularity)
