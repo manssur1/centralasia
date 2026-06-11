@@ -1098,24 +1098,21 @@ authForm.addEventListener("submit", async (event) => {
     const authPath = isRegister
       ? `/auth/v1/signup?redirect_to=${encodeURIComponent(window.location.origin + window.location.pathname)}`
       : "/auth/v1/token?grant_type=password";
-    let payload = await supabaseAuthRequest(authPath, {
+    const payload = await supabaseAuthRequest(authPath, {
       method: "POST",
       body: JSON.stringify({ email, password })
     });
-    let session = normalizeSession(payload);
+    const identities = payload?.user?.identities;
+    const emailAlreadyRegistered = isRegister && Array.isArray(identities) && identities.length === 0;
 
-    if (isRegister && !session) {
-      try {
-        const loginPayload = await supabaseAuthRequest("/auth/v1/token?grant_type=password", {
-          method: "POST",
-          body: JSON.stringify({ email, password })
-        });
-        payload = loginPayload;
-        session = normalizeSession(loginPayload);
-      } catch (loginError) {
-        console.warn("Auto-login after registration failed:", loginError);
-      }
+    if (emailAlreadyRegistered) {
+      setAuthMode("login");
+      authForm.querySelector('[name="email"]').value = email;
+      authStatus.textContent = "Этот email уже зарегистрирован. Используй вкладку входа.";
+      return;
     }
+
+    const session = normalizeSession(payload);
 
     if (session) {
       saveSession(session, payload.user);
@@ -1126,9 +1123,15 @@ authForm.addEventListener("submit", async (event) => {
     }
   } catch (error) {
     console.error("Auth error:", error);
-    authStatus.textContent = error.message.includes("Invalid login")
-      ? "Неверный email или пароль."
-      : `Не получилось: ${error.message}`;
+    if (isRegister && /already|registered|exists/i.test(error.message)) {
+      setAuthMode("login");
+      authForm.querySelector('[name="email"]').value = email;
+      authStatus.textContent = "Этот email уже зарегистрирован. Используй вкладку входа.";
+    } else {
+      authStatus.textContent = error.message.includes("Invalid login")
+        ? "Неверный email или пароль."
+        : `Не получилось: ${error.message}`;
+    }
   } finally {
     authSubmit.disabled = false;
   }
