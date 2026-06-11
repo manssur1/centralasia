@@ -719,6 +719,174 @@ let products = [
     description: "Набор крепежных элементов для соединения секций, крышек, консолей и аксессуаров кабельной трассы.",
     tags: ["крепеж", "болты", "монтаж"],
     popularity: 80
+  },
+  {
+    id: "control-cabinet-shu",
+    title: "Шкаф управления ШУ",
+    category: "Шкафы / щиты",
+    type: "Шкаф управления",
+    conductor: "Металл",
+    voltage: "380 В",
+    cores: "напольный / навесной",
+    badge: "Автоматика",
+    image: "assets/control-cabinet.png",
+    description: "Шкаф управления для автоматизации насосов, вентиляции, приводов и технологического оборудования.",
+    tags: ["ШУ", "управление", "автоматика"],
+    popularity: 92
+  },
+  {
+    id: "distribution-cabinet-shr",
+    title: "Шкаф распределительный ШР",
+    category: "Шкафы / щиты",
+    type: "Распределительный шкаф",
+    conductor: "Металл",
+    voltage: "0,4 кВ",
+    cores: "до 630 А",
+    badge: "Распределение",
+    image: "assets/distribution-cabinet.png",
+    description: "Распределительный шкаф для ввода, защиты и распределения электроэнергии на объекте.",
+    tags: ["ШР", "0,4 кВ", "распределение"],
+    popularity: 90
+  },
+  {
+    id: "vru-cabinet",
+    title: "Вводно-распределительное устройство ВРУ",
+    category: "Шкафы / щиты",
+    type: "ВРУ",
+    conductor: "Металл",
+    voltage: "0,4 кВ",
+    cores: "по проекту",
+    badge: "Ввод",
+    image: "assets/vru-cabinet.png",
+    description: "ВРУ для приема, учета и распределения электроэнергии в жилых, коммерческих и промышленных зданиях.",
+    tags: ["ВРУ", "ввод", "учет"],
+    popularity: 94
+  },
+  {
+    id: "floor-switchboard-shcho",
+    title: "Щит освещения ЩО",
+    category: "Шкафы / щиты",
+    type: "Щит освещения",
+    conductor: "Металл",
+    voltage: "220/380 В",
+    cores: "12-36 модулей",
+    badge: "Освещение",
+    image: "assets/floor-switchboard.png",
+    description: "Щит освещения для групповых линий, автоматов защиты и управления осветительными нагрузками.",
+    tags: ["ЩО", "освещение", "автоматы"],
+    popularity: 86
+  },
+  {
+    id: "modular-panel-24",
+    title: "Щит модульный навесной 24 модуля",
+    category: "Шкафы / щиты",
+    type: "Модульный щит",
+    conductor: "Пластик / металл",
+    voltage: "до 400 В",
+    cores: "24 модуля",
+    badge: "Модульный",
+    image: "assets/modular-panel.png",
+    description: "Навесной модульный щит для автоматов, УЗО, реле и компактного распределения линий.",
+    tags: ["модульный", "DIN", "навесной"],
+    popularity: 88
+  },
+  {
+    id: "metering-panel-shchu",
+    title: "Щит учета электроэнергии ЩУ",
+    category: "Шкафы / щиты",
+    type: "Щит учета",
+    conductor: "Металл",
+    voltage: "220/380 В",
+    cores: "1-3 счетчика",
+    badge: "Учет",
+    image: "assets/metering-panel.png",
+    description: "Щит учета для размещения счетчиков, вводных автоматов и пломбируемых устройств.",
+    tags: ["ЩУ", "счетчик", "учет"],
+    popularity: 84
+  },
+  {
+    id: "outdoor-cabinet-ip54",
+    title: "Шкаф уличный IP54",
+    category: "Шкафы / щиты",
+    type: "Уличный шкаф",
+    conductor: "Металл",
+    voltage: "по проекту",
+    cores: "IP54",
+    badge: "Улица",
+    image: "assets/outdoor-cabinet.png",
+    description: "Уличный шкаф с защитой от пыли и влаги для наружной установки оборудования и коммутации.",
+    tags: ["IP54", "уличный", "защита"],
+    popularity: 82
+  },
+  {
+    id: "automation-cabinet-asu",
+    title: "Шкаф автоматики АСУ",
+    category: "Шкафы / щиты",
+    type: "Шкаф автоматики",
+    conductor: "Металл",
+    voltage: "24/220/380 В",
+    cores: "ПЛК / реле / индикация",
+    badge: "АСУ",
+    image: "assets/automation-cabinet.png",
+    description: "Шкаф автоматики для размещения контроллеров, релейной логики, сигнализации и органов управления.",
+    tags: ["АСУ", "ПЛК", "сигнализация"],
+    popularity: 83
+  },
+  {
+    id: "metal-enclosure-shmp",
+    title: "Корпус металлический ЩМП",
+    category: "Шкафы / щиты",
+    type: "Корпус",
+    conductor: "Металл",
+    voltage: "универсальный",
+    cores: "300x400 мм",
+    badge: "Корпус",
+    image: "assets/metal-enclosure.png",
+    description: "Металлический корпус для сборки распределительных, учетных и управляющих щитов.",
+    tags: ["ЩМП", "корпус", "сборка"],
+    popularity: 81
+  },
+  {
+    id: "lighting-panel-group",
+    title: "Групповой щит освещения",
+    category: "Шкафы / щиты",
+    type: "Групповой щит",
+    conductor: "Пластик / металл",
+    voltage: "220/380 В",
+    cores: "8-24 линии",
+    badge: "Группы",
+    image: "assets/lighting-panel.png",
+    description: "Компактный групповой щит для распределения линий освещения, розеточных групп и малых нагрузок.",
+    tags: ["групповой", "линии", "защита"],
+    popularity: 79
+  },
+  {
+    id: "server-rack-19",
+    title: "Шкаф телекоммуникационный 19\"",
+    category: "Шкафы / щиты",
+    type: "Телеком шкаф",
+    conductor: "Металл",
+    voltage: "слаботочные сети",
+    cores: "19 дюймов",
+    badge: "СКС",
+    image: "assets/server-rack.png",
+    description: "Телекоммуникационный шкаф для серверного, сетевого и кроссового оборудования.",
+    tags: ["19\"", "СКС", "серверный"],
+    popularity: 77
+  },
+  {
+    id: "panel-accessory-kit",
+    title: "Комплект аксессуаров для щитов",
+    category: "Шкафы / щиты",
+    type: "Аксессуары",
+    conductor: "Металл / пластик",
+    voltage: "DIN / клеммы / шины",
+    cores: "комплект",
+    badge: "Комплект",
+    image: "assets/accessory-panel.png",
+    description: "Аксессуары для сборки щитов: DIN-рейки, шины, клеммы, маркировка и монтажные элементы.",
+    tags: ["аксессуары", "DIN", "клеммы"],
+    popularity: 75
   }
 ];
 
@@ -1151,6 +1319,7 @@ function submitEmailFallback(payload) {
 
 function getProductSection(product) {
   if (product.section) return product.section;
+  if (product.category === "Шкафы / щиты") return "Шкафы / щиты";
   return product.category === "Кабеленесущие системы" ? "Кабеленесущие системы" : "Кабели";
 }
 
@@ -1178,10 +1347,25 @@ function getSystemGroup(product) {
   return "Крепеж и аксессуары";
 }
 
+function getCabinetGroup(product) {
+  const text = `${product.type || ""} ${product.title}`.toLowerCase();
+
+  if (text.includes("вру") || text.includes("ввод")) return "ВРУ";
+  if (text.includes("распредел")) return "Распределительные шкафы";
+  if (text.includes("управ") || text.includes("автоматик") || text.includes("асу")) return "Управление и автоматика";
+  if (text.includes("освещ")) return "Щиты освещения";
+  if (text.includes("учет") || text.includes("счет")) return "Щиты учета";
+  if (text.includes("модуль")) return "Модульные щиты";
+  if (text.includes("улич")) return "Уличные шкафы";
+  if (text.includes("телеком") || text.includes("19")) return "Телеком шкафы";
+  return "Корпуса и аксессуары";
+}
+
 function getProductGroup(product) {
-  return getProductSection(product) === "Кабеленесущие системы"
-    ? getSystemGroup(product)
-    : getCableGroup(product);
+  const section = getProductSection(product);
+  if (section === "Кабеленесущие системы") return getSystemGroup(product);
+  if (section === "Шкафы / щиты") return getCabinetGroup(product);
+  return getCableGroup(product);
 }
 
 async function loadProductsFromSupabase() {
