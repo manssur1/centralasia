@@ -37,7 +37,7 @@
         <div class="auth-card-head">
           <div>
             <p class="eyebrow">защищенный доступ</p>
-            <h2 id="authTitle">Вход по JWT</h2>
+            <h2 id="authTitle">Вход в аккаунт</h2>
           </div>
           <button class="icon-button" type="button" id="authClose" aria-label="Закрыть">×</button>
         </div>
@@ -118,7 +118,7 @@
           </div>
           <p>
             Фильтруй по назначению, материалу жилы и запросу. Позже этот же
-            интерфейс можно подключить к Supabase.
+            интерфейс можно подключить к базе и заявкам.
           </p>
         </div>
 
@@ -166,8 +166,7 @@
           <h2 id="request-title">Собери список кабелей</h2>
           <p>
             Добавляй позиции из каталога, укажи контакты и комментарий. Сейчас
-            форма работает как прототип, а после подключения Supabase будет
-            сохранять заявки в базу.
+            форма сохраняет заявки и помогает быстро передать список позиций менеджеру.
           </p>
         </div>
 
@@ -195,7 +194,7 @@
               <textarea name="comment" rows="5" placeholder="Метраж, сроки, объект, город"></textarea>
             </label>
             <button class="primary-button full-width" type="submit">Подготовить заявку</button>
-            <p class="auth-note" id="requestAuthNote">Для отправки заявки войдите или зарегистрируйтесь. Запрос уйдет в Supabase с вашим JWT.</p>
+            <p class="auth-note" id="requestAuthNote">Для отправки заявки войдите или зарегистрируйтесь. Заявка будет привязана к вашему аккаунту.</p>
             <p class="form-status" id="formStatus" role="status"></p>
           </form>
         </div>
