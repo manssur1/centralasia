@@ -564,12 +564,19 @@ const SUPABASE_TABLES = {
   requests: "quote_requests"
 };
 
+const AUTH_STORAGE_KEY = "cae_supabase_session";
+
 const state = {
   category: "Все",
   conductor: "Все",
   search: "",
   sort: "popular",
-  quote: []
+  quote: [],
+  auth: {
+    mode: "login",
+    session: null,
+    user: null
+  }
 };
 
 const categoryFilters = document.querySelector("#categoryFilters");
@@ -586,12 +593,65 @@ const clearQuote = document.querySelector("#clearQuote");
 const requestForm = document.querySelector("#requestForm");
 const formStatus = document.querySelector("#formStatus");
 const heroProductCount = document.querySelector("#heroProductCount");
+const authOpen = document.querySelector("#authOpen");
+const authDialog = document.querySelector("#authDialog");
+const authClose = document.querySelector("#authClose");
+const authForm = document.querySelector("#authForm");
+const authStatus = document.querySelector("#authStatus");
+const authSubmit = document.querySelector("#authSubmit");
+const authLoginTab = document.querySelector("#authLoginTab");
+const authRegisterTab = document.querySelector("#authRegisterTab");
+const requestAuthNote = document.querySelector("#requestAuthNote");
 
 function isSupabaseConfigured() {
   return /^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(SUPABASE_CONFIG.url);
 }
 
-async function supabaseRequest(path, options = {}) {
+function getSavedSession() {
+  try {
+    return JSON.parse(localStorage.getItem(AUTH_STORAGE_KEY) || "null");
+  } catch (error) {
+    console.warn("Auth session restore failed:", error);
+    return null;
+  }
+}
+
+function saveSession(session, user) {
+  state.auth.session = session;
+  state.auth.user = user || session?.user || null;
+
+  try {
+    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({
+      session: state.auth.session,
+      user: state.auth.user
+    }));
+  } catch (error) {
+    console.warn("Auth session save failed:", error);
+  }
+
+  renderAuthState();
+}
+
+function clearSession() {
+  state.auth.session = null;
+  state.auth.user = null;
+  localStorage.removeItem(AUTH_STORAGE_KEY);
+  renderAuthState();
+}
+
+function normalizeSession(payload) {
+  if (!payload?.access_token) return null;
+
+  return {
+    access_token: payload.access_token,
+    refresh_token: payload.refresh_token || state.auth.session?.refresh_token || null,
+    token_type: payload.token_type || "bearer",
+    expires_at: payload.expires_at || Math.floor(Date.now() / 1000) + Number(payload.expires_in || 3600),
+    user: payload.user || state.auth.user
+  };
+}
+
+async function supabaseAuthRequest(path, options = {}) {
   if (!isSupabaseConfigured()) {
     throw new Error("Supabase URL is not configured.");
   }
@@ -600,7 +660,139 @@ async function supabaseRequest(path, options = {}) {
     ...options,
     headers: {
       apikey: SUPABASE_CONFIG.publishableKey,
-      Authorization: `Bearer ${SUPABASE_CONFIG.publishableKey}`,
+      "Content-Type": "application/json",
+      ...(options.headers || {})
+    }
+  });
+
+  const text = await response.text();
+  let payload = null;
+  if (text) {
+    try {
+      payload = JSON.parse(text);
+    } catch {
+      payload = { message: text };
+    }
+  }
+
+  if (!response.ok) {
+    throw new Error(payload?.msg || payload?.message || payload?.error_description || `Auth failed with ${response.status}`);
+  }
+
+  return payload;
+}
+
+async function refreshAuthSession() {
+  if (!state.auth.session?.refresh_token) return null;
+
+  try {
+    const payload = await supabaseAuthRequest("/auth/v1/token?grant_type=refresh_token", {
+      method: "POST",
+      body: JSON.stringify({ refresh_token: state.auth.session.refresh_token })
+    });
+    const session = normalizeSession(payload);
+    if (session) saveSession(session, payload.user);
+    return session;
+  } catch (error) {
+    console.warn("JWT refresh failed:", error);
+    clearSession();
+    return null;
+  }
+}
+
+async function getAuthToken() {
+  const session = state.auth.session;
+  if (!session?.access_token) return null;
+
+  const expiresAt = Number(session.expires_at || 0);
+  const shouldRefresh = expiresAt && expiresAt - Math.floor(Date.now() / 1000) < 60;
+  if (shouldRefresh) {
+    const refreshed = await refreshAuthSession();
+    return refreshed?.access_token || null;
+  }
+
+  return session.access_token;
+}
+
+async function restoreAuthSession() {
+  const saved = getSavedSession();
+  if (!saved?.session?.access_token) {
+    renderAuthState();
+    return;
+  }
+
+  state.auth.session = saved.session;
+  state.auth.user = saved.user || saved.session.user || null;
+
+  const expiresAt = Number(saved.session.expires_at || 0);
+  if (expiresAt && expiresAt <= Math.floor(Date.now() / 1000)) {
+    await refreshAuthSession();
+    return;
+  }
+
+  renderAuthState();
+}
+
+function renderAuthState() {
+  const isAuthenticated = Boolean(state.auth.session?.access_token);
+  const email = state.auth.user?.email || "аккаунт";
+
+  authOpen.textContent = isAuthenticated ? "Выйти" : "Войти";
+  authOpen.title = isAuthenticated ? `Выйти из ${email}` : "Войти или зарегистрироваться";
+  authOpen.classList.toggle("is-authenticated", isAuthenticated);
+
+  if (requestAuthNote) {
+    requestAuthNote.textContent = isAuthenticated
+      ? `Заявка будет отправлена с JWT пользователя ${email}.`
+      : "Для отправки заявки войдите или зарегистрируйтесь. Запрос уйдет в Supabase с вашим JWT.";
+  }
+}
+
+function setAuthMode(mode) {
+  state.auth.mode = mode;
+  const isRegister = mode === "register";
+  authSubmit.textContent = isRegister ? "Зарегистрироваться" : "Войти";
+  authLoginTab.classList.toggle("is-active", !isRegister);
+  authRegisterTab.classList.toggle("is-active", isRegister);
+  authStatus.textContent = "";
+}
+
+function openAuthDialog(mode = "login") {
+  setAuthMode(mode);
+  authForm.reset();
+  authDialog.showModal();
+}
+
+async function handleLogout() {
+  const token = state.auth.session?.access_token;
+  if (token) {
+    try {
+      await supabaseAuthRequest("/auth/v1/logout", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+    } catch (error) {
+      console.warn("Supabase logout warning:", error);
+    }
+  }
+
+  clearSession();
+}
+
+async function supabaseRequest(path, options = {}) {
+  if (!isSupabaseConfigured()) {
+    throw new Error("Supabase URL is not configured.");
+  }
+
+  const token = await getAuthToken();
+
+  const response = await fetch(`${SUPABASE_CONFIG.url}${path}`, {
+    ...options,
+    headers: {
+      apikey: SUPABASE_CONFIG.publishableKey,
+      Authorization: `Bearer ${token || SUPABASE_CONFIG.publishableKey}`,
       "Content-Type": "application/json",
       ...(options.headers || {})
     }
@@ -836,6 +1028,57 @@ clearQuote.addEventListener("click", () => {
   renderQuote();
 });
 
+authOpen.addEventListener("click", async () => {
+  if (state.auth.session?.access_token) {
+    await handleLogout();
+    return;
+  }
+
+  openAuthDialog("login");
+});
+
+authClose.addEventListener("click", () => {
+  authDialog.close();
+});
+
+authLoginTab.addEventListener("click", () => setAuthMode("login"));
+authRegisterTab.addEventListener("click", () => setAuthMode("register"));
+
+authForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const data = new FormData(authForm);
+  const email = String(data.get("email") || "").trim();
+  const password = String(data.get("password") || "");
+  const isRegister = state.auth.mode === "register";
+
+  authSubmit.disabled = true;
+  authStatus.textContent = isRegister ? "Создаем аккаунт..." : "Проверяем JWT...";
+
+  try {
+    const payload = await supabaseAuthRequest(isRegister ? "/auth/v1/signup" : "/auth/v1/token?grant_type=password", {
+      method: "POST",
+      body: JSON.stringify({ email, password })
+    });
+    const session = normalizeSession(payload);
+
+    if (session) {
+      saveSession(session, payload.user);
+      authStatus.textContent = "Готово, JWT сохранен.";
+      setTimeout(() => authDialog.close(), 350);
+    } else {
+      authStatus.textContent = "Аккаунт создан. Если Supabase требует подтверждение, проверь почту и потом войди.";
+    }
+  } catch (error) {
+    console.error("Auth error:", error);
+    authStatus.textContent = error.message.includes("Invalid login")
+      ? "Неверный email или пароль."
+      : `Не получилось: ${error.message}`;
+  } finally {
+    authSubmit.disabled = false;
+  }
+});
+
 requestForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
@@ -844,11 +1087,25 @@ requestForm.addEventListener("submit", async (event) => {
     return;
   }
 
+  if (!state.auth.session?.access_token) {
+    formStatus.textContent = "Сначала войди или зарегистрируйся, чтобы отправить заявку с JWT.";
+    openAuthDialog("login");
+    return;
+  }
+
   const data = new FormData(requestForm);
+  const customerName = String(data.get("name") || "").trim();
+  const customerContact = String(data.get("contact") || "").trim();
+
+  if (!customerName || !customerContact) {
+    formStatus.textContent = "Укажи имя и телефон или email.";
+    return;
+  }
+
   const request = {
-    customer_name: data.get("name"),
-    customer_contact: data.get("contact"),
-    comment: data.get("comment"),
+    customer_name: customerName,
+    customer_contact: customerContact,
+    comment: String(data.get("comment") || "").trim(),
     items: state.quote.map((item) => ({
       id: item.id,
       title: item.title,
@@ -891,4 +1148,5 @@ requestForm.addEventListener("submit", async (event) => {
 
 render();
 renderQuote();
+restoreAuthSession();
 loadProductsFromSupabase();
