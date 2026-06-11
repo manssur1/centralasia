@@ -26,8 +26,39 @@
         <a href="#request">Заявка</a>
       </nav>
 
-      <a class="header-action" href="#request">Получить счет</a>
+      <div class="header-actions">
+        <button class="auth-button" type="button" id="authOpen">Войти</button>
+        <a class="header-action" href="#request">Получить счет</a>
+      </div>
     </header>
+
+    <dialog class="auth-dialog" id="authDialog" aria-labelledby="authTitle">
+      <form class="auth-card" id="authForm" method="dialog">
+        <div class="auth-card-head">
+          <div>
+            <p class="eyebrow">защищенный доступ</p>
+            <h2 id="authTitle">Вход по JWT</h2>
+          </div>
+          <button class="icon-button" type="button" id="authClose" aria-label="Закрыть">×</button>
+        </div>
+
+        <div class="auth-tabs" role="tablist" aria-label="Режим авторизации">
+          <button type="button" class="auth-tab is-active" id="authLoginTab" data-auth-mode="login">Вход</button>
+          <button type="button" class="auth-tab" id="authRegisterTab" data-auth-mode="register">Регистрация</button>
+        </div>
+
+        <label class="field">
+          <span>Email</span>
+          <input name="email" type="email" autocomplete="email" placeholder="name@company.kz" required>
+        </label>
+        <label class="field">
+          <span>Пароль</span>
+          <input name="password" type="password" autocomplete="current-password" minlength="6" placeholder="Минимум 6 символов" required>
+        </label>
+        <button class="primary-button full-width" type="submit" id="authSubmit">Войти</button>
+        <p class="auth-note" id="authStatus" role="status"></p>
+      </form>
+    </dialog>
 
     <main id="top">
       <section class="hero" aria-labelledby="hero-title">
@@ -150,7 +181,7 @@
             <p class="quote-empty" id="quoteEmpty">Пока пусто. Добавь нужные позиции из каталога.</p>
           </div>
 
-          <form class="request-form" id="requestForm">
+          <form class="request-form" id="requestForm" novalidate>
             <label class="field">
               <span>Имя</span>
               <input name="name" type="text" placeholder="Как к вам обращаться" required>
@@ -164,6 +195,7 @@
               <textarea name="comment" rows="5" placeholder="Метраж, сроки, объект, город"></textarea>
             </label>
             <button class="primary-button full-width" type="submit">Подготовить заявку</button>
+            <p class="auth-note" id="requestAuthNote">Для отправки заявки войдите или зарегистрируйтесь. Запрос уйдет в Supabase с вашим JWT.</p>
             <p class="form-status" id="formStatus" role="status"></p>
           </form>
         </div>
