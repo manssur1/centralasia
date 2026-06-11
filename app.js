@@ -732,6 +732,7 @@ const SUPABASE_TABLES = {
   requests: "quote_requests"
 };
 
+const ASSET_VERSION = "20260611-catalog-groups";
 const AUTH_STORAGE_KEY = "cae_supabase_session";
 
 const state = {
@@ -1033,6 +1034,11 @@ function normalizeProduct(row) {
   };
 }
 
+function assetUrl(path) {
+  if (!path || !path.startsWith("assets/")) return path;
+  return `${path}?v=${ASSET_VERSION}`;
+}
+
 function getProductSection(product) {
   if (product.section) return product.section;
   return product.category === "Кабеленесущие системы" ? "Кабеленесущие системы" : "Кабели";
@@ -1154,7 +1160,7 @@ function createProductCard(product) {
   card.className = "product-card";
   card.innerHTML = `
     <div class="product-media">
-      <img src="${product.image}" alt="${product.title}">
+      <img src="${assetUrl(product.image)}" alt="${product.title}">
       <span class="product-badge">${product.badge}</span>
     </div>
     <div class="product-body">
