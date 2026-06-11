@@ -1,12 +1,12 @@
-# CentralAsiaEnergetics Cable Catalog
+# CentralAsiaEnergetics Catalog
 
-Статический сайт каталога кабеля и провода.
+Статический сайт каталога кабеля, провода и кабеленесущих систем.
 
 ## Файлы
 
 - `index.html` - разметка сайта
 - `styles.css` - адаптивный дизайн
-- `app.js` - товары, фильтры, заявка и Supabase JWT Auth
+- `app.js` - товары, кабеленесущие системы, фильтры, заявка и Supabase JWT Auth
 - `assets/` - локальные изображения для hero и карточек
 - `site-preview.png` - desktop preview
 - `site-preview-mobile.png` - mobile preview
@@ -24,7 +24,7 @@ python -m http.server 8080
 
 ## Следующий шаг
 
-Supabase уже подготовлен в `app.js`.
+Supabase уже подготовлен в `app.js`. Локальный каталог содержит 54 позиции; если Supabase отдаст меньше строк, фронтенд сохранит локальные новые позиции и объединит их с базой.
 
 1. В Supabase SQL Editor запусти `supabase-schema.sql`.
 2. В `app.js` заполни `SUPABASE_CONFIG.url` значением вида `https://xxxx.supabase.co`.
