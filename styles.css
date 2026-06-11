@@ -111,6 +111,7 @@ button {
 
 .nav-links a,
 .header-action,
+.auth-button,
 .text-button,
 .ghost-button,
 .primary-button {
@@ -131,6 +132,12 @@ button {
   color: var(--teal-dark);
 }
 
+.header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .header-action,
 .primary-button {
   display: inline-flex;
@@ -142,6 +149,26 @@ button {
 
 .header-action {
   padding: 0 16px;
+}
+
+.auth-button {
+  display: inline-flex;
+  border: 1px solid var(--line);
+  background: var(--white);
+  padding: 0 14px;
+  color: #26313b;
+  font-weight: 800;
+}
+
+.auth-button.is-authenticated {
+  border-color: rgba(11, 145, 135, 0.3);
+  background: rgba(11, 145, 135, 0.1);
+  color: var(--teal-dark);
+}
+
+.auth-button:hover {
+  border-color: var(--teal);
+  color: var(--teal-dark);
 }
 
 .primary-button {
@@ -164,6 +191,92 @@ button {
 
 .ghost-button:hover {
   background: rgba(255, 255, 255, 0.12);
+}
+
+.auth-dialog {
+  width: min(440px, calc(100% - 28px));
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  padding: 0;
+}
+
+.auth-dialog::backdrop {
+  background: rgba(17, 21, 28, 0.55);
+  backdrop-filter: blur(5px);
+}
+
+.auth-card {
+  display: grid;
+  gap: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--white);
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+
+.auth-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.auth-card h2 {
+  margin: 2px 0 0;
+  font-size: 28px;
+  line-height: 1.05;
+}
+
+.icon-button {
+  display: inline-grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #fbfcfb;
+  color: var(--ink);
+  font-size: 24px;
+  line-height: 1;
+}
+
+.icon-button:hover {
+  border-color: var(--copper);
+  color: var(--copper);
+}
+
+.auth-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #edf1f2;
+  padding: 4px;
+}
+
+.auth-tab {
+  min-height: 38px;
+  border: 0;
+  border-radius: calc(var(--radius) - 2px);
+  background: transparent;
+  color: #44505b;
+  font-weight: 800;
+}
+
+.auth-tab.is-active {
+  background: var(--white);
+  color: var(--teal-dark);
+  box-shadow: 0 4px 14px rgba(20, 27, 35, 0.08);
+}
+
+.auth-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.45;
 }
 
 .hero {
@@ -710,6 +823,14 @@ button {
 
   .header-action {
     width: 100%;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .auth-button {
+    flex: 1;
   }
 
   .hero,
