@@ -454,7 +454,21 @@ button {
   top: 88px;
   display: grid;
   gap: 22px;
+  max-height: calc(100vh - 112px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 18px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(11, 145, 135, 0.36) transparent;
+}
+
+.filters::-webkit-scrollbar {
+  width: 8px;
+}
+
+.filters::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(11, 145, 135, 0.28);
 }
 
 .field {
@@ -505,17 +519,35 @@ button {
 
 .chip-row {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   gap: 8px;
+  max-width: 100%;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(11, 145, 135, 0.35) transparent;
+}
+
+.chip-row::-webkit-scrollbar {
+  height: 7px;
+}
+
+.chip-row::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(11, 145, 135, 0.26);
 }
 
 .chip {
+  flex: 0 0 auto;
   min-height: 34px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--white);
   padding: 0 10px;
   color: #39434d;
+  scroll-snap-align: start;
+  white-space: nowrap;
 }
 
 .chip[aria-pressed="true"] {
@@ -913,6 +945,7 @@ button {
 
   .filters {
     position: static;
+    max-height: 420px;
   }
 }
 
