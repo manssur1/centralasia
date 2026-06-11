@@ -519,18 +519,21 @@ button {
 
 .chip-row {
   display: flex;
+  flex-direction: column;
   flex-wrap: nowrap;
   gap: 8px;
   max-width: 100%;
-  overflow-x: auto;
-  padding-bottom: 4px;
-  scroll-snap-type: x proximity;
+  max-height: 176px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-right: 4px;
+  scroll-snap-type: y proximity;
   scrollbar-width: thin;
   scrollbar-color: rgba(11, 145, 135, 0.35) transparent;
 }
 
 .chip-row::-webkit-scrollbar {
-  height: 7px;
+  width: 7px;
 }
 
 .chip-row::-webkit-scrollbar-thumb {
@@ -540,6 +543,8 @@ button {
 
 .chip {
   flex: 0 0 auto;
+  width: fit-content;
+  max-width: 100%;
   min-height: 34px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
