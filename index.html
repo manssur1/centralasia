@@ -8,7 +8,7 @@
       name="description"
       content="CentralAsiaEnergetics: каталог кабеля, провода и кабеленесущих систем с быстрым подбором по назначению, материалу и типу продукции."
     >
-    <link rel="stylesheet" href="styles.css?v=20260611-qty-controls">
+    <link rel="stylesheet" href="styles.css?v=20260611-moving-search">
   </head>
   <body>
     <header class="site-header" aria-label="Главная навигация">
@@ -124,11 +124,6 @@
 
         <div class="catalog-shell">
           <aside class="filters" aria-label="Фильтры каталога">
-            <label class="field">
-              <span>Поиск</span>
-              <input id="searchInput" type="search" placeholder="Например, ВВГ, СИП, лоток или гофра">
-            </label>
-
             <div class="filter-group" aria-label="Группа товаров">
               <span class="filter-title">Раздел</span>
               <div class="chip-row" id="sectionFilters"></div>
@@ -156,8 +151,14 @@
 
           <div class="catalog-workspace">
             <div class="catalog-toolbar">
-              <p id="resultCount" aria-live="polite">0 позиций</p>
-              <button class="text-button" type="button" id="resetFilters">Сбросить фильтры</button>
+              <label class="field catalog-search">
+                <span>Поиск</span>
+                <input id="searchInput" type="search" placeholder="Например, ВВГ, СИП, лоток или гофра">
+              </label>
+              <div class="catalog-toolbar-actions">
+                <p id="resultCount" aria-live="polite">0 позиций</p>
+                <button class="text-button" type="button" id="resetFilters">Сбросить фильтры</button>
+              </div>
             </div>
             <div class="product-grid" id="productGrid"></div>
             <p class="empty-state" id="emptyState" hidden>Ничего не найдено. Попробуй другой запрос.</p>
@@ -212,6 +213,6 @@
       <a href="https://pro.ekt.kz/catalog/kabelenesushchie_sistemy/">Кабеленесущие системы</a>
     </footer>
 
-    <script src="app.js?v=20260611-qty-controls" defer></script>
+    <script src="app.js?v=20260611-moving-search" defer></script>
   </body>
 </html>
