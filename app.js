@@ -905,8 +905,17 @@ const EMAIL_CONFIG = {
   endpoint: "https://formsubmit.co/ajax/centralasiaenerg@gmail.com"
 };
 
-const ASSET_VERSION = "20260611-catalog-groups";
+const ASSET_VERSION = "20260611-security";
 const AUTH_STORAGE_KEY = "cae_supabase_session";
+const REQUEST_RATE_KEY = "cae_request_rate";
+const SESSION_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
+const REQUEST_COOLDOWN_MS = 30 * 1000;
+const MAX_QUOTE_ITEMS = 40;
+const MAX_ITEM_QTY = 999;
+const MAX_SEARCH_LENGTH = 80;
+const MAX_NAME_LENGTH = 80;
+const MAX_CONTACT_LENGTH = 120;
+const MAX_COMMENT_LENGTH = 800;
 
 const state = {
   section: "Все",
@@ -951,9 +960,75 @@ function isSupabaseConfigured() {
   return /^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(SUPABASE_CONFIG.url);
 }
 
+function normalizeWhitespace(value, maxLength) {
+  return String(value ?? "")
+    .replace(/[\u0000-\u001f\u007f]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, maxLength);
+}
+
+function normalizeMultiline(value, maxLength) {
+  return String(value ?? "")
+    .replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g, " ")
+    .replace(/[ \t]+/g, " ")
+    .trim()
+    .slice(0, maxLength);
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function escapeAttribute(value) {
+  return escapeHtml(value).replace(/`/g, "&#96;");
+}
+
+function safeProductId(value) {
+  return String(value ?? "").replace(/[^a-z0-9_-]/gi, "").slice(0, 80);
+}
+
+function isValidEmail(value) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(value);
+}
+
+function isValidContact(value) {
+  const contact = normalizeWhitespace(value, MAX_CONTACT_LENGTH);
+  const digits = contact.replace(/\D/g, "");
+  return isValidEmail(contact) || digits.length >= 7;
+}
+
+function getCooldownLeft() {
+  try {
+    const sentAt = Number(localStorage.getItem(REQUEST_RATE_KEY) || 0);
+    return Math.max(0, REQUEST_COOLDOWN_MS - (Date.now() - sentAt));
+  } catch {
+    return 0;
+  }
+}
+
+function markRequestSent() {
+  try {
+    localStorage.setItem(REQUEST_RATE_KEY, String(Date.now()));
+  } catch {
+    // Rate limiting is best-effort in private browsing modes.
+  }
+}
+
 function getSavedSession() {
   try {
-    return JSON.parse(localStorage.getItem(AUTH_STORAGE_KEY) || "null");
+    const saved = JSON.parse(localStorage.getItem(AUTH_STORAGE_KEY) || "null");
+    if (!saved?.session?.access_token) return null;
+    if (saved.createdAt && Date.now() - Number(saved.createdAt) > SESSION_MAX_AGE_MS) {
+      localStorage.removeItem(AUTH_STORAGE_KEY);
+      return null;
+    }
+    return saved;
   } catch (error) {
     console.warn("Auth session restore failed:", error);
     return null;
@@ -967,7 +1042,8 @@ function saveSession(session, user) {
   try {
     localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({
       session: state.auth.session,
-      user: state.auth.user
+      user: state.auth.user,
+      createdAt: Date.now()
     }));
   } catch (error) {
     console.warn("Auth session save failed:", error);
@@ -1035,6 +1111,9 @@ function consumeAuthRedirect() {
 async function supabaseAuthRequest(path, options = {}) {
   if (!isSupabaseConfigured()) {
     throw new Error("Supabase URL is not configured.");
+  }
+  if (!path.startsWith("/auth/v1/")) {
+    throw new Error("Blocked unsafe auth endpoint.");
   }
 
   const response = await fetch(`${SUPABASE_CONFIG.url}${path}`, {
@@ -1176,6 +1255,9 @@ async function supabaseRequest(path, options = {}) {
   if (!isSupabaseConfigured()) {
     throw new Error("Supabase URL is not configured.");
   }
+  if (!path.startsWith("/rest/v1/")) {
+    throw new Error("Blocked unsafe data endpoint.");
+  }
 
   const token = await getAuthToken();
 
@@ -1215,9 +1297,34 @@ function normalizeProduct(row) {
   };
 }
 
+function secureProduct(product) {
+  return {
+    ...product,
+    id: safeProductId(product.id),
+    title: normalizeWhitespace(product.title, 140),
+    category: normalizeWhitespace(product.category, 80),
+    type: normalizeWhitespace(product.type, 80),
+    conductor: normalizeWhitespace(product.conductor, 80),
+    voltage: normalizeWhitespace(product.voltage, 80),
+    cores: normalizeWhitespace(product.cores, 80),
+    badge: normalizeWhitespace(product.badge, 40),
+    image: /^assets\/[a-z0-9._/-]+\.(png|jpe?g|webp|gif|svg)$/i.test(String(product.image || "")) && !String(product.image || "").includes("..")
+      ? String(product.image)
+      : "assets/power-cable.png",
+    description: normalizeWhitespace(product.description, 260),
+    tags: Array.isArray(product.tags)
+      ? product.tags.slice(0, 8).map((tag) => normalizeWhitespace(tag, 40)).filter(Boolean)
+      : [],
+    popularity: Number.isFinite(Number(product.popularity)) ? Number(product.popularity) : 0
+  };
+}
+
 function assetUrl(path) {
-  if (!path || !path.startsWith("assets/")) return path;
-  return `${path}?v=${ASSET_VERSION}`;
+  const safePath = String(path || "");
+  if (!/^assets\/[a-z0-9._/-]+\.(png|jpe?g|webp|gif|svg)$/i.test(safePath) || safePath.includes("..")) {
+    return `assets/power-cable.png?v=${ASSET_VERSION}`;
+  }
+  return `${safePath}?v=${ASSET_VERSION}`;
 }
 
 function formatQuoteForEmail(items) {
@@ -1379,7 +1486,9 @@ async function loadProductsFromSupabase() {
     if (Array.isArray(rows) && rows.length > 0) {
       const localProducts = products;
       const merged = new Map(localProducts.map((product) => [product.id, product]));
-      rows.map(normalizeProduct).forEach((product) => merged.set(product.id, product));
+      rows.map(normalizeProduct).map(secureProduct).forEach((product) => {
+        if (product.id) merged.set(product.id, product);
+      });
       products = [...merged.values()];
       state.section = "Все";
       state.group = "Все";
@@ -1454,24 +1563,24 @@ function createProductCard(product) {
   card.className = "product-card";
   card.innerHTML = `
     <div class="product-media">
-      <img src="${assetUrl(product.image)}" alt="${product.title}">
-      <span class="product-badge">${product.badge}</span>
+      <img src="${assetUrl(product.image)}" alt="${escapeAttribute(product.title)}" loading="lazy" decoding="async">
+      <span class="product-badge">${escapeHtml(product.badge)}</span>
     </div>
     <div class="product-body">
       <div class="product-topline">
-        <span>${getProductSection(product)} / ${getProductGroup(product)}</span>
-        <span>${product.type ? `${product.type} / ` : ""}${product.conductor}</span>
+        <span>${escapeHtml(getProductSection(product))} / ${escapeHtml(getProductGroup(product))}</span>
+        <span>${product.type ? `${escapeHtml(product.type)} / ` : ""}${escapeHtml(product.conductor)}</span>
       </div>
-      <h3 class="product-title">${product.title}</h3>
-      <p class="product-desc">${product.description}</p>
+      <h3 class="product-title">${escapeHtml(product.title)}</h3>
+      <p class="product-desc">${escapeHtml(product.description)}</p>
       <dl class="spec-list">
-        <div><dt>Параметр</dt><dd>${product.voltage}</dd></div>
-        <div><dt>Исполнение</dt><dd>${product.cores}</dd></div>
+        <div><dt>Параметр</dt><dd>${escapeHtml(product.voltage)}</dd></div>
+        <div><dt>Исполнение</dt><dd>${escapeHtml(product.cores)}</dd></div>
       </dl>
       <div class="tag-row">
-        ${product.tags.map((tag) => `<span>${tag}</span>`).join("")}
+        ${product.tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}
       </div>
-      <button class="card-action" type="button" data-product-id="${product.id}">В заявку</button>
+      <button class="card-action" type="button" data-product-id="${escapeAttribute(product.id)}">В заявку</button>
     </div>
   `;
   return card;
@@ -1516,13 +1625,18 @@ function renderFilters() {
 }
 
 function addToQuote(productId) {
-  const product = products.find((item) => item.id === productId);
+  const id = safeProductId(productId);
+  const product = products.find((item) => item.id === id);
   if (!product) return;
 
-  const existing = state.quote.find((item) => item.id === productId);
+  const existing = state.quote.find((item) => item.id === id);
   if (existing) {
-    existing.qty += 1;
+    existing.qty = Math.min(MAX_ITEM_QTY, existing.qty + 1);
   } else {
+    if (state.quote.length >= MAX_QUOTE_ITEMS) {
+      formStatus.textContent = "В одной заявке можно добавить до 40 позиций.";
+      return;
+    }
     state.quote.push({ ...product, qty: 1 });
   }
 
@@ -1530,17 +1644,19 @@ function addToQuote(productId) {
 }
 
 function removeFromQuote(productId) {
-  state.quote = state.quote.filter((item) => item.id !== productId);
+  const id = safeProductId(productId);
+  state.quote = state.quote.filter((item) => item.id !== id);
   renderQuote();
 }
 
 function updateQuoteQty(productId, delta) {
-  const item = state.quote.find((entry) => entry.id === productId);
+  const id = safeProductId(productId);
+  const item = state.quote.find((entry) => entry.id === id);
   if (!item) return;
 
-  item.qty += delta;
+  item.qty = Math.min(MAX_ITEM_QTY, item.qty + delta);
   if (item.qty <= 0) {
-    removeFromQuote(productId);
+    removeFromQuote(id);
     return;
   }
 
@@ -1556,14 +1672,14 @@ function renderQuote() {
     row.className = "quote-item";
     row.innerHTML = `
       <div>
-        <strong>${item.title}</strong>
-        <span>${getProductSection(item)} / ${getProductGroup(item)}, ${item.cores}, ${item.qty} шт.</span>
+        <strong>${escapeHtml(item.title)}</strong>
+        <span>${escapeHtml(getProductSection(item))} / ${escapeHtml(getProductGroup(item))}, ${escapeHtml(item.cores)}, ${escapeHtml(item.qty)} шт.</span>
       </div>
-      <div class="quote-controls" aria-label="Количество ${item.title}">
-        <button class="quote-step" type="button" aria-label="Уменьшить ${item.title}" data-qty-id="${item.id}" data-qty-delta="-1">-</button>
-        <strong class="quote-qty">${item.qty}</strong>
-        <button class="quote-step" type="button" aria-label="Увеличить ${item.title}" data-qty-id="${item.id}" data-qty-delta="1">+</button>
-        <button class="quote-remove" type="button" aria-label="Удалить ${item.title}" data-remove-id="${item.id}">x</button>
+      <div class="quote-controls" aria-label="Количество ${escapeAttribute(item.title)}">
+        <button class="quote-step" type="button" aria-label="Уменьшить ${escapeAttribute(item.title)}" data-qty-id="${escapeAttribute(item.id)}" data-qty-delta="-1">-</button>
+        <strong class="quote-qty">${escapeHtml(item.qty)}</strong>
+        <button class="quote-step" type="button" aria-label="Увеличить ${escapeAttribute(item.title)}" data-qty-id="${escapeAttribute(item.id)}" data-qty-delta="1">+</button>
+        <button class="quote-remove" type="button" aria-label="Удалить ${escapeAttribute(item.title)}" data-remove-id="${escapeAttribute(item.id)}">x</button>
       </div>
     `;
     quoteList.append(row);
@@ -1576,7 +1692,8 @@ function render() {
 }
 
 searchInput.addEventListener("input", (event) => {
-  state.search = event.target.value;
+  state.search = normalizeWhitespace(event.target.value, MAX_SEARCH_LENGTH);
+  if (event.target.value !== state.search) event.target.value = state.search;
   renderProducts();
 });
 
@@ -1639,9 +1756,19 @@ authForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const data = new FormData(authForm);
-  const email = String(data.get("email") || "").trim();
+  const email = normalizeWhitespace(data.get("email"), MAX_CONTACT_LENGTH).toLowerCase();
   const password = String(data.get("password") || "");
   const isRegister = state.auth.mode === "register";
+
+  if (!isValidEmail(email)) {
+    authStatus.textContent = "Укажи корректный email.";
+    return;
+  }
+
+  if (password.length < 6 || password.length > 128) {
+    authStatus.textContent = "Пароль должен быть от 6 до 128 символов.";
+    return;
+  }
 
   authSubmit.disabled = true;
   authStatus.textContent = isRegister ? "Создаем аккаунт..." : "Проверяем данные...";
@@ -1697,6 +1824,12 @@ requestForm.addEventListener("submit", async (event) => {
     return;
   }
 
+  const cooldownLeft = getCooldownLeft();
+  if (cooldownLeft > 0) {
+    formStatus.textContent = `Подожди ${Math.ceil(cooldownLeft / 1000)} сек. перед следующей отправкой.`;
+    return;
+  }
+
   if (!state.auth.session?.access_token) {
     formStatus.textContent = "Сначала войди или зарегистрируйся, чтобы отправить заявку из аккаунта.";
     openAuthDialog("login");
@@ -1712,27 +1845,33 @@ requestForm.addEventListener("submit", async (event) => {
   }
 
   const data = new FormData(requestForm);
-  const customerName = String(data.get("name") || "").trim();
-  const customerContact = String(data.get("contact") || "").trim();
+  const customerName = normalizeWhitespace(data.get("name"), MAX_NAME_LENGTH);
+  const customerContact = normalizeWhitespace(data.get("contact"), MAX_CONTACT_LENGTH);
+  const comment = normalizeMultiline(data.get("comment"), MAX_COMMENT_LENGTH);
 
   if (!customerName || !customerContact) {
     formStatus.textContent = "Укажи имя и телефон или email.";
     return;
   }
 
+  if (!isValidContact(customerContact)) {
+    formStatus.textContent = "Укажи корректный телефон или email.";
+    return;
+  }
+
   const request = {
     customer_name: customerName,
     customer_contact: customerContact,
-    comment: String(data.get("comment") || "").trim(),
+    comment,
     items: state.quote.map((item) => ({
-      id: item.id,
-      title: item.title,
-      category: item.category,
-      type: item.type,
-      conductor: item.conductor,
-      voltage: item.voltage,
-      cores: item.cores,
-      qty: item.qty
+      id: safeProductId(item.id),
+      title: normalizeWhitespace(item.title, 140),
+      category: normalizeWhitespace(item.category, 80),
+      type: normalizeWhitespace(item.type, 80),
+      conductor: normalizeWhitespace(item.conductor, 80),
+      voltage: normalizeWhitespace(item.voltage, 80),
+      cores: normalizeWhitespace(item.cores, 80),
+      qty: Math.max(1, Math.min(MAX_ITEM_QTY, Number(item.qty) || 1))
     })),
     source: "catalog-site"
   };
@@ -1774,12 +1913,14 @@ requestForm.addEventListener("submit", async (event) => {
     state.quote = [];
     renderQuote();
     requestForm.reset();
+    markRequestSent();
   } catch (error) {
     console.error("Request submit error:", error);
     formStatus.textContent = "Не удалось отправить заявку. Попробуй еще раз или проверь настройки базы.";
   }
 });
 
+products = products.map(secureProduct).filter((product) => product.id);
 render();
 renderQuote();
 restoreAuthSession();
