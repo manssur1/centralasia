@@ -735,7 +735,8 @@ const SUPABASE_TABLES = {
 const AUTH_STORAGE_KEY = "cae_supabase_session";
 
 const state = {
-  category: "Все",
+  section: "Все",
+  group: "Все",
   conductor: "Все",
   search: "",
   sort: "popular",
@@ -747,6 +748,7 @@ const state = {
   }
 };
 
+const sectionFilters = document.querySelector("#sectionFilters");
 const categoryFilters = document.querySelector("#categoryFilters");
 const conductorFilters = document.querySelector("#conductorFilters");
 const productGrid = document.querySelector("#productGrid");
@@ -1031,6 +1033,41 @@ function normalizeProduct(row) {
   };
 }
 
+function getProductSection(product) {
+  if (product.section) return product.section;
+  return product.category === "Кабеленесущие системы" ? "Кабеленесущие системы" : "Кабели";
+}
+
+function getCableGroup(product) {
+  const text = `${product.category} ${product.title} ${product.type || ""}`.toLowerCase();
+
+  if (text.includes("силов")) return "Силовой";
+  if (text.includes("гиб") || text.includes("нестационар")) return "Гибкий";
+  if (text.includes("сип") || text.includes("самонес") || text.includes("воздуш")) return "Самонесущий";
+  if (text.includes("контроль")) return "Контрольный";
+  if (text.includes("установ") || text.includes("электрических установок")) return "Установочный";
+  if (text.includes("связ") || text.includes("utp") || text.includes("ftp")) return "Связь";
+  if (text.includes("различного") || text.includes("специаль")) return "Специальный";
+  return "Прочие кабели";
+}
+
+function getSystemGroup(product) {
+  const text = `${product.type || ""} ${product.title}`.toLowerCase();
+
+  if (text.includes("листовой")) return "Листовые лотки";
+  if (text.includes("проволочный")) return "Проволочные лотки";
+  if (text.includes("лестничный")) return "Лестничные лотки";
+  if (text.includes("кабель-канал") || text.includes("канал")) return "Кабель-каналы";
+  if (text.includes("гофр") || text.includes("труба") || text.includes("металлорукав")) return "Трубы и металлорукав";
+  return "Крепеж и аксессуары";
+}
+
+function getProductGroup(product) {
+  return getProductSection(product) === "Кабеленесущие системы"
+    ? getSystemGroup(product)
+    : getCableGroup(product);
+}
+
 async function loadProductsFromSupabase() {
   if (!isSupabaseConfigured()) return;
 
@@ -1044,7 +1081,8 @@ async function loadProductsFromSupabase() {
       const merged = new Map(localProducts.map((product) => [product.id, product]));
       rows.map(normalizeProduct).forEach((product) => merged.set(product.id, product));
       products = [...merged.values()];
-      state.category = "Все";
+      state.section = "Все";
+      state.group = "Все";
       state.conductor = "Все";
       render();
     }
@@ -1054,7 +1092,15 @@ async function loadProductsFromSupabase() {
 }
 
 function uniqueValues(key) {
-  return ["Все", ...new Set(products.map((product) => product[key]))];
+  let values = products;
+
+  if (key !== "section" && state.section !== "Все") {
+    values = values.filter((product) => getProductSection(product) === state.section);
+  }
+
+  if (key === "section") return ["Все", ...new Set(values.map(getProductSection))];
+  if (key === "group") return ["Все", ...new Set(values.map(getProductGroup))];
+  return ["Все", ...new Set(values.map((product) => product[key]))];
 }
 
 function renderChipGroup(node, values, activeValue, onSelect) {
@@ -1075,11 +1121,14 @@ function getFilteredProducts() {
   const query = state.search.trim().toLowerCase();
 
   return products
-    .filter((product) => state.category === "Все" || product.category === state.category)
+    .filter((product) => state.section === "Все" || getProductSection(product) === state.section)
+    .filter((product) => state.group === "Все" || getProductGroup(product) === state.group)
     .filter((product) => state.conductor === "Все" || product.conductor === state.conductor)
     .filter((product) => {
       if (!query) return true;
       const haystack = [
+        getProductSection(product),
+        getProductGroup(product),
         product.title,
         product.category,
         product.type,
@@ -1110,7 +1159,7 @@ function createProductCard(product) {
     </div>
     <div class="product-body">
       <div class="product-topline">
-        <span>${product.category}</span>
+        <span>${getProductSection(product)} / ${getProductGroup(product)}</span>
         <span>${product.type ? `${product.type} / ` : ""}${product.conductor}</span>
       </div>
       <h3 class="product-title">${product.title}</h3>
@@ -1148,8 +1197,15 @@ function renderProducts() {
 }
 
 function renderFilters() {
-  renderChipGroup(categoryFilters, uniqueValues("category"), state.category, (value) => {
-    state.category = value;
+  renderChipGroup(sectionFilters, uniqueValues("section"), state.section, (value) => {
+    state.section = value;
+    state.group = "Все";
+    state.conductor = "Все";
+    render();
+  });
+
+  renderChipGroup(categoryFilters, uniqueValues("group"), state.group, (value) => {
+    state.group = value;
     render();
   });
 
@@ -1188,7 +1244,7 @@ function renderQuote() {
     row.innerHTML = `
       <div>
         <strong>${item.title}</strong>
-        <span>${item.category}, ${item.cores}, ${item.qty} шт.</span>
+        <span>${getProductSection(item)} / ${getProductGroup(item)}, ${item.cores}, ${item.qty} шт.</span>
       </div>
       <button type="button" aria-label="Удалить ${item.title}" data-remove-id="${item.id}">x</button>
     `;
@@ -1212,7 +1268,8 @@ sortSelect.addEventListener("change", (event) => {
 });
 
 resetFilters.addEventListener("click", () => {
-  state.category = "Все";
+  state.section = "Все";
+  state.group = "Все";
   state.conductor = "Все";
   state.search = "";
   state.sort = "popular";
