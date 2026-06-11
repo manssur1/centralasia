@@ -49,8 +49,7 @@ for insert
 to authenticated
 with check (
   auth.uid() is not null
-  and
-  customer_name <> ''
+  and customer_name <> ''
   and customer_contact <> ''
   and jsonb_typeof(items) = 'array'
 );
