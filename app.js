@@ -1558,7 +1558,7 @@ requestForm.addEventListener("submit", async (event) => {
       formStatus.textContent = "Заявка сохранена, но письмо не ушло. Проверь подтверждение почты centralasiaenerg@gmail.com.";
     } else if (databaseResult.status === "rejected") {
       console.error("Request save error:", databaseResult.reason);
-      formStatus.textContent = "Заявка отправлена на почту, но не сохранилась в базе.";
+      formStatus.textContent = "Заявка отправлена на почту. Мы скоро свяжемся.";
     } else {
       formStatus.textContent = "Заявка отправлена на почту и сохранена.";
     }
