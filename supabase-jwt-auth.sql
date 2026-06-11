@@ -19,6 +19,17 @@ with check (
   and jsonb_typeof(items) = 'array'
 );
 
+drop policy if exists "Public can create quote requests" on public.quote_requests;
+create policy "Public can create quote requests"
+on public.quote_requests
+for insert
+to anon
+with check (
+  customer_name <> ''
+  and customer_contact <> ''
+  and jsonb_typeof(items) = 'array'
+);
+
 drop policy if exists "Users can read own quote requests" on public.quote_requests;
 create policy "Users can read own quote requests"
 on public.quote_requests
