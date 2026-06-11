@@ -555,7 +555,7 @@ let products = [
 ];
 
 const SUPABASE_CONFIG = {
-  url: "",
+  url: "https://dbyejxbkqzqcpkukfmcn.supabase.co",
   publishableKey: "sb_publishable_YiFz3mPj13A9yqeLZnqXPg_4yQZvOkw"
 };
 
