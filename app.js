@@ -927,6 +927,14 @@ async function getAuthToken() {
   return session.access_token;
 }
 
+async function requireFreshAuthToken() {
+  const token = await getAuthToken();
+  if (token) return token;
+
+  clearSession();
+  throw new Error("AUTH_REQUIRED");
+}
+
 async function restoreAuthSession() {
   if (consumeAuthRedirect()) return;
 
@@ -1103,10 +1111,42 @@ async function sendEmailNotification(request) {
   }
 
   if (!response.ok || body?.success === "false") {
-    throw new Error(body?.message || `Email request failed with ${response.status}`);
+    return submitEmailFallback(payload);
   }
 
   return body;
+}
+
+function submitEmailFallback(payload) {
+  return new Promise((resolve) => {
+    const iframeName = `email_target_${Date.now()}`;
+    const iframe = document.createElement("iframe");
+    iframe.name = iframeName;
+    iframe.hidden = true;
+
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = EMAIL_CONFIG.endpoint.replace("/ajax/", "/");
+    form.target = iframeName;
+    form.hidden = true;
+
+    Object.entries(payload).forEach(([name, value]) => {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = name;
+      input.value = String(value);
+      form.append(input);
+    });
+
+    document.body.append(iframe, form);
+    form.submit();
+
+    setTimeout(() => {
+      form.remove();
+      iframe.remove();
+      resolve({ success: true, fallback: true });
+    }, 1200);
+  });
 }
 
 function getProductSection(product) {
@@ -1451,6 +1491,14 @@ requestForm.addEventListener("submit", async (event) => {
 
   if (!state.auth.session?.access_token) {
     formStatus.textContent = "Сначала войди или зарегистрируйся, чтобы отправить заявку из аккаунта.";
+    openAuthDialog("login");
+    return;
+  }
+
+  try {
+    await requireFreshAuthToken();
+  } catch (error) {
+    formStatus.textContent = "Сессия истекла. Войди заново и отправь заявку еще раз.";
     openAuthDialog("login");
     return;
   }
