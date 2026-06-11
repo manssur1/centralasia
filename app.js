@@ -551,6 +551,174 @@ let products = [
     description: "Медный резиновый гибкий кабель для подключения передвижного оборудования.",
     tags: ["КГ", "резиновый", "гибкий"],
     popularity: 84
+  },
+  {
+    id: "sheet-cable-tray-100x50",
+    title: "Листовой кабельный лоток 100x50",
+    category: "Кабеленесущие системы",
+    type: "Лоток листовой",
+    conductor: "Оцинкованная сталь",
+    voltage: "перфорация / оцинковка",
+    cores: "100x50 мм",
+    badge: "Трасса",
+    image: "assets/tray-sheet.png",
+    description: "Металлический перфорированный лоток для открытой прокладки силовых и слаботочных линий на объектах.",
+    tags: ["лоток", "перфорированный", "оцинковка"],
+    popularity: 93
+  },
+  {
+    id: "wire-cable-tray-60x100",
+    title: "Проволочный кабельный лоток 60x100",
+    category: "Кабеленесущие системы",
+    type: "Лоток проволочный",
+    conductor: "Оцинкованная сталь",
+    voltage: "вентиляция кабеля",
+    cores: "60x100 мм",
+    badge: "Легкий",
+    image: "assets/wire-tray.png",
+    description: "Проволочный лоток для быстрых трасс внутри помещений, удобен для ответвлений и обслуживания кабеля.",
+    tags: ["проволочный", "СКС", "внутри"],
+    popularity: 88
+  },
+  {
+    id: "ladder-cable-tray-200",
+    title: "Лестничный лоток 200 мм",
+    category: "Кабеленесущие системы",
+    type: "Лоток лестничный",
+    conductor: "Сталь",
+    voltage: "высокая несущая способность",
+    cores: "ширина 200 мм",
+    badge: "Нагрузка",
+    image: "assets/ladder-tray.png",
+    description: "Жесткая лестничная секция для тяжелых кабельных линий, магистралей и открытых промышленных трасс.",
+    tags: ["лестничный", "магистраль", "тяжелый кабель"],
+    popularity: 86
+  },
+  {
+    id: "cable-channel-40x25",
+    title: "Кабель-канал 40x25 с крышкой",
+    category: "Кабеленесущие системы",
+    type: "Кабель-канал",
+    conductor: "ПВХ",
+    voltage: "самозатухающий ПВХ",
+    cores: "40x25 мм",
+    badge: "Офис",
+    image: "assets/cable-channel.png",
+    description: "Пластиковый короб для аккуратной прокладки проводки в офисах, торговых залах и административных помещениях.",
+    tags: ["короб", "ПВХ", "интерьер"],
+    popularity: 92
+  },
+  {
+    id: "pvc-corrugated-pipe-20",
+    title: "Гофрированная труба ПВХ d20",
+    category: "Кабеленесущие системы",
+    type: "Гофротруба",
+    conductor: "ПВХ",
+    voltage: "гибкая прокладка",
+    cores: "d20 мм",
+    badge: "Гибкая",
+    image: "assets/pvc-corrugated.png",
+    description: "Гофротруба для защиты кабеля в стенах, перекрытиях и открытых трассах с поворотами.",
+    tags: ["гофра", "труба", "монтаж"],
+    popularity: 90
+  },
+  {
+    id: "metal-hose-rz-ts-25",
+    title: "Металлорукав РЗ-Ц d25",
+    category: "Кабеленесущие системы",
+    type: "Металлорукав",
+    conductor: "Оцинкованная сталь",
+    voltage: "механическая защита",
+    cores: "d25 мм",
+    badge: "Защита",
+    image: "assets/metal-hose.png",
+    description: "Гибкая металлическая оболочка для участков, где кабелю нужна защита от ударов, истирания и помех.",
+    tags: ["металлорукав", "экран", "защита"],
+    popularity: 89
+  },
+  {
+    id: "mounting-profile-strut",
+    title: "Монтажный профиль перфорированный",
+    category: "Кабеленесущие системы",
+    type: "Профиль",
+    conductor: "Оцинкованная сталь",
+    voltage: "перфорация под крепеж",
+    cores: "41x41 мм",
+    badge: "Монтаж",
+    image: "assets/mounting-profile.png",
+    description: "Профиль для сборки подвесов, рам и опор под кабельные лотки и инженерные трассы.",
+    tags: ["профиль", "подвес", "опора"],
+    popularity: 78
+  },
+  {
+    id: "console-bracket-tray",
+    title: "Консоль настенная для лотка",
+    category: "Кабеленесущие системы",
+    type: "Кронштейн",
+    conductor: "Сталь",
+    voltage: "настенный монтаж",
+    cores: "200 мм",
+    badge: "Крепеж",
+    image: "assets/console-bracket.png",
+    description: "Кронштейн для крепления кабельных лотков к стенам, колоннам и монтажным конструкциям.",
+    tags: ["консоль", "кронштейн", "крепление"],
+    popularity: 76
+  },
+  {
+    id: "tray-cover-100",
+    title: "Крышка для кабельного лотка 100 мм",
+    category: "Кабеленесущие системы",
+    type: "Крышка лотка",
+    conductor: "Оцинкованная сталь",
+    voltage: "защита трассы",
+    cores: "ширина 100 мм",
+    badge: "Аксессуар",
+    image: "assets/tray-cover.png",
+    description: "Крышка защищает открытую трассу от пыли, случайного контакта и механических воздействий.",
+    tags: ["крышка", "лоток", "аксессуар"],
+    popularity: 74
+  },
+  {
+    id: "junction-box-pvc",
+    title: "Коробка распределительная ПВХ",
+    category: "Кабеленесущие системы",
+    type: "Коробка",
+    conductor: "ПВХ",
+    voltage: "IP по запросу",
+    cores: "100x100 мм",
+    badge: "Узел",
+    image: "assets/junction-box.png",
+    description: "Распределительная коробка для соединения, ответвления и обслуживания кабельных линий.",
+    tags: ["коробка", "ответвление", "ПВХ"],
+    popularity: 73
+  },
+  {
+    id: "floor-cable-channel",
+    title: "Напольный кабель-канал",
+    category: "Кабеленесущие системы",
+    type: "Напольный канал",
+    conductor: "ПВХ / резина",
+    voltage: "защита проходов",
+    cores: "2 канала",
+    badge: "Безопасность",
+    image: "assets/floor-channel.png",
+    description: "Напольный канал для временной или постоянной защиты кабеля в проходных зонах.",
+    tags: ["напольный", "проход", "защита"],
+    popularity: 72
+  },
+  {
+    id: "tray-fasteners-set",
+    title: "Комплект крепежа для лотков",
+    category: "Кабеленесущие системы",
+    type: "Крепеж",
+    conductor: "Сталь",
+    voltage: "болты / гайки / шайбы",
+    cores: "М6-М8",
+    badge: "Комплект",
+    image: "assets/fasteners.png",
+    description: "Набор крепежных элементов для соединения секций, крышек, консолей и аксессуаров кабельной трассы.",
+    tags: ["крепеж", "болты", "монтаж"],
+    popularity: 80
   }
 ];
 
@@ -872,7 +1040,10 @@ async function loadProductsFromSupabase() {
     );
 
     if (Array.isArray(rows) && rows.length > 0) {
-      products = rows.map(normalizeProduct);
+      const localProducts = products;
+      const merged = new Map(localProducts.map((product) => [product.id, product]));
+      rows.map(normalizeProduct).forEach((product) => merged.set(product.id, product));
+      products = [...merged.values()];
       state.category = "Все";
       state.conductor = "Все";
       render();
@@ -945,8 +1116,8 @@ function createProductCard(product) {
       <h3 class="product-title">${product.title}</h3>
       <p class="product-desc">${product.description}</p>
       <dl class="spec-list">
-        <div><dt>Напряжение</dt><dd>${product.voltage}</dd></div>
-        <div><dt>Жилы</dt><dd>${product.cores}</dd></div>
+        <div><dt>Параметр</dt><dd>${product.voltage}</dd></div>
+        <div><dt>Исполнение</dt><dd>${product.cores}</dd></div>
       </dl>
       <div class="tag-row">
         ${product.tags.map((tag) => `<span>${tag}</span>`).join("")}
