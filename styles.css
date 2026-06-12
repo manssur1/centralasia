@@ -820,22 +820,42 @@ button {
   font-weight: 800;
 }
 
-.card-action {
+.product-actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.card-action,
+.card-link {
   width: 100%;
   min-height: 42px;
-  margin-top: 16px;
   border: 1px solid var(--ink);
   border-radius: var(--radius);
   background: var(--ink);
   color: var(--white);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font-weight: 800;
   transition: border-color 180ms ease, background 180ms ease, transform 180ms ease, box-shadow 180ms ease;
 }
 
-.card-action:hover {
+.card-action:hover,
+.card-link:hover {
   border-color: var(--copper);
   background: var(--copper);
   transform: translateY(-1px);
+}
+
+.card-link {
+  border-color: rgba(11, 145, 135, 0.28);
+  background: rgba(11, 145, 135, 0.08);
+  color: var(--teal-dark);
+}
+
+.card-link:hover {
+  color: var(--white);
 }
 
 .card-action.is-added {
