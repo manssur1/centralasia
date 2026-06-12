@@ -898,7 +898,6 @@ let products = [
     cores: "1 пост, скрытая установка",
     badge: "Розетка",
     image: "assets/outlet-single.png",
-    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
     description: "Базовая силовая розетка для жилых, офисных и коммерческих помещений, подходит для стандартных подрозетников.",
     tags: ["розетка", "16А", "заземление"],
     popularity: 91
@@ -913,7 +912,6 @@ let products = [
     cores: "2 поста, скрытая установка",
     badge: "2 поста",
     image: "assets/outlet-double.png",
-    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
     description: "Двойная розетка для рабочих зон, кухонь, офисных столов и точек подключения бытового оборудования.",
     tags: ["двойная", "16А", "скрытая"],
     popularity: 90
@@ -928,7 +926,6 @@ let products = [
     cores: "IP44",
     badge: "IP44",
     image: "assets/outlet-ip44.png",
-    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
     description: "Розетка с защитной крышкой для влажных помещений, технических зон, гаражей и наружных точек под навесом.",
     tags: ["IP44", "крышка", "влага"],
     popularity: 87
@@ -943,7 +940,6 @@ let products = [
     cores: "1 пост",
     badge: "Крышка",
     image: "assets/outlet-lid.png",
-    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
     description: "Универсальная розетка с крышкой для защиты контактов от пыли, случайного касания и брызг.",
     tags: ["крышка", "защита", "розетка"],
     popularity: 84
@@ -958,7 +954,6 @@ let products = [
     cores: "1 порт",
     badge: "RJ45",
     image: "assets/data-outlet-rj45.png",
-    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
     description: "Информационная розетка для подключения компьютерных сетей, рабочих мест, камер и слаботочных линий.",
     tags: ["RJ45", "LAN", "СКС"],
     popularity: 82
@@ -973,7 +968,6 @@ let products = [
     cores: "1 выход",
     badge: "TV",
     image: "assets/tv-outlet.png",
-    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
     description: "TV-розетка для аккуратного подключения антенного или коаксиального кабеля в жилых и офисных помещениях.",
     tags: ["TV", "коаксиал", "слаботочка"],
     popularity: 76
@@ -988,7 +982,6 @@ let products = [
     cores: "1 клавиша",
     badge: "1 клавиша",
     image: "assets/switch-single.png",
-    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
     description: "Классический выключатель для одной группы освещения, подходит для скрытого монтажа в стандартный подрозетник.",
     tags: ["выключатель", "1 клавиша", "свет"],
     popularity: 89
@@ -1003,7 +996,6 @@ let products = [
     cores: "2 клавиши",
     badge: "2 клавиши",
     image: "assets/switch-double.png",
-    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
     description: "Выключатель для раздельного управления двумя группами освещения: люстра, зона, подсветка или вентиляция.",
     tags: ["2 клавиши", "освещение", "механизм"],
     popularity: 88
@@ -1018,7 +1010,6 @@ let products = [
     cores: "1 клавиша, схема 6",
     badge: "Проходной",
     image: "assets/switch-pass.png",
-    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
     description: "Проходной выключатель для управления светом из двух точек: коридоры, лестницы, спальни и длинные помещения.",
     tags: ["проходной", "лестница", "свет"],
     popularity: 81
@@ -1033,7 +1024,6 @@ let products = [
     cores: "поворотный механизм",
     badge: "Диммер",
     image: "assets/dimmer.png",
-    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
     description: "Диммер для плавной регулировки яркости совместимых светильников и создания комфортных сценариев освещения.",
     tags: ["диммер", "яркость", "освещение"],
     popularity: 74
@@ -1048,7 +1038,6 @@ let products = [
     cores: "2 поста",
     badge: "Рамка",
     image: "assets/frame-switch.png",
-    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
     description: "Декоративная рамка для объединения двух механизмов: розеток, выключателей, TV или RJ45-модулей.",
     tags: ["рамка", "2 поста", "механизмы"],
     popularity: 72
@@ -1063,7 +1052,6 @@ let products = [
     cores: "для бетона / кирпича",
     badge: "68 мм",
     image: "assets/mount-box-concrete.png",
-    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
     description: "Монтажная коробка для установки розеток и выключателей в бетонные, кирпичные и блочные стены.",
     tags: ["подрозетник", "бетон", "68 мм"],
     popularity: 86
@@ -1078,7 +1066,6 @@ let products = [
     cores: "для ГКЛ",
     badge: "ГКЛ",
     image: "assets/mount-box-drywall.png",
-    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
     description: "Подрозетник с крепежными лапками для надежного монтажа механизмов в гипсокартонные перегородки.",
     tags: ["подрозетник", "ГКЛ", "лапки"],
     popularity: 85
@@ -1093,7 +1080,6 @@ let products = [
     cores: "80x80 мм",
     badge: "Распайка",
     image: "assets/junction-box-indoor.png",
-    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
     description: "Коробка для соединения и ответвления проводов внутри помещений, подходит для обслуживаемых узлов электропроводки.",
     tags: ["распредкоробка", "соединение", "проводка"],
     popularity: 83
@@ -1108,7 +1094,6 @@ let products = [
     cores: "IP65",
     badge: "IP65",
     image: "assets/junction-box-ip65.png",
-    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
     description: "Герметичная распределительная коробка для наружного монтажа, влажных зон, складов и технических помещений.",
     tags: ["IP65", "герметичная", "наружная"],
     popularity: 84
@@ -1123,12 +1108,450 @@ let products = [
     cores: "2-4 модуля",
     badge: "Пол",
     image: "assets/floor-outlet-block.png",
-    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
     description: "Напольный блок для рабочих мест, переговорных и open-space зон, где питание и связь выводятся из пола.",
     tags: ["напольный", "офис", "модули"],
     popularity: 78
   }
 ];
+
+const wiringDeviceSeriesProducts = [
+  {
+    id: "legrand-forix-series",
+    title: "Розетки / Выключатели Legrand Forix",
+    category: "Розетки / выключатели / коробки",
+    type: "Серия Legrand",
+    conductor: "Пластик / контактная группа",
+    voltage: "250 В / 10-16 А",
+    cores: "розетки, выключатели, рамки",
+    badge: "Legrand",
+    image: "assets/wiring-legrand.png",
+    description: "Серия Forix для открытого и аккуратного бытового монтажа: розетки, выключатели и аксессуары для помещений.",
+    tags: ["Legrand", "Forix", "розетки"],
+    popularity: 92
+  },
+  {
+    id: "legrand-mosaic-series",
+    title: "Розетки / Выключатели Legrand Mosaic",
+    category: "Розетки / выключатели / коробки",
+    type: "Серия Legrand",
+    conductor: "Пластик / модульная система",
+    voltage: "250 В / 10-16 А",
+    cores: "модули, рамки, механизмы",
+    badge: "Mosaic",
+    image: "assets/wiring-legrand.png",
+    description: "Модульная серия Mosaic для офисов, рабочих мест, слаботочных и силовых точек в едином дизайне.",
+    tags: ["Legrand", "Mosaic", "модульная"],
+    popularity: 91
+  },
+  {
+    id: "legrand-suno-series",
+    title: "Розетки / Выключатели Legrand SUNO",
+    category: "Розетки / выключатели / коробки",
+    type: "Серия Legrand",
+    conductor: "Пластик / декоративные цвета",
+    voltage: "250 В / 10-16 А",
+    cores: "алюминий, антрацит, белый, слоновая кость, шампань",
+    badge: "SUNO",
+    image: "assets/wiring-legrand.png",
+    description: "Линейка SUNO с популярными цветами и механизмами для жилых, офисных и коммерческих интерьеров.",
+    tags: ["Legrand", "SUNO", "цветные серии"],
+    popularity: 90
+  },
+  {
+    id: "legrand-nilo-step-series",
+    title: "Розетки / Выключатели Legrand Nilo Step",
+    category: "Розетки / выключатели / коробки",
+    type: "Серия Legrand",
+    conductor: "Пластик / декоративные цвета",
+    voltage: "250 В / 10-16 А",
+    cores: "алюминий, белый, черный, сталь, слоновая кость",
+    badge: "Nilo Step",
+    image: "assets/wiring-legrand.png",
+    description: "Серия Nilo Step для современных интерьеров: розетки, выключатели, рамки и базовые механизмы.",
+    tags: ["Legrand", "Nilo Step", "механизмы"],
+    popularity: 89
+  },
+  {
+    id: "lezard-switches-sockets",
+    title: "Розетки / Выключатели LEZARD",
+    category: "Розетки / выключатели / коробки",
+    type: "Серия электроустановочная",
+    conductor: "Пластик / контактная группа",
+    voltage: "250 В / 10-16 А",
+    cores: "розетки, выключатели, рамки",
+    badge: "LEZARD",
+    image: "assets/wiring-systeme.png",
+    description: "Популярные электроустановочные изделия LEZARD для бытовых и офисных линий.",
+    tags: ["LEZARD", "розетки", "выключатели"],
+    popularity: 84
+  },
+  {
+    id: "schneider-electric-switches-sockets",
+    title: "Розетки / Выключатели Schneider Electric",
+    category: "Розетки / выключатели / коробки",
+    type: "Серия Schneider Electric",
+    conductor: "Пластик / контактная группа",
+    voltage: "250 В / 10-16 А",
+    cores: "розетки, выключатели, рамки",
+    badge: "Schneider",
+    image: "assets/wiring-systeme.png",
+    description: "Серии Schneider Electric для аккуратного монтажа силовых, световых и слаботочных точек.",
+    tags: ["Schneider Electric", "розетки", "выключатели"],
+    popularity: 88
+  },
+  {
+    id: "iek-aquatic-series",
+    title: "Розетки / Выключатели IEK AQUATIC",
+    category: "Розетки / выключатели / коробки",
+    type: "Серия IEK",
+    conductor: "Пластик / влагозащита",
+    voltage: "250 В / 10-16 А",
+    cores: "влагозащищенные механизмы",
+    badge: "AQUATIC",
+    image: "assets/wiring-iek.png",
+    description: "Серия AQUATIC для влажных зон, подсобных помещений и технических участков.",
+    tags: ["IEK", "AQUATIC", "влагозащита"],
+    popularity: 87
+  },
+  {
+    id: "iek-germes-series",
+    title: "Розетки / Выключатели IEK ГЕРМЕС",
+    category: "Розетки / выключатели / коробки",
+    type: "Серия IEK",
+    conductor: "Пластик / наружный монтаж",
+    voltage: "250 В / 10-16 А",
+    cores: "розетки и выключатели",
+    badge: "ГЕРМЕС",
+    image: "assets/wiring-iek.png",
+    description: "Серия ГЕРМЕС для открытого монтажа и быстрых электромонтажных работ.",
+    tags: ["IEK", "ГЕРМЕС", "наружный монтаж"],
+    popularity: 86
+  },
+  {
+    id: "iek-kvarta-series",
+    title: "Розетки / Выключатели IEK КВАРТА",
+    category: "Розетки / выключатели / коробки",
+    type: "Серия IEK",
+    conductor: "Пластик / контактная группа",
+    voltage: "250 В / 10-16 А",
+    cores: "розетки, выключатели, рамки",
+    badge: "КВАРТА",
+    image: "assets/wiring-iek.png",
+    description: "Базовая серия КВАРТА для квартир, офисов и стандартных точек электропроводки.",
+    tags: ["IEK", "КВАРТА", "скрытый монтаж"],
+    popularity: 85
+  },
+  {
+    id: "iek-oktava-series",
+    title: "Розетки / Выключатели IEK ОКТАВА",
+    category: "Розетки / выключатели / коробки",
+    type: "Серия IEK",
+    conductor: "Пластик / контактная группа",
+    voltage: "250 В / 10-16 А",
+    cores: "розетки, выключатели, рамки",
+    badge: "ОКТАВА",
+    image: "assets/wiring-iek.png",
+    description: "Серия ОКТАВА для аккуратного внутреннего монтажа с простым подбором механизмов.",
+    tags: ["IEK", "ОКТАВА", "механизмы"],
+    popularity: 84
+  },
+  {
+    id: "stove-socket-plug",
+    title: "Розетки / Вилки для плиты",
+    category: "Розетки / выключатели / коробки",
+    type: "Силовая розетка",
+    conductor: "Пластик / силовые контакты",
+    voltage: "250-400 В",
+    cores: "для электроплит",
+    badge: "Плита",
+    image: "assets/industrial-plug.png",
+    description: "Силовые розетки и вилки для подключения электроплит, варочных панелей и мощной бытовой нагрузки.",
+    tags: ["плита", "силовая розетка", "вилка"],
+    popularity: 83
+  },
+  {
+    id: "iek-fors-series",
+    title: "Розетки / Выключатели IEK ФОРС",
+    category: "Розетки / выключатели / коробки",
+    type: "Серия IEK",
+    conductor: "Пластик / контактная группа",
+    voltage: "250 В / 10-16 А",
+    cores: "розетки и выключатели",
+    badge: "ФОРС",
+    image: "assets/wiring-iek.png",
+    description: "Серия ФОРС для быстрых комплектаций объекта розетками, выключателями и рамками.",
+    tags: ["IEK", "ФОРС", "розетки"],
+    popularity: 83
+  },
+  {
+    id: "iek-bolero-series",
+    title: "Розетки / Выключатели IEK BOLERO",
+    category: "Розетки / выключатели / коробки",
+    type: "Серия IEK",
+    conductor: "Пластик / контактная группа",
+    voltage: "250 В / 10-16 А",
+    cores: "розетки, выключатели, рамки",
+    badge: "BOLERO",
+    image: "assets/wiring-iek.png",
+    description: "Серия BOLERO для декоративных и стандартных точек электромонтажа.",
+    tags: ["IEK", "BOLERO", "декоративная серия"],
+    popularity: 82
+  },
+  {
+    id: "iek-brite-series",
+    title: "Розетки / Выключатели IEK BRITE",
+    category: "Розетки / выключатели / коробки",
+    type: "Серия IEK",
+    conductor: "Пластик / контактная группа",
+    voltage: "250 В / 10-16 А",
+    cores: "розетки, выключатели, рамки",
+    badge: "BRITE",
+    image: "assets/wiring-iek.png",
+    description: "Серия BRITE для современных интерьеров и комплектных электромонтажных заявок.",
+    tags: ["IEK", "BRITE", "выключатели"],
+    popularity: 82
+  },
+  {
+    id: "extension-cords",
+    title: "Удлинители / Шнуры",
+    category: "Розетки / выключатели / коробки",
+    type: "Удлинители",
+    conductor: "Медь / ПВС",
+    voltage: "220 В",
+    cores: "2-6 гнезд, разные длины",
+    badge: "Удлинители",
+    image: "assets/extension-cord.png",
+    description: "Удлинители и сетевые шнуры для временного питания рабочих мест, инструмента и бытовой техники.",
+    tags: ["удлинитель", "шнур", "ПВС"],
+    popularity: 86
+  },
+  {
+    id: "power-filters",
+    title: "Сетевые фильтры",
+    category: "Розетки / выключатели / коробки",
+    type: "Сетевой фильтр",
+    conductor: "Медь / защитный модуль",
+    voltage: "220 В",
+    cores: "3-6 гнезд",
+    badge: "Фильтр",
+    image: "assets/power-filter.png",
+    description: "Сетевые фильтры для компьютеров, офисной техники и рабочих зон с несколькими точками питания.",
+    tags: ["сетевой фильтр", "удлинитель", "защита"],
+    popularity: 85
+  },
+  {
+    id: "triple-adapters",
+    title: "Тройники универсальные / Адаптера",
+    category: "Розетки / выключатели / коробки",
+    type: "Адаптер",
+    conductor: "Пластик / контактная группа",
+    voltage: "220 В",
+    cores: "универсальные переходники",
+    badge: "Адаптеры",
+    image: "assets/adapter-triple.png",
+    description: "Тройники, переходники и адаптеры для бытовых подключений и временного распределения питания.",
+    tags: ["тройник", "адаптер", "переходник"],
+    popularity: 80
+  },
+  {
+    id: "power-connectors-rubber",
+    title: "Силовые разъёмы папа-мама каучук",
+    category: "Розетки / выключатели / коробки",
+    type: "Силовые разъёмы",
+    conductor: "Каучук / силовые контакты",
+    voltage: "220-380 В",
+    cores: "папа-мама",
+    badge: "Каучук",
+    image: "assets/industrial-plug.png",
+    description: "Каучуковые силовые разъёмы для надежного подключения оборудования, инструмента и временных линий.",
+    tags: ["силовой разъем", "каучук", "папа-мама"],
+    popularity: 84
+  },
+  {
+    id: "power-connectors-plastic",
+    title: "Силовые разъёмы папа-мама пластик",
+    category: "Розетки / выключатели / коробки",
+    type: "Силовые разъёмы",
+    conductor: "Пластик / силовые контакты",
+    voltage: "220-380 В",
+    cores: "папа-мама, EXPERT, штекеры",
+    badge: "Разъёмы",
+    image: "assets/industrial-plug.png",
+    description: "Пластиковые силовые разъёмы, штекеры и комплектующие для сборки переносных линий питания.",
+    tags: ["силовой разъем", "штекер", "EXPERT"],
+    popularity: 83
+  },
+  {
+    id: "unit-vita-astra-series",
+    title: "Розетки / Выключатели UNIT VITA / ASTRA",
+    category: "Розетки / выключатели / коробки",
+    type: "Серия UNIT",
+    conductor: "Пластик / контактная группа",
+    voltage: "250 В / 10-16 А",
+    cores: "VITA, ASTRA",
+    badge: "UNIT",
+    image: "assets/wiring-unit.png",
+    description: "Серии UNIT VITA и ASTRA для базовой комплектации квартир, офисов и коммерческих помещений.",
+    tags: ["UNIT", "VITA", "ASTRA"],
+    popularity: 81
+  },
+  {
+    id: "unit-tetranew-smart-series",
+    title: "Розетки / Выключатели UNIT TETRANEW / SMART / ELEMENT",
+    category: "Розетки / выключатели / коробки",
+    type: "Серия UNIT",
+    conductor: "Пластик / контактная группа",
+    voltage: "250 В / 10-16 А",
+    cores: "TETRANEW, SMART, ELEMENT",
+    badge: "UNIT",
+    image: "assets/wiring-unit.png",
+    description: "Серии UNIT TETRANEW, SMART и ELEMENT для современных точек питания и управления светом.",
+    tags: ["UNIT", "TETRANEW", "SMART", "ELEMENT"],
+    popularity: 80
+  },
+  {
+    id: "unit-rock-quattro-series",
+    title: "Розетки / Выключатели UNIT ROCK / QUATTRO",
+    category: "Розетки / выключатели / коробки",
+    type: "Серия UNIT",
+    conductor: "Пластик / контактная группа",
+    voltage: "250 В / 10-16 А",
+    cores: "ROCK, QUATTRO",
+    badge: "UNIT",
+    image: "assets/wiring-unit.png",
+    description: "Серии UNIT ROCK и QUATTRO для подбора розеток, выключателей и рамок в одном стиле.",
+    tags: ["UNIT", "ROCK", "QUATTRO"],
+    popularity: 79
+  },
+  {
+    id: "systeme-aqua-atlas-series",
+    title: "Розетки / Выключатели Systeme Electric AQUA / ATLAS",
+    category: "Розетки / выключатели / коробки",
+    type: "Серия Systeme Electric",
+    conductor: "Пластик / контактная группа",
+    voltage: "250 В / 10-16 А",
+    cores: "AQUA, ATLAS, ATLAS IP54",
+    badge: "Systeme",
+    image: "assets/wiring-systeme.png",
+    description: "Серии AQUA и ATLAS для бытовых, технических и влагозащищенных точек монтажа.",
+    tags: ["Systeme Electric", "AQUA", "ATLAS"],
+    popularity: 86
+  },
+  {
+    id: "systeme-wessen-series",
+    title: "Розетки / Выключатели Systeme Electric WESSEN 59",
+    category: "Розетки / выключатели / коробки",
+    type: "Серия Systeme Electric",
+    conductor: "Пластик / декоративные цвета",
+    voltage: "250 В / 10-16 А",
+    cores: "бук, матовый, сосна, датская сосна",
+    badge: "WESSEN 59",
+    image: "assets/wiring-systeme.png",
+    description: "Серия WESSEN 59 с декоративными вариантами для интерьеров и стандартных механизмов.",
+    tags: ["Systeme Electric", "WESSEN 59", "декор"],
+    popularity: 85
+  },
+  {
+    id: "systeme-etud-blanca-glossa-series",
+    title: "Розетки / Выключатели Systeme Electric ЭТЮД / Blanca / GLOSSA",
+    category: "Розетки / выключатели / коробки",
+    type: "Серия Systeme Electric",
+    conductor: "Пластик / контактная группа",
+    voltage: "250 В / 10-16 А",
+    cores: "ЭТЮД, ЭТЮД IP44, Blanca, GLOSSA, ARTGALLERY",
+    badge: "Systeme",
+    image: "assets/wiring-systeme.png",
+    description: "Популярные серии Systeme Electric для скрытого, открытого и декоративного монтажа.",
+    tags: ["Systeme Electric", "ЭТЮД", "Blanca", "GLOSSA"],
+    popularity: 87
+  },
+  {
+    id: "automatic-boxes",
+    title: "Коробки под автоматы",
+    category: "Розетки / выключатели / коробки",
+    type: "Коробки",
+    conductor: "Пластик",
+    voltage: "до 400 В",
+    cores: "под автоматы и модульные устройства",
+    badge: "Коробки",
+    image: "assets/wiring-boxes.png",
+    description: "Коробки и боксы под автоматы для компактной установки модульной защиты и распределения.",
+    tags: ["коробка", "автоматы", "модульная"],
+    popularity: 84
+  },
+  {
+    id: "installation-boxes-family",
+    title: "Коробки установочные / Подрозетники",
+    category: "Розетки / выключатели / коробки",
+    type: "Коробки",
+    conductor: "Пластик",
+    voltage: "68 мм и другие размеры",
+    cores: "установочные, распределительные, прямой монтаж",
+    badge: "Подрозетники",
+    image: "assets/wiring-boxes.png",
+    description: "Установочные коробки, подрозетники, распределительные коробки и решения для прямого монтажа.",
+    tags: ["подрозетник", "установочная коробка", "монтаж"],
+    popularity: 88
+  },
+  {
+    id: "terminal-blocks",
+    title: "Колодки без заземления / с заземлением",
+    category: "Розетки / выключатели / коробки",
+    type: "Колодки",
+    conductor: "Пластик / контактная группа",
+    voltage: "220 В",
+    cores: "без заземления, с заземлением",
+    badge: "Колодки",
+    image: "assets/terminal-block.png",
+    description: "Розеточные колодки для сборки удлинителей, переносок и временных точек питания.",
+    tags: ["колодка", "заземление", "удлинитель"],
+    popularity: 82
+  },
+  {
+    id: "cable-reels-frames",
+    title: "Катушки / Рамки",
+    category: "Розетки / выключатели / коробки",
+    type: "Катушки и рамки",
+    conductor: "Пластик / металл",
+    voltage: "220 В",
+    cores: "катушки, рамки, аксессуары",
+    badge: "Катушки",
+    image: "assets/cable-reel.png",
+    description: "Катушки, рамки и аксессуары для переносных линий питания, удлинителей и монтажных комплектов.",
+    tags: ["катушка", "рамка", "удлинитель"],
+    popularity: 78
+  },
+  {
+    id: "bells-buttons",
+    title: "Звонки / Кнопки",
+    category: "Розетки / выключатели / коробки",
+    type: "Звонки и кнопки",
+    conductor: "Пластик / контактный механизм",
+    voltage: "220 В / слаботочные линии",
+    cores: "кнопки, звонки",
+    badge: "Звонки",
+    image: "assets/doorbell-button.png",
+    description: "Кнопки вызова, звонки и аксессуары для входных групп, квартир и офисных помещений.",
+    tags: ["звонок", "кнопка", "вызов"],
+    popularity: 77
+  },
+  {
+    id: "universal-plugs",
+    title: "Вилки универсальные",
+    category: "Розетки / выключатели / коробки",
+    type: "Вилки",
+    conductor: "Пластик / контактная группа",
+    voltage: "220 В",
+    cores: "универсальные вилки",
+    badge: "Вилки",
+    image: "assets/universal-plug.png",
+    description: "Универсальные вилки для ремонта шнуров, сборки переносок и подключения бытовой техники.",
+    tags: ["вилка", "универсальная", "шнур"],
+    popularity: 79
+  }
+];
+
+products = [...products, ...wiringDeviceSeriesProducts];
 
 const SUPABASE_CONFIG = {
   url: "https://dbyejxbkqzqcpkukfmcn.supabase.co",
@@ -1145,7 +1568,7 @@ const EMAIL_CONFIG = {
   endpoint: "https://formsubmit.co/ajax/centralasiaenerg@gmail.com"
 };
 
-const ASSET_VERSION = "20260612-no-supplier-link";
+const ASSET_VERSION = "20260613-ekt-wiring-series";
 const AUTH_STORAGE_KEY = "cae_supabase_session";
 const QUOTE_STORAGE_KEY = "cae_quote_items";
 const REQUEST_RATE_KEY = "cae_request_rate";
@@ -1904,6 +2327,43 @@ function getCabinetGroup(product) {
 function getWiringDeviceGroup(product) {
   const text = `${product.type || ""} ${product.title}`.toLowerCase();
 
+  if (text.includes("legrand")) return "Серии Legrand";
+  if (
+    text.includes("iek") ||
+    text.includes("aquatic") ||
+    text.includes("гермес") ||
+    text.includes("кварта") ||
+    text.includes("октава") ||
+    text.includes("форс") ||
+    text.includes("bolero") ||
+    text.includes("brite")
+  ) return "Серии IEK";
+  if (
+    text.includes("unit") ||
+    text.includes("vita") ||
+    text.includes("astra") ||
+    text.includes("tetranew") ||
+    text.includes("smart") ||
+    text.includes("element") ||
+    text.includes("rock") ||
+    text.includes("quattro")
+  ) return "Серии UNIT";
+  if (
+    text.includes("schneider") ||
+    text.includes("systeme") ||
+    text.includes("wessen") ||
+    text.includes("atlas") ||
+    text.includes("aqua") ||
+    text.includes("этюд") ||
+    text.includes("blanca") ||
+    text.includes("glossa") ||
+    text.includes("artgallery")
+  ) return "Schneider / Systeme Electric";
+  if (text.includes("удлин") || text.includes("сетев") || text.includes("шнур")) return "Удлинители и фильтры";
+  if (text.includes("разъ") || text.includes("каучук") || text.includes("штекер")) return "Силовые разъёмы";
+  if (text.includes("тройник") || text.includes("адаптер") || text.includes("вилк") || text.includes("колод")) return "Колодки, вилки и адаптеры";
+  if (text.includes("звон") || text.includes("кноп")) return "Звонки и кнопки";
+  if (text.includes("катуш")) return "Катушки и рамки";
   if (text.includes("rj45") || text.includes("tv") || text.includes("слаботоч")) return "Слаботочные розетки";
   if (text.includes("подрозет") || text.includes("монтаж")) return "Монтажные коробки";
   if (text.includes("распредел") || text.includes("гермет")) return "Распределительные коробки";
@@ -1937,8 +2397,7 @@ async function loadProductsFromSupabase() {
         const localProduct = merged.get(product.id) || {};
         merged.set(product.id, {
           ...localProduct,
-          ...product,
-          externalUrl: localProduct.externalUrl || ""
+          ...product
         });
       });
       products = [...merged.values()];
