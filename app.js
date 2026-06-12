@@ -905,7 +905,7 @@ const EMAIL_CONFIG = {
   endpoint: "https://formsubmit.co/ajax/centralasiaenerg@gmail.com"
 };
 
-const ASSET_VERSION = "20260612-motion";
+const ASSET_VERSION = "20260612-catalog-visible";
 const AUTH_STORAGE_KEY = "cae_supabase_session";
 const QUOTE_STORAGE_KEY = "cae_quote_items";
 const REQUEST_RATE_KEY = "cae_request_rate";
@@ -1154,7 +1154,6 @@ function setupRevealAnimations() {
     ".hero-content",
     ".quick-strip article",
     ".section-heading",
-    ".catalog-shell",
     ".request-copy",
     ".request-layout"
   ].join(","));
