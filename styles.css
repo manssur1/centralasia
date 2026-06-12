@@ -754,6 +754,11 @@ button {
   background: var(--copper);
 }
 
+.card-action.is-added {
+  border-color: var(--teal-dark);
+  background: var(--teal-dark);
+}
+
 .empty-state {
   border: 1px dashed var(--line);
   border-radius: var(--radius);
@@ -881,6 +886,58 @@ button {
   margin: 0;
   color: var(--teal-dark);
   font-weight: 800;
+}
+
+.floating-quote {
+  position: fixed;
+  right: clamp(16px, 3vw, 36px);
+  bottom: clamp(16px, 3vw, 32px);
+  z-index: 40;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  border: 1px solid rgba(11, 145, 135, 0.22);
+  border-radius: 999px;
+  padding: 10px 18px;
+  background: var(--ink);
+  color: var(--white);
+  box-shadow: 0 18px 42px rgba(17, 21, 28, 0.22);
+  font-weight: 900;
+}
+
+.floating-quote strong {
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: var(--teal);
+  color: var(--white);
+}
+
+.floating-quote:hover {
+  transform: translateY(-2px);
+}
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 28px;
+  z-index: 41;
+  max-width: min(420px, calc(100% - 32px));
+  transform: translate(-50%, 18px);
+  border: 1px solid rgba(11, 145, 135, 0.22);
+  border-radius: var(--radius-lg);
+  padding: 13px 16px;
+  background: var(--white);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+  font-weight: 800;
+  opacity: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.toast.is-visible {
+  transform: translate(-50%, 0);
+  opacity: 1;
 }
 
 .site-footer {
@@ -1015,5 +1072,16 @@ button {
 
   .quote-controls {
     justify-content: start;
+  }
+
+  .floating-quote {
+    right: 14px;
+    bottom: 14px;
+    left: 14px;
+    justify-content: center;
+  }
+
+  .toast {
+    bottom: 78px;
   }
 }
