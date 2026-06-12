@@ -905,8 +905,9 @@ const EMAIL_CONFIG = {
   endpoint: "https://formsubmit.co/ajax/centralasiaenerg@gmail.com"
 };
 
-const ASSET_VERSION = "20260612-request-fallback";
+const ASSET_VERSION = "20260612-ux";
 const AUTH_STORAGE_KEY = "cae_supabase_session";
+const QUOTE_STORAGE_KEY = "cae_quote_items";
 const REQUEST_RATE_KEY = "cae_request_rate";
 const SESSION_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 const REQUEST_COOLDOWN_MS = 30 * 1000;
@@ -955,6 +956,19 @@ const authSubmit = document.querySelector("#authSubmit");
 const authLoginTab = document.querySelector("#authLoginTab");
 const authRegisterTab = document.querySelector("#authRegisterTab");
 const requestAuthNote = document.querySelector("#requestAuthNote");
+const floatingQuote = document.createElement("button");
+const toast = document.createElement("div");
+
+floatingQuote.className = "floating-quote";
+floatingQuote.type = "button";
+floatingQuote.hidden = true;
+floatingQuote.setAttribute("aria-label", "Перейти к заявке");
+
+toast.className = "toast";
+toast.setAttribute("role", "status");
+toast.setAttribute("aria-live", "polite");
+toast.hidden = true;
+document.body.append(floatingQuote, toast);
 
 function isSupabaseConfigured() {
   return /^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(SUPABASE_CONFIG.url);
@@ -1018,6 +1032,64 @@ function markRequestSent() {
   } catch {
     // Rate limiting is best-effort in private browsing modes.
   }
+}
+
+function getQuoteQty(productId) {
+  return state.quote.find((item) => item.id === productId)?.qty || 0;
+}
+
+function getQuoteTotals() {
+  return state.quote.reduce((totals, item) => {
+    totals.items += 1;
+    totals.qty += Number(item.qty) || 0;
+    return totals;
+  }, { items: 0, qty: 0 });
+}
+
+function saveQuote() {
+  try {
+    const items = state.quote.map((item) => ({
+      id: safeProductId(item.id),
+      qty: Math.max(1, Math.min(MAX_ITEM_QTY, Number(item.qty) || 1))
+    }));
+    localStorage.setItem(QUOTE_STORAGE_KEY, JSON.stringify(items));
+  } catch (error) {
+    console.warn("Quote save failed:", error);
+  }
+}
+
+function restoreQuote() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(QUOTE_STORAGE_KEY) || "[]");
+    if (!Array.isArray(saved)) return;
+
+    state.quote = saved
+      .slice(0, MAX_QUOTE_ITEMS)
+      .map((entry) => {
+        const product = products.find((item) => item.id === safeProductId(entry.id));
+        if (!product) return null;
+        return {
+          ...product,
+          qty: Math.max(1, Math.min(MAX_ITEM_QTY, Number(entry.qty) || 1))
+        };
+      })
+      .filter(Boolean);
+  } catch (error) {
+    console.warn("Quote restore failed:", error);
+    state.quote = [];
+  }
+}
+
+let toastTimer = null;
+function showToast(message) {
+  toast.textContent = message;
+  toast.hidden = false;
+  toast.classList.add("is-visible");
+  window.clearTimeout(toastTimer);
+  toastTimer = window.setTimeout(() => {
+    toast.classList.remove("is-visible");
+    toast.hidden = true;
+  }, 2200);
 }
 
 function getSavedSession() {
@@ -1517,7 +1589,9 @@ async function loadProductsFromSupabase() {
       state.section = "Все";
       state.group = "Все";
       state.conductor = "Все";
+      restoreQuote();
       render();
+      renderQuote();
     }
   } catch (error) {
     console.warn("Supabase products fallback:", error);
@@ -1584,6 +1658,7 @@ function getFilteredProducts() {
 
 function createProductCard(product) {
   const card = document.createElement("article");
+  const quoteQty = getQuoteQty(product.id);
   card.className = "product-card";
   card.innerHTML = `
     <div class="product-media">
@@ -1604,7 +1679,7 @@ function createProductCard(product) {
       <div class="tag-row">
         ${product.tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}
       </div>
-      <button class="card-action" type="button" data-product-id="${escapeAttribute(product.id)}">В заявку</button>
+      <button class="card-action${quoteQty ? " is-added" : ""}" type="button" data-product-id="${escapeAttribute(product.id)}">${quoteQty ? `В заявке: ${escapeHtml(quoteQty)}` : "В заявку"}</button>
     </div>
   `;
   return card;
@@ -1627,6 +1702,23 @@ function renderProducts() {
   emptyState.hidden = filteredProducts.length > 0;
 
   filteredProducts.forEach((product) => productGrid.append(createProductCard(product)));
+}
+
+function updateProductActionStates() {
+  productGrid.querySelectorAll("[data-product-id]").forEach((button) => {
+    const qty = getQuoteQty(button.dataset.productId);
+    button.classList.toggle("is-added", qty > 0);
+    button.textContent = qty > 0 ? `В заявке: ${qty}` : "В заявку";
+  });
+}
+
+function renderFloatingQuote() {
+  const totals = getQuoteTotals();
+  floatingQuote.hidden = totals.items === 0;
+  floatingQuote.innerHTML = `
+    <span>Заявка</span>
+    <strong>${escapeHtml(totals.qty)} шт.</strong>
+  `;
 }
 
 function renderFilters() {
@@ -1665,6 +1757,7 @@ function addToQuote(productId) {
   }
 
   renderQuote();
+  showToast(`${product.title} добавлен в заявку`);
 }
 
 function removeFromQuote(productId) {
@@ -1708,6 +1801,10 @@ function renderQuote() {
     `;
     quoteList.append(row);
   });
+
+  saveQuote();
+  updateProductActionStates();
+  renderFloatingQuote();
 }
 
 function render() {
@@ -1758,6 +1855,11 @@ quoteList.addEventListener("click", (event) => {
 clearQuote.addEventListener("click", () => {
   state.quote = [];
   renderQuote();
+  showToast("Заявка очищена");
+});
+
+floatingQuote.addEventListener("click", () => {
+  document.querySelector("#request")?.scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
 authOpen.addEventListener("click", async () => {
@@ -1945,6 +2047,7 @@ requestForm.addEventListener("submit", async (event) => {
 });
 
 products = products.map(secureProduct).filter((product) => product.id);
+restoreQuote();
 render();
 renderQuote();
 restoreAuthSession();
