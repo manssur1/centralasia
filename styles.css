@@ -93,6 +93,11 @@ button {
   transform: translateY(0);
 }
 
+.catalog-shell.reveal-on-scroll {
+  opacity: 1;
+  transform: none;
+}
+
 .site-header {
   position: sticky;
   top: 0;
