@@ -887,6 +887,246 @@ let products = [
     description: "Аксессуары для сборки щитов: DIN-рейки, шины, клеммы, маркировка и монтажные элементы.",
     tags: ["аксессуары", "DIN", "клеммы"],
     popularity: 75
+  },
+  {
+    id: "socket-single-grounded",
+    title: "Розетка одноместная с заземлением 16А",
+    category: "Розетки / выключатели / коробки",
+    type: "Розетка",
+    conductor: "Пластик / контакты латунь",
+    voltage: "250 В / 16 А",
+    cores: "1 пост, скрытая установка",
+    badge: "Розетка",
+    image: "assets/outlet-single.png",
+    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
+    description: "Базовая силовая розетка для жилых, офисных и коммерческих помещений, подходит для стандартных подрозетников.",
+    tags: ["розетка", "16А", "заземление"],
+    popularity: 91
+  },
+  {
+    id: "socket-double-grounded",
+    title: "Розетка двухместная с заземлением 16А",
+    category: "Розетки / выключатели / коробки",
+    type: "Розетка",
+    conductor: "Пластик / контакты латунь",
+    voltage: "250 В / 16 А",
+    cores: "2 поста, скрытая установка",
+    badge: "2 поста",
+    image: "assets/outlet-double.png",
+    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
+    description: "Двойная розетка для рабочих зон, кухонь, офисных столов и точек подключения бытового оборудования.",
+    tags: ["двойная", "16А", "скрытая"],
+    popularity: 90
+  },
+  {
+    id: "socket-ip44",
+    title: "Розетка влагозащищенная IP44",
+    category: "Розетки / выключатели / коробки",
+    type: "Влагозащищенная розетка",
+    conductor: "Пластик / крышка",
+    voltage: "250 В / 16 А",
+    cores: "IP44",
+    badge: "IP44",
+    image: "assets/outlet-ip44.png",
+    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
+    description: "Розетка с защитной крышкой для влажных помещений, технических зон, гаражей и наружных точек под навесом.",
+    tags: ["IP44", "крышка", "влага"],
+    popularity: 87
+  },
+  {
+    id: "socket-with-cover",
+    title: "Розетка с защитной крышкой",
+    category: "Розетки / выключатели / коробки",
+    type: "Розетка с крышкой",
+    conductor: "Пластик",
+    voltage: "250 В / 16 А",
+    cores: "1 пост",
+    badge: "Крышка",
+    image: "assets/outlet-lid.png",
+    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
+    description: "Универсальная розетка с крышкой для защиты контактов от пыли, случайного касания и брызг.",
+    tags: ["крышка", "защита", "розетка"],
+    popularity: 84
+  },
+  {
+    id: "data-outlet-rj45",
+    title: "Компьютерная розетка RJ45",
+    category: "Розетки / выключатели / коробки",
+    type: "Слаботочная розетка",
+    conductor: "RJ45 / Cat.5e-Cat.6",
+    voltage: "LAN",
+    cores: "1 порт",
+    badge: "RJ45",
+    image: "assets/data-outlet-rj45.png",
+    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
+    description: "Информационная розетка для подключения компьютерных сетей, рабочих мест, камер и слаботочных линий.",
+    tags: ["RJ45", "LAN", "СКС"],
+    popularity: 82
+  },
+  {
+    id: "tv-outlet",
+    title: "Телевизионная розетка TV",
+    category: "Розетки / выключатели / коробки",
+    type: "Слаботочная розетка",
+    conductor: "TV / коаксиал",
+    voltage: "антенная линия",
+    cores: "1 выход",
+    badge: "TV",
+    image: "assets/tv-outlet.png",
+    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
+    description: "TV-розетка для аккуратного подключения антенного или коаксиального кабеля в жилых и офисных помещениях.",
+    tags: ["TV", "коаксиал", "слаботочка"],
+    popularity: 76
+  },
+  {
+    id: "switch-single-key",
+    title: "Выключатель одноклавишный",
+    category: "Розетки / выключатели / коробки",
+    type: "Выключатель",
+    conductor: "Пластик / механизм",
+    voltage: "250 В / 10 А",
+    cores: "1 клавиша",
+    badge: "1 клавиша",
+    image: "assets/switch-single.png",
+    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
+    description: "Классический выключатель для одной группы освещения, подходит для скрытого монтажа в стандартный подрозетник.",
+    tags: ["выключатель", "1 клавиша", "свет"],
+    popularity: 89
+  },
+  {
+    id: "switch-double-key",
+    title: "Выключатель двухклавишный",
+    category: "Розетки / выключатели / коробки",
+    type: "Выключатель",
+    conductor: "Пластик / механизм",
+    voltage: "250 В / 10 А",
+    cores: "2 клавиши",
+    badge: "2 клавиши",
+    image: "assets/switch-double.png",
+    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
+    description: "Выключатель для раздельного управления двумя группами освещения: люстра, зона, подсветка или вентиляция.",
+    tags: ["2 клавиши", "освещение", "механизм"],
+    popularity: 88
+  },
+  {
+    id: "switch-pass-through",
+    title: "Выключатель проходной",
+    category: "Розетки / выключатели / коробки",
+    type: "Проходной выключатель",
+    conductor: "Пластик / механизм",
+    voltage: "250 В / 10 А",
+    cores: "1 клавиша, схема 6",
+    badge: "Проходной",
+    image: "assets/switch-pass.png",
+    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
+    description: "Проходной выключатель для управления светом из двух точек: коридоры, лестницы, спальни и длинные помещения.",
+    tags: ["проходной", "лестница", "свет"],
+    popularity: 81
+  },
+  {
+    id: "dimmer-rotary",
+    title: "Светорегулятор поворотный",
+    category: "Розетки / выключатели / коробки",
+    type: "Диммер",
+    conductor: "Пластик / электроника",
+    voltage: "220 В",
+    cores: "поворотный механизм",
+    badge: "Диммер",
+    image: "assets/dimmer.png",
+    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
+    description: "Диммер для плавной регулировки яркости совместимых светильников и создания комфортных сценариев освещения.",
+    tags: ["диммер", "яркость", "освещение"],
+    popularity: 74
+  },
+  {
+    id: "frame-two-gang",
+    title: "Рамка декоративная на 2 поста",
+    category: "Розетки / выключатели / коробки",
+    type: "Рамка",
+    conductor: "Пластик",
+    voltage: "для механизмов",
+    cores: "2 поста",
+    badge: "Рамка",
+    image: "assets/frame-switch.png",
+    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
+    description: "Декоративная рамка для объединения двух механизмов: розеток, выключателей, TV или RJ45-модулей.",
+    tags: ["рамка", "2 поста", "механизмы"],
+    popularity: 72
+  },
+  {
+    id: "mounting-box-concrete",
+    title: "Подрозетник для бетона",
+    category: "Розетки / выключатели / коробки",
+    type: "Монтажная коробка",
+    conductor: "Пластик",
+    voltage: "68 мм",
+    cores: "для бетона / кирпича",
+    badge: "68 мм",
+    image: "assets/mount-box-concrete.png",
+    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
+    description: "Монтажная коробка для установки розеток и выключателей в бетонные, кирпичные и блочные стены.",
+    tags: ["подрозетник", "бетон", "68 мм"],
+    popularity: 86
+  },
+  {
+    id: "mounting-box-drywall",
+    title: "Подрозетник для гипсокартона",
+    category: "Розетки / выключатели / коробки",
+    type: "Монтажная коробка",
+    conductor: "Пластик / лапки",
+    voltage: "68 мм",
+    cores: "для ГКЛ",
+    badge: "ГКЛ",
+    image: "assets/mount-box-drywall.png",
+    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
+    description: "Подрозетник с крепежными лапками для надежного монтажа механизмов в гипсокартонные перегородки.",
+    tags: ["подрозетник", "ГКЛ", "лапки"],
+    popularity: 85
+  },
+  {
+    id: "junction-box-indoor",
+    title: "Коробка распределительная внутренняя",
+    category: "Розетки / выключатели / коробки",
+    type: "Распределительная коробка",
+    conductor: "Пластик",
+    voltage: "до 400 В",
+    cores: "80x80 мм",
+    badge: "Распайка",
+    image: "assets/junction-box-indoor.png",
+    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
+    description: "Коробка для соединения и ответвления проводов внутри помещений, подходит для обслуживаемых узлов электропроводки.",
+    tags: ["распредкоробка", "соединение", "проводка"],
+    popularity: 83
+  },
+  {
+    id: "junction-box-ip65",
+    title: "Коробка распределительная IP65",
+    category: "Розетки / выключатели / коробки",
+    type: "Герметичная коробка",
+    conductor: "Пластик / уплотнение",
+    voltage: "до 400 В",
+    cores: "IP65",
+    badge: "IP65",
+    image: "assets/junction-box-ip65.png",
+    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
+    description: "Герметичная распределительная коробка для наружного монтажа, влажных зон, складов и технических помещений.",
+    tags: ["IP65", "герметичная", "наружная"],
+    popularity: 84
+  },
+  {
+    id: "floor-outlet-block",
+    title: "Напольный блок розеток",
+    category: "Розетки / выключатели / коробки",
+    type: "Напольный блок",
+    conductor: "Металл / пластик",
+    voltage: "220 В / LAN",
+    cores: "2-4 модуля",
+    badge: "Пол",
+    image: "assets/floor-outlet-block.png",
+    externalUrl: "https://pro.ekt.kz/catalog/rozetki_vyklyuchateli_korobki/",
+    description: "Напольный блок для рабочих мест, переговорных и open-space зон, где питание и связь выводятся из пола.",
+    tags: ["напольный", "офис", "модули"],
+    popularity: 78
   }
 ];
 
@@ -905,7 +1145,7 @@ const EMAIL_CONFIG = {
   endpoint: "https://formsubmit.co/ajax/centralasiaenerg@gmail.com"
 };
 
-const ASSET_VERSION = "20260612-catalog-visible";
+const ASSET_VERSION = "20260612-wiring-devices";
 const AUTH_STORAGE_KEY = "cae_supabase_session";
 const QUOTE_STORAGE_KEY = "cae_quote_items";
 const REQUEST_RATE_KEY = "cae_request_rate";
@@ -1006,6 +1246,19 @@ function escapeAttribute(value) {
 
 function safeProductId(value) {
   return String(value ?? "").replace(/[^a-z0-9_-]/gi, "").slice(0, 80);
+}
+
+function safeExternalUrl(value) {
+  const url = String(value || "");
+  if (!url) return "";
+
+  try {
+    const parsed = new URL(url);
+    if (!["https:"].includes(parsed.protocol)) return "";
+    return parsed.href;
+  } catch {
+    return "";
+  }
 }
 
 function isValidEmail(value) {
@@ -1459,6 +1712,7 @@ function normalizeProduct(row) {
     cores: row.cores || "по запросу",
     badge: row.badge || "В наличии",
     image: row.image_url || row.image || "assets/power-cable.png",
+    externalUrl: row.external_url || row.externalUrl || "",
     description: row.description || "Позиция каталога кабеля и провода.",
     tags: Array.isArray(row.tags) ? row.tags : [],
     popularity: Number(row.popularity || 0)
@@ -1479,6 +1733,7 @@ function secureProduct(product) {
     image: /^assets\/[a-z0-9._/-]+\.(png|jpe?g|webp|gif|svg)$/i.test(String(product.image || "")) && !String(product.image || "").includes("..")
       ? String(product.image)
       : "assets/power-cable.png",
+    externalUrl: safeExternalUrl(product.externalUrl),
     description: normalizeWhitespace(product.description, 260),
     tags: Array.isArray(product.tags)
       ? product.tags.slice(0, 8).map((tag) => normalizeWhitespace(tag, 40)).filter(Boolean)
@@ -1618,6 +1873,7 @@ function submitEmailFallback(payload) {
 
 function getProductSection(product) {
   if (product.section) return product.section;
+  if (product.category === "Розетки / выключатели / коробки") return "Розетки / выключатели / коробки";
   if (product.category === "Шкафы / щиты") return "Шкафы / щиты";
   return product.category === "Кабеленесущие системы" ? "Кабеленесущие системы" : "Кабели";
 }
@@ -1660,10 +1916,23 @@ function getCabinetGroup(product) {
   return "Корпуса и аксессуары";
 }
 
+function getWiringDeviceGroup(product) {
+  const text = `${product.type || ""} ${product.title}`.toLowerCase();
+
+  if (text.includes("rj45") || text.includes("tv") || text.includes("слаботоч")) return "Слаботочные розетки";
+  if (text.includes("подрозет") || text.includes("монтаж")) return "Монтажные коробки";
+  if (text.includes("распредел") || text.includes("гермет")) return "Распределительные коробки";
+  if (text.includes("розет") || text.includes("напольн")) return "Розетки";
+  if (text.includes("выключ") || text.includes("диммер") || text.includes("светорегулятор")) return "Выключатели";
+  if (text.includes("рамк")) return "Рамки и механизмы";
+  return "Электроустановочные изделия";
+}
+
 function getProductGroup(product) {
   const section = getProductSection(product);
   if (section === "Кабеленесущие системы") return getSystemGroup(product);
   if (section === "Шкафы / щиты") return getCabinetGroup(product);
+  if (section === "Розетки / выключатели / коробки") return getWiringDeviceGroup(product);
   return getCableGroup(product);
 }
 
@@ -1679,7 +1948,13 @@ async function loadProductsFromSupabase() {
       const localProducts = products;
       const merged = new Map(localProducts.map((product) => [product.id, product]));
       rows.map(normalizeProduct).map(secureProduct).forEach((product) => {
-        if (product.id) merged.set(product.id, product);
+        if (!product.id) return;
+        const localProduct = merged.get(product.id) || {};
+        merged.set(product.id, {
+          ...localProduct,
+          ...product,
+          externalUrl: product.externalUrl || localProduct.externalUrl || ""
+        });
       });
       products = [...merged.values()];
       state.section = "Все";
@@ -1775,7 +2050,10 @@ function createProductCard(product) {
       <div class="tag-row">
         ${product.tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}
       </div>
-      <button class="card-action${quoteQty ? " is-added" : ""}" type="button" data-product-id="${escapeAttribute(product.id)}">${quoteQty ? `В заявке: ${escapeHtml(quoteQty)}` : "В заявку"}</button>
+      <div class="product-actions">
+        <button class="card-action${quoteQty ? " is-added" : ""}" type="button" data-product-id="${escapeAttribute(product.id)}">${quoteQty ? `В заявке: ${escapeHtml(quoteQty)}` : "В заявку"}</button>
+        ${product.externalUrl ? `<a class="card-link" href="${escapeAttribute(product.externalUrl)}" target="_blank" rel="noopener noreferrer">Открыть у поставщика</a>` : ""}
+      </div>
     </div>
   `;
   return card;
