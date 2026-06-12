@@ -905,7 +905,7 @@ const EMAIL_CONFIG = {
   endpoint: "https://formsubmit.co/ajax/centralasiaenerg@gmail.com"
 };
 
-const ASSET_VERSION = "20260612-ux";
+const ASSET_VERSION = "20260612-motion";
 const AUTH_STORAGE_KEY = "cae_supabase_session";
 const QUOTE_STORAGE_KEY = "cae_quote_items";
 const REQUEST_RATE_KEY = "cae_request_rate";
@@ -917,6 +917,7 @@ const MAX_SEARCH_LENGTH = 80;
 const MAX_NAME_LENGTH = 80;
 const MAX_CONTACT_LENGTH = 120;
 const MAX_COMMENT_LENGTH = 800;
+const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 const state = {
   section: "Все",
@@ -1090,6 +1091,102 @@ function showToast(message) {
     toast.classList.remove("is-visible");
     toast.hidden = true;
   }, 2200);
+}
+
+function easeInOutCubic(progress) {
+  return progress < 0.5
+    ? 4 * progress * progress * progress
+    : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+}
+
+function smoothScrollTo(target) {
+  if (!target) return;
+
+  if (prefersReducedMotion.matches) {
+    target.scrollIntoView({ block: "start" });
+    return;
+  }
+
+  const headerOffset = 82;
+  const startY = window.scrollY;
+  const targetY = Math.max(0, target.getBoundingClientRect().top + window.scrollY - headerOffset);
+  const distance = targetY - startY;
+  const duration = Math.min(900, Math.max(420, Math.abs(distance) * 0.45));
+  const startTime = performance.now();
+
+  function step(now) {
+    const progress = Math.min(1, (now - startTime) / duration);
+    window.scrollTo(0, startY + distance * easeInOutCubic(progress));
+    if (progress < 1) window.requestAnimationFrame(step);
+  }
+
+  window.requestAnimationFrame(step);
+}
+
+function animateCatalogArrival() {
+  const catalog = document.querySelector("#catalog");
+  if (!catalog || prefersReducedMotion.matches) return;
+
+  catalog.classList.remove("is-catalog-arriving");
+  void catalog.offsetWidth;
+  catalog.classList.add("is-catalog-arriving");
+  window.setTimeout(() => catalog.classList.remove("is-catalog-arriving"), 1400);
+}
+
+function handleAnchorNavigation(event) {
+  const link = event.target.closest('a[href^="#"]');
+  if (!link) return;
+
+  const hash = link.getAttribute("href");
+  if (!hash || hash === "#") return;
+
+  const target = document.querySelector(hash);
+  if (!target) return;
+
+  event.preventDefault();
+  smoothScrollTo(target);
+  if (hash === "#catalog") animateCatalogArrival();
+  history.pushState(null, "", hash);
+}
+
+function setupRevealAnimations() {
+  const revealNodes = document.querySelectorAll([
+    ".hero-content",
+    ".quick-strip article",
+    ".section-heading",
+    ".catalog-shell",
+    ".request-copy",
+    ".request-layout"
+  ].join(","));
+
+  revealNodes.forEach((node) => node.classList.add("reveal-on-scroll"));
+
+  if (prefersReducedMotion.matches || !("IntersectionObserver" in window)) {
+    revealNodes.forEach((node) => node.classList.add("is-revealed"));
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add("is-revealed");
+      observer.unobserve(entry.target);
+    });
+  }, {
+    threshold: 0.14,
+    rootMargin: "0px 0px -8% 0px"
+  });
+
+  revealNodes.forEach((node) => observer.observe(node));
+  window.requestAnimationFrame(() => {
+    revealNodes.forEach((node) => {
+      const rect = node.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 0.92 && rect.bottom > 0) {
+        node.classList.add("is-revealed");
+        observer.unobserve(node);
+      }
+    });
+  });
 }
 
 function getSavedSession() {
@@ -1659,7 +1756,7 @@ function getFilteredProducts() {
 function createProductCard(product) {
   const card = document.createElement("article");
   const quoteQty = getQuoteQty(product.id);
-  card.className = "product-card";
+  card.className = "product-card product-card-enter";
   card.innerHTML = `
     <div class="product-media">
       <img src="${assetUrl(product.image)}" alt="${escapeAttribute(product.title)}" loading="lazy" decoding="async">
@@ -1685,6 +1782,20 @@ function createProductCard(product) {
   return card;
 }
 
+function animateProductCards() {
+  if (prefersReducedMotion.matches) {
+    productGrid.querySelectorAll(".product-card-enter").forEach((card) => {
+      card.classList.add("is-visible");
+    });
+    return;
+  }
+
+  productGrid.querySelectorAll(".product-card-enter").forEach((card, index) => {
+    const delay = Math.min(index, 11) * 38;
+    window.setTimeout(() => card.classList.add("is-visible"), delay);
+  });
+}
+
 function pluralize(count) {
   const mod10 = count % 10;
   const mod100 = count % 100;
@@ -1702,6 +1813,7 @@ function renderProducts() {
   emptyState.hidden = filteredProducts.length > 0;
 
   filteredProducts.forEach((product) => productGrid.append(createProductCard(product)));
+  animateProductCards();
 }
 
 function updateProductActionStates() {
@@ -1859,7 +1971,12 @@ clearQuote.addEventListener("click", () => {
 });
 
 floatingQuote.addEventListener("click", () => {
-  document.querySelector("#request")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  smoothScrollTo(document.querySelector("#request"));
+});
+
+document.addEventListener("click", handleAnchorNavigation);
+window.addEventListener("hashchange", () => {
+  if (window.location.hash === "#catalog") animateCatalogArrival();
 });
 
 authOpen.addEventListener("click", async () => {
@@ -2048,7 +2165,12 @@ requestForm.addEventListener("submit", async (event) => {
 
 products = products.map(secureProduct).filter((product) => product.id);
 restoreQuote();
+setupRevealAnimations();
 render();
 renderQuote();
 restoreAuthSession();
 loadProductsFromSupabase();
+
+if (window.location.hash === "#catalog") {
+  window.setTimeout(animateCatalogArrival, 260);
+}
