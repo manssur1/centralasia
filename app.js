@@ -1145,7 +1145,7 @@ const EMAIL_CONFIG = {
   endpoint: "https://formsubmit.co/ajax/centralasiaenerg@gmail.com"
 };
 
-const ASSET_VERSION = "20260612-wiring-devices";
+const ASSET_VERSION = "20260612-no-supplier-link";
 const AUTH_STORAGE_KEY = "cae_supabase_session";
 const QUOTE_STORAGE_KEY = "cae_quote_items";
 const REQUEST_RATE_KEY = "cae_request_rate";
@@ -1246,19 +1246,6 @@ function escapeAttribute(value) {
 
 function safeProductId(value) {
   return String(value ?? "").replace(/[^a-z0-9_-]/gi, "").slice(0, 80);
-}
-
-function safeExternalUrl(value) {
-  const url = String(value || "");
-  if (!url) return "";
-
-  try {
-    const parsed = new URL(url);
-    if (!["https:"].includes(parsed.protocol)) return "";
-    return parsed.href;
-  } catch {
-    return "";
-  }
 }
 
 function isValidEmail(value) {
@@ -1712,7 +1699,6 @@ function normalizeProduct(row) {
     cores: row.cores || "по запросу",
     badge: row.badge || "В наличии",
     image: row.image_url || row.image || "assets/power-cable.png",
-    externalUrl: row.external_url || row.externalUrl || "",
     description: row.description || "Позиция каталога кабеля и провода.",
     tags: Array.isArray(row.tags) ? row.tags : [],
     popularity: Number(row.popularity || 0)
@@ -1733,7 +1719,6 @@ function secureProduct(product) {
     image: /^assets\/[a-z0-9._/-]+\.(png|jpe?g|webp|gif|svg)$/i.test(String(product.image || "")) && !String(product.image || "").includes("..")
       ? String(product.image)
       : "assets/power-cable.png",
-    externalUrl: safeExternalUrl(product.externalUrl),
     description: normalizeWhitespace(product.description, 260),
     tags: Array.isArray(product.tags)
       ? product.tags.slice(0, 8).map((tag) => normalizeWhitespace(tag, 40)).filter(Boolean)
@@ -1953,7 +1938,7 @@ async function loadProductsFromSupabase() {
         merged.set(product.id, {
           ...localProduct,
           ...product,
-          externalUrl: product.externalUrl || localProduct.externalUrl || ""
+          externalUrl: localProduct.externalUrl || ""
         });
       });
       products = [...merged.values()];
@@ -2050,10 +2035,7 @@ function createProductCard(product) {
       <div class="tag-row">
         ${product.tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}
       </div>
-      <div class="product-actions">
-        <button class="card-action${quoteQty ? " is-added" : ""}" type="button" data-product-id="${escapeAttribute(product.id)}">${quoteQty ? `В заявке: ${escapeHtml(quoteQty)}` : "В заявку"}</button>
-        ${product.externalUrl ? `<a class="card-link" href="${escapeAttribute(product.externalUrl)}" target="_blank" rel="noopener noreferrer">Открыть у поставщика</a>` : ""}
-      </div>
+      <button class="card-action${quoteQty ? " is-added" : ""}" type="button" data-product-id="${escapeAttribute(product.id)}">${quoteQty ? `В заявке: ${escapeHtml(quoteQty)}` : "В заявку"}</button>
     </div>
   `;
   return card;
