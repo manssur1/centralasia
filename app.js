@@ -905,7 +905,7 @@ const EMAIL_CONFIG = {
   endpoint: "https://formsubmit.co/ajax/centralasiaenerg@gmail.com"
 };
 
-const ASSET_VERSION = "20260611-security";
+const ASSET_VERSION = "20260612-request-fallback";
 const AUTH_STORAGE_KEY = "cae_supabase_session";
 const REQUEST_RATE_KEY = "cae_request_rate";
 const SESSION_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
@@ -1366,30 +1366,54 @@ async function sendEmailNotification(request) {
     "Состав заявки": formatQuoteForEmail(request.items)
   };
 
-  const response = await fetch(EMAIL_CONFIG.endpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json"
-    },
-    body: JSON.stringify(payload)
-  });
+  try {
+    const response = await fetch(EMAIL_CONFIG.endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      body: JSON.stringify(payload)
+    });
 
-  const text = await response.text();
-  let body = null;
-  if (text) {
-    try {
-      body = JSON.parse(text);
-    } catch {
-      body = { message: text };
+    const text = await response.text();
+    let body = null;
+    if (text) {
+      try {
+        body = JSON.parse(text);
+      } catch {
+        body = { message: text };
+      }
     }
+
+    if (response.ok && body?.success !== "false") {
+      return body;
+    }
+  } catch (error) {
+    console.warn("Email ajax delivery failed, trying fallback:", error);
   }
 
-  if (!response.ok || body?.success === "false") {
+  return submitEmailNoCors(payload);
+}
+
+async function submitEmailNoCors(payload) {
+  try {
+    const formData = new FormData();
+    Object.entries(payload).forEach(([name, value]) => {
+      formData.append(name, String(value));
+    });
+
+    await fetch(EMAIL_CONFIG.endpoint.replace("/ajax/", "/"), {
+      method: "POST",
+      mode: "no-cors",
+      body: formData
+    });
+
+    return { success: true, fallback: "no-cors" };
+  } catch (error) {
+    console.warn("Email no-cors delivery failed, trying iframe fallback:", error);
     return submitEmailFallback(payload);
   }
-
-  return body;
 }
 
 function submitEmailFallback(payload) {
