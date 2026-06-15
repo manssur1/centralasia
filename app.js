@@ -2867,7 +2867,7 @@ requestForm.addEventListener("submit", async (event) => {
 
     if (emailResult.status === "rejected") {
       console.error("Email notification error:", emailResult.reason);
-      formStatus.textContent = "Заявка сохранена, но письмо не ушло. Проверь подтверждение почты centralasiaenerg@gmail.com.";
+      formStatus.textContent = "Заявка сохранена, но письмо пока не ушло: почта для заявок ждет подтверждения.";
     } else if (databaseResult.status === "rejected") {
       console.error("Request save error:", databaseResult.reason);
       formStatus.textContent = "Заявка отправлена на почту. Мы скоро свяжемся.";
@@ -2882,7 +2882,7 @@ requestForm.addEventListener("submit", async (event) => {
   } catch (error) {
     console.error("Request submit error:", error);
     if (isFormSubmitActivationMessage(error.message)) {
-      formStatus.textContent = "FormSubmit ждет подтверждение почты centralasiaenerg@gmail.com. Открой письмо Activate Form и нажми подтверждение.";
+      formStatus.textContent = "Почта для заявок ждет подтверждения. Открой centralasiaenerg@gmail.com и нажми Activate Form.";
     } else {
       formStatus.textContent = "Не удалось отправить заявку. Попробуй еще раз или проверь настройки базы.";
     }
