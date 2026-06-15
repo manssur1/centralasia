@@ -2188,6 +2188,8 @@ async function sendEmailNotification(request) {
     _template: "table",
     _captcha: "false",
     _replyto: request.customer_contact.includes("@") ? request.customer_contact : EMAIL_CONFIG.recipient,
+    _next: `${window.location.origin}${window.location.pathname}#request`,
+    "Сайт": window.location.href,
     "Имя клиента": request.customer_name,
     "Телефон или email": request.customer_contact,
     "Комментарий": request.comment || "без комментария",
@@ -2198,13 +2200,13 @@ async function sendEmailNotification(request) {
   };
 
   try {
+    const formData = createEmailFormData(payload);
     const response = await fetch(EMAIL_CONFIG.endpoint, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         Accept: "application/json"
       },
-      body: JSON.stringify(payload)
+      body: formData
     });
 
     const text = await response.text();
@@ -2217,34 +2219,36 @@ async function sendEmailNotification(request) {
       }
     }
 
-    if (response.ok && body?.success !== "false") {
+    if (!response.ok || body?.success === "false") {
+      throw new Error(body?.message || `FormSubmit returned ${response.status}`);
+    }
+
+    if (body?.message && isFormSubmitActivationMessage(body.message)) {
+      throw new Error(body.message);
+    }
+
+    if (response.ok) {
       return body;
     }
   } catch (error) {
-    console.warn("Email ajax delivery failed, trying fallback:", error);
-  }
-
-  return submitEmailNoCors(payload);
-}
-
-async function submitEmailNoCors(payload) {
-  try {
-    const formData = new FormData();
-    Object.entries(payload).forEach(([name, value]) => {
-      formData.append(name, String(value));
-    });
-
-    await fetch(EMAIL_CONFIG.endpoint.replace("/ajax/", "/"), {
-      method: "POST",
-      mode: "no-cors",
-      body: formData
-    });
-
-    return { success: true, fallback: "no-cors" };
-  } catch (error) {
-    console.warn("Email no-cors delivery failed, trying iframe fallback:", error);
+    if (isFormSubmitActivationMessage(error.message)) {
+      throw error;
+    }
+    console.warn("Email ajax delivery failed, trying iframe fallback:", error);
     return submitEmailFallback(payload);
   }
+}
+
+function isFormSubmitActivationMessage(message = "") {
+  return /activate|activation|confirm|confirmation|verify|verification/i.test(String(message));
+}
+
+function createEmailFormData(payload) {
+  const formData = new FormData();
+  Object.entries(payload).forEach(([name, value]) => {
+    formData.append(name, String(value));
+  });
+  return formData;
 }
 
 function submitEmailFallback(payload) {
