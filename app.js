@@ -2881,7 +2881,11 @@ requestForm.addEventListener("submit", async (event) => {
     markRequestSent();
   } catch (error) {
     console.error("Request submit error:", error);
-    formStatus.textContent = "Не удалось отправить заявку. Попробуй еще раз или проверь настройки базы.";
+    if (isFormSubmitActivationMessage(error.message)) {
+      formStatus.textContent = "FormSubmit ждет подтверждение почты centralasiaenerg@gmail.com. Открой письмо Activate Form и нажми подтверждение.";
+    } else {
+      formStatus.textContent = "Не удалось отправить заявку. Попробуй еще раз или проверь настройки базы.";
+    }
   }
 });
 
