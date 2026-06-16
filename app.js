@@ -2196,11 +2196,12 @@ async function sendEmailNotification(request) {
     "Аккаунт": accountEmail,
     "Дата": submittedAt,
     "Позиций": String(request.items.length),
+    "Проект": request.project_file_name || "не приложен",
     "Состав заявки": formatQuoteForEmail(request.items)
   };
 
   try {
-    const formData = createEmailFormData(payload);
+    const formData = createEmailFormData(payload, request.project_file);
     const response = await fetch(EMAIL_CONFIG.endpoint, {
       method: "POST",
       headers: {
@@ -2235,7 +2236,7 @@ async function sendEmailNotification(request) {
       throw error;
     }
     console.warn("Email ajax delivery failed, trying iframe fallback:", error);
-    return submitEmailFallback(payload);
+    return submitEmailFallback(payload, request.source_form);
   }
 }
 
@@ -2243,15 +2244,21 @@ function isFormSubmitActivationMessage(message = "") {
   return /activate|activation|confirm|confirmation|verify|verification/i.test(String(message));
 }
 
-function createEmailFormData(payload) {
+function createEmailFormData(payload, projectFile) {
   const formData = new FormData();
   Object.entries(payload).forEach(([name, value]) => {
     formData.append(name, String(value));
   });
+  if (projectFile instanceof File && projectFile.size > 0) {
+    formData.append("project_file", projectFile, projectFile.name);
+  }
   return formData;
 }
 
-function submitEmailFallback(payload) {
+function submitEmailFallback(payload, sourceForm) {
+  if (sourceForm instanceof HTMLFormElement) {
+    return submitEmailFallbackFromSourceForm(payload, sourceForm);
+  }
   return new Promise((resolve) => {
     const iframeName = `email_target_${Date.now()}`;
     const iframe = document.createElement("iframe");
@@ -2281,6 +2288,58 @@ function submitEmailFallback(payload) {
       resolve({ success: true, fallback: true });
     }, 1200);
   });
+}
+
+function submitEmailFallbackFromSourceForm(payload, sourceForm) {
+  return new Promise((resolve) => {
+    const iframeName = `email_target_${Date.now()}`;
+    const iframe = document.createElement("iframe");
+    iframe.name = iframeName;
+    iframe.hidden = true;
+
+    const originalAction = sourceForm.getAttribute("action");
+    const originalMethod = sourceForm.getAttribute("method");
+    const originalTarget = sourceForm.getAttribute("target");
+    const originalEnctype = sourceForm.getAttribute("enctype");
+
+    const hiddenInputs = Object.entries(payload).map(([name, value]) => {
+      const input = document.createElement("input");
+      input.type = "hidden";
+      input.name = name;
+      input.value = String(value);
+      return input;
+    });
+
+    document.body.append(iframe);
+    hiddenInputs.forEach((input) => sourceForm.append(input));
+
+    sourceForm.method = "POST";
+    sourceForm.action = EMAIL_CONFIG.endpoint.replace("/ajax/", "/");
+    sourceForm.target = iframeName;
+    sourceForm.enctype = "multipart/form-data";
+
+    sourceForm.submit();
+
+    setTimeout(() => {
+      hiddenInputs.forEach((input) => input.remove());
+      iframe.remove();
+
+      restoreFormAttribute(sourceForm, "action", originalAction);
+      restoreFormAttribute(sourceForm, "method", originalMethod);
+      restoreFormAttribute(sourceForm, "target", originalTarget);
+      restoreFormAttribute(sourceForm, "enctype", originalEnctype);
+
+      resolve({ success: true, fallback: true });
+    }, 1200);
+  });
+}
+
+function restoreFormAttribute(form, name, value) {
+  if (value === null) {
+    form.removeAttribute(name);
+    return;
+  }
+  form.setAttribute(name, value);
 }
 
 function getProductSection(product) {
@@ -2813,6 +2872,8 @@ requestForm.addEventListener("submit", async (event) => {
   const customerName = normalizeWhitespace(data.get("name"), MAX_NAME_LENGTH);
   const customerContact = normalizeWhitespace(data.get("contact"), MAX_CONTACT_LENGTH);
   const comment = normalizeMultiline(data.get("comment"), MAX_COMMENT_LENGTH);
+  const projectFile = data.get("project");
+  const hasProjectFile = projectFile instanceof File && projectFile.size > 0 && projectFile.name;
 
   if (!customerName || !customerContact) {
     formStatus.textContent = "Укажи имя и телефон или email.";
@@ -2841,6 +2902,13 @@ requestForm.addEventListener("submit", async (event) => {
     source: "catalog-site"
   };
 
+  const emailRequest = {
+    ...request,
+    project_file: hasProjectFile ? projectFile : null,
+    project_file_name: hasProjectFile ? normalizeWhitespace(projectFile.name, 180) : "",
+    source_form: requestForm
+  };
+
   if (!isSupabaseConfigured()) {
     console.info("Prepared cable request", request);
     formStatus.textContent = "Подключение к базе еще не настроено.";
@@ -2858,7 +2926,7 @@ requestForm.addEventListener("submit", async (event) => {
         },
         body: JSON.stringify(request)
       }),
-      sendEmailNotification(request)
+      sendEmailNotification(emailRequest)
     ]);
 
     if (databaseResult.status === "rejected" && emailResult.status === "rejected") {
