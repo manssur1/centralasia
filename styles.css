@@ -146,6 +146,10 @@ button {
   text-transform: uppercase;
 }
 
+.header-contact-top {
+  color: var(--teal-dark);
+}
+
 .header-contact strong {
   color: var(--teal-dark);
   font-size: 14px;
@@ -1138,9 +1142,9 @@ button {
     width: 100%;
     max-width: none;
     margin-right: 0;
-    padding: 10px 12px;
+    padding: 9px 12px;
     grid-template-columns: auto 1fr;
-    gap: 8px;
+    gap: 6px;
     align-items: center;
     border-radius: 12px;
   }
@@ -1151,7 +1155,7 @@ button {
 
   .header-contact strong {
     justify-self: end;
-    font-size: 14px;
+    font-size: 13px;
   }
 
   .nav-links {
