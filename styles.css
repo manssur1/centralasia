@@ -439,6 +439,7 @@ button {
 }
 
 .quick-strip,
+.brand-seo,
 .catalog-section,
 .request-section {
   width: min(var(--max), calc(100% - 36px));
@@ -473,6 +474,55 @@ button {
   margin: 0;
   color: var(--muted);
   line-height: 1.55;
+}
+
+.brand-seo {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(320px, 1fr);
+  gap: clamp(22px, 4vw, 54px);
+  align-items: start;
+  margin-top: -12px;
+  padding: clamp(28px, 5vw, 54px) 0 22px;
+  border-bottom: 1px solid rgba(17, 21, 28, 0.08);
+}
+
+.brand-seo h2 {
+  max-width: 620px;
+  margin: 0;
+  font-size: clamp(30px, 4.4vw, 52px);
+  line-height: 1;
+}
+
+.brand-seo-copy {
+  display: grid;
+  gap: 20px;
+}
+
+.brand-seo-copy p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+.keyword-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.keyword-list li {
+  min-height: 34px;
+  padding: 7px 11px;
+  border: 1px solid rgba(11, 145, 135, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--teal-dark);
+  font-size: 14px;
+  font-weight: 800;
 }
 
 .section-heading {
@@ -1126,6 +1176,7 @@ button {
   }
 
   .quick-strip,
+  .brand-seo,
   .section-heading,
   .catalog-shell,
   .request-layout {
@@ -1138,6 +1189,11 @@ button {
 
   .quick-strip {
     transform: translateY(-28px);
+  }
+
+  .brand-seo {
+    margin-top: -4px;
+    padding-top: 26px;
   }
 
   .filters {
@@ -1264,6 +1320,7 @@ button {
   }
 
   .quick-strip,
+  .brand-seo,
   .catalog-section,
   .request-section {
     width: min(100% - 28px, var(--max));
@@ -1272,6 +1329,15 @@ button {
   .quick-strip article {
     min-height: auto;
     padding: 20px;
+  }
+
+  .brand-seo h2 {
+    font-size: clamp(28px, 10vw, 42px);
+  }
+
+  .brand-seo-copy p {
+    font-size: 16px;
+    line-height: 1.58;
   }
 
   .section-heading {
