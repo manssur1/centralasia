@@ -121,14 +121,22 @@ button {
 
 .brand-mark {
   display: grid;
-  width: 48px;
-  height: 42px;
+  width: 52px;
+  height: 52px;
   place-items: center;
-  border-radius: var(--radius);
-  background: var(--ink);
-  color: var(--white);
-  font-size: 13px;
-  font-weight: 800;
+  flex: 0 0 auto;
+  overflow: hidden;
+  border: 1px solid rgba(17, 21, 28, 0.08);
+  border-radius: 16px;
+  background: #f7f8f6;
+  box-shadow: 0 10px 28px rgba(17, 21, 28, 0.08);
+}
+
+.brand-mark img {
+  width: 88%;
+  height: 88%;
+  object-fit: contain;
+  display: block;
 }
 
 .brand strong,
@@ -1058,8 +1066,9 @@ button {
   }
 
   .brand-mark {
-    width: 42px;
-    height: 38px;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
   }
 
   .brand small {
@@ -1175,9 +1184,9 @@ button {
   }
 
   .brand-mark {
-    width: 38px;
-    height: 34px;
-    font-size: 12px;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
   }
 
   .brand strong {
