@@ -125,41 +125,36 @@ button {
   object-fit: contain;
 }
 
-.header-contact {
+.trust-strip {
+  border-bottom: 1px solid rgba(17, 21, 28, 0.08);
+  background:
+    linear-gradient(135deg, rgba(11, 145, 135, 0.08), rgba(191, 97, 50, 0.08)),
+    #fbfcfb;
+}
+
+.trust-strip-inner {
   display: grid;
-  gap: 2px;
-  min-width: 210px;
-  max-width: 320px;
-  margin-right: auto;
-  padding: 8px 14px;
-  border: 1px solid rgba(11, 145, 135, 0.18);
-  border-radius: 14px;
-  background: linear-gradient(135deg, rgba(11, 145, 135, 0.08), rgba(191, 97, 50, 0.08));
-  color: var(--ink);
-  line-height: 1.1;
+  width: min(var(--max), calc(100% - 36px));
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 1fr) auto;
+  gap: 10px 18px;
+  align-items: center;
+  margin: 0 auto;
+  padding: 12px 0;
 }
 
-.header-contact span {
-  color: var(--muted);
-  font-size: 12px;
+.trust-strip-inner span,
+.trust-strip-inner a {
+  color: #37404a;
+  font-size: 13px;
   font-weight: 800;
-  text-transform: uppercase;
+  line-height: 1.35;
 }
 
-.header-contact-top {
+.trust-strip-inner a {
   color: var(--teal-dark);
-}
-
-.header-contact strong {
-  color: var(--teal-dark);
-  font-size: 14px;
+  justify-self: end;
+  text-align: right;
   white-space: nowrap;
-}
-
-.header-contact:hover {
-  border-color: rgba(11, 145, 135, 0.36);
-  transform: translateY(-1px);
-  box-shadow: 0 12px 26px rgba(11, 145, 135, 0.12);
 }
 
 .nav-links {
@@ -170,7 +165,6 @@ button {
 }
 
 .nav-links a,
-.header-contact,
 .header-action,
 .auth-button,
 .text-button,
@@ -1138,24 +1132,21 @@ button {
     max-width: min(330px, 86vw);
   }
 
-  .header-contact {
-    width: 100%;
-    max-width: none;
-    margin-right: 0;
-    padding: 9px 12px;
-    grid-template-columns: auto 1fr;
-    gap: 6px;
-    align-items: center;
-    border-radius: 12px;
+  .trust-strip-inner {
+    width: min(100% - 28px, var(--max));
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 14px;
+    padding: 10px 0;
   }
 
-  .header-contact span {
+  .trust-strip-inner span,
+  .trust-strip-inner a {
     font-size: 11px;
   }
 
-  .header-contact strong {
-    justify-self: end;
-    font-size: 13px;
+  .trust-strip-inner a {
+    justify-self: start;
+    text-align: left;
   }
 
   .nav-links {
