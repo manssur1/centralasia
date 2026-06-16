@@ -600,6 +600,12 @@ button {
   font-weight: 800;
 }
 
+.field-hint {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
 .field input,
 .field select,
 .field textarea {
@@ -616,6 +622,10 @@ button {
 .field select {
   min-height: 46px;
   padding: 0 12px;
+}
+
+.field input[type="file"] {
+  padding: 10px 12px;
 }
 
 .field textarea {
