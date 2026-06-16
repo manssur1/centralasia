@@ -1568,9 +1568,11 @@ const EMAIL_CONFIG = {
   endpoint: "https://formsubmit.co/ajax/centralasiaenerg@gmail.com"
 };
 
+const helperApi = window.CAEHelpers || {};
 const ASSET_VERSION = "20260613-ekt-wiring-series";
 const AUTH_STORAGE_KEY = "cae_supabase_session";
 const QUOTE_STORAGE_KEY = "cae_quote_items";
+const CATALOG_STATE_KEY = "cae_catalog_state";
 const REQUEST_RATE_KEY = "cae_request_rate";
 const SESSION_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 const REQUEST_COOLDOWN_MS = 30 * 1000;
@@ -1580,7 +1582,22 @@ const MAX_SEARCH_LENGTH = 80;
 const MAX_NAME_LENGTH = 80;
 const MAX_CONTACT_LENGTH = 120;
 const MAX_COMMENT_LENGTH = 800;
+const MAX_PROJECT_FILE_SIZE_BYTES = helperApi.MAX_PROJECT_FILE_SIZE_BYTES || 15 * 1024 * 1024;
+const MIN_REQUEST_FILL_TIME_MS = helperApi.MIN_REQUEST_FILL_TIME_MS || 2500;
+const sanitizeCatalogState = helperApi.sanitizeCatalogState || ((rawState, defaults) => ({ ...defaults, ...(rawState || {}) }));
+const shouldTrapBotSubmission = helperApi.shouldTrapBotSubmission || (({ honeypotValue, elapsedMs }) => {
+  return Boolean(String(honeypotValue || "").trim()) || Number(elapsedMs || 0) < MIN_REQUEST_FILL_TIME_MS;
+});
+const validateProjectFile = helperApi.validateProjectFile || ((file) => {
+  if (!file || !file.name || !Number(file.size || 0)) return { ok: true, reason: "" };
+  if (Number(file.size) > MAX_PROJECT_FILE_SIZE_BYTES) {
+    return { ok: false, reason: "Файл проекта слишком большой. Максимум 15 МБ." };
+  }
+  return { ok: true, reason: "" };
+});
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+let requestFormReadyAt = Date.now();
+let isSubmittingRequest = false;
 
 const state = {
   section: "Все",
@@ -1601,6 +1618,7 @@ const categoryFilters = document.querySelector("#categoryFilters");
 const conductorFilters = document.querySelector("#conductorFilters");
 const productGrid = document.querySelector("#productGrid");
 const searchInput = document.querySelector("#searchInput");
+const searchClear = document.querySelector("#searchClear");
 const sortSelect = document.querySelector("#sortSelect");
 const resultCount = document.querySelector("#resultCount");
 const emptyState = document.querySelector("#emptyState");
@@ -1620,8 +1638,21 @@ const authSubmit = document.querySelector("#authSubmit");
 const authLoginTab = document.querySelector("#authLoginTab");
 const authRegisterTab = document.querySelector("#authRegisterTab");
 const requestAuthNote = document.querySelector("#requestAuthNote");
+const requestSubmitButton = requestForm?.querySelector('button[type="submit"]');
+const REQUEST_SUBMIT_DEFAULT_LABEL = requestSubmitButton?.textContent || "Подготовить заявку";
+const backToTop = document.createElement("button");
+const scrollProgress = document.createElement("div");
 const floatingQuote = document.createElement("button");
 const toast = document.createElement("div");
+
+backToTop.className = "back-to-top";
+backToTop.type = "button";
+backToTop.hidden = true;
+backToTop.setAttribute("aria-label", "Вернуться наверх");
+backToTop.innerHTML = "<span aria-hidden=\"true\">↑</span><span>Наверх</span>";
+
+scrollProgress.className = "scroll-progress";
+scrollProgress.setAttribute("aria-hidden", "true");
 
 floatingQuote.className = "floating-quote";
 floatingQuote.type = "button";
@@ -1632,7 +1663,7 @@ toast.className = "toast";
 toast.setAttribute("role", "status");
 toast.setAttribute("aria-live", "polite");
 toast.hidden = true;
-document.body.append(floatingQuote, toast);
+document.body.append(scrollProgress, backToTop, floatingQuote, toast);
 
 function isSupabaseConfigured() {
   return /^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(SUPABASE_CONFIG.url);
@@ -1744,6 +1775,52 @@ function restoreQuote() {
   }
 }
 
+function getCatalogStateDefaults() {
+  return {
+    section: "Р’СЃРµ",
+    group: "Р’СЃРµ",
+    conductor: "Р’СЃРµ",
+    search: "",
+    sort: "popular"
+  };
+}
+
+function saveCatalogState() {
+  try {
+    const safeState = sanitizeCatalogState({
+      section: state.section,
+      group: state.group,
+      conductor: state.conductor,
+      search: state.search,
+      sort: state.sort
+    }, getCatalogStateDefaults());
+    localStorage.setItem(CATALOG_STATE_KEY, JSON.stringify(safeState));
+  } catch (error) {
+    console.warn("Catalog state save failed:", error);
+  }
+}
+
+function restoreCatalogState() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(CATALOG_STATE_KEY) || "null");
+    if (!saved) return;
+
+    const safeState = sanitizeCatalogState(saved, getCatalogStateDefaults());
+    state.section = safeState.section;
+    state.group = safeState.group;
+    state.conductor = safeState.conductor;
+    state.search = safeState.search;
+    state.sort = safeState.sort;
+  } catch (error) {
+    console.warn("Catalog state restore failed:", error);
+  }
+}
+
+function refreshSearchClear() {
+  if (!searchClear) return;
+  searchClear.hidden = !state.search;
+}
+
 let toastTimer = null;
 function showToast(message) {
   toast.textContent = message;
@@ -1754,6 +1831,17 @@ function showToast(message) {
     toast.classList.remove("is-visible");
     toast.hidden = true;
   }, 2200);
+}
+
+function updateScrollChrome() {
+  const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+  const progress = Math.min(1, Math.max(0, window.scrollY / maxScroll));
+  scrollProgress.style.setProperty("--scroll-progress", progress.toFixed(4));
+  backToTop.hidden = window.scrollY < 560;
+}
+
+function isTypingContext(node) {
+  return Boolean(node?.closest?.("input, textarea, select, [contenteditable='true']"));
 }
 
 function easeInOutCubic(progress) {
@@ -1817,6 +1905,7 @@ function setupRevealAnimations() {
     ".hero-content",
     ".quick-strip article",
     ".section-heading",
+    ".catalog-shell",
     ".request-copy",
     ".request-layout"
   ].join(","));
@@ -2592,6 +2681,9 @@ function renderProducts() {
   heroProductCount.textContent = products.length;
   resultCount.textContent = pluralize(filteredProducts.length);
   emptyState.hidden = filteredProducts.length > 0;
+  searchInput.value = state.search;
+  sortSelect.value = state.sort;
+  refreshSearchClear();
 
   filteredProducts.forEach((product) => productGrid.append(createProductCard(product)));
   animateProductCards();
@@ -2703,17 +2795,28 @@ function renderQuote() {
 function render() {
   renderFilters();
   renderProducts();
+  saveCatalogState();
 }
 
 searchInput.addEventListener("input", (event) => {
   state.search = normalizeWhitespace(event.target.value, MAX_SEARCH_LENGTH);
   if (event.target.value !== state.search) event.target.value = state.search;
   renderProducts();
+  saveCatalogState();
+});
+
+searchClear?.addEventListener("click", () => {
+  state.search = "";
+  searchInput.value = "";
+  renderProducts();
+  saveCatalogState();
+  searchInput.focus();
 });
 
 sortSelect.addEventListener("change", (event) => {
   state.sort = event.target.value;
   renderProducts();
+  saveCatalogState();
 });
 
 resetFilters.addEventListener("click", () => {
@@ -2755,10 +2858,40 @@ floatingQuote.addEventListener("click", () => {
   smoothScrollTo(document.querySelector("#request"));
 });
 
+backToTop.addEventListener("click", () => {
+  smoothScrollTo(document.querySelector("#top"));
+});
+
 document.addEventListener("click", handleAnchorNavigation);
+document.addEventListener("keydown", (event) => {
+  if (event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey) return;
+
+  if (event.key === "/" && !isTypingContext(document.activeElement)) {
+    event.preventDefault();
+    searchInput.focus();
+    searchInput.select();
+    return;
+  }
+
+  if (event.key !== "Escape") return;
+
+  if (authDialog.open) {
+    authDialog.close();
+    return;
+  }
+
+  if (document.activeElement === searchInput && state.search) {
+    state.search = "";
+    searchInput.value = "";
+    renderProducts();
+    saveCatalogState();
+  }
+});
 window.addEventListener("hashchange", () => {
   if (window.location.hash === "#catalog") animateCatalogArrival();
 });
+window.addEventListener("scroll", updateScrollChrome, { passive: true });
+window.addEventListener("resize", updateScrollChrome);
 
 authOpen.addEventListener("click", async () => {
   if (state.auth.session?.access_token) {
@@ -2843,6 +2976,8 @@ authForm.addEventListener("submit", async (event) => {
 requestForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
+  if (isSubmittingRequest) return;
+
   if (state.quote.length === 0) {
     formStatus.textContent = "Добавь хотя бы одну позицию в заявку.";
     return;
@@ -2869,11 +3004,19 @@ requestForm.addEventListener("submit", async (event) => {
   }
 
   const data = new FormData(requestForm);
+  if (shouldTrapBotSubmission({
+    honeypotValue: data.get("company_website"),
+    elapsedMs: Date.now() - requestFormReadyAt
+  })) {
+    formStatus.textContent = "Не удалось отправить заявку. Проверь поля и попробуй еще раз.";
+    return;
+  }
   const customerName = normalizeWhitespace(data.get("name"), MAX_NAME_LENGTH);
   const customerContact = normalizeWhitespace(data.get("contact"), MAX_CONTACT_LENGTH);
   const comment = normalizeMultiline(data.get("comment"), MAX_COMMENT_LENGTH);
   const projectFile = data.get("project");
   const hasProjectFile = projectFile instanceof File && projectFile.size > 0 && projectFile.name;
+  const projectValidation = validateProjectFile(hasProjectFile ? projectFile : null);
 
   if (!customerName || !customerContact) {
     formStatus.textContent = "Укажи имя и телефон или email.";
@@ -2882,6 +3025,11 @@ requestForm.addEventListener("submit", async (event) => {
 
   if (!isValidContact(customerContact)) {
     formStatus.textContent = "Укажи корректный телефон или email.";
+    return;
+  }
+
+  if (!projectValidation.ok) {
+    formStatus.textContent = projectValidation.reason;
     return;
   }
 
@@ -2917,6 +3065,13 @@ requestForm.addEventListener("submit", async (event) => {
 
   formStatus.textContent = "Отправляем заявку...";
 
+  isSubmittingRequest = true;
+  requestForm.setAttribute("aria-busy", "true");
+  if (requestSubmitButton) {
+    requestSubmitButton.disabled = true;
+    requestSubmitButton.textContent = "Отправляем...";
+  }
+
   try {
     const [databaseResult, emailResult] = await Promise.allSettled([
       supabaseRequest(`/rest/v1/${SUPABASE_TABLES.requests}`, {
@@ -2946,6 +3101,7 @@ requestForm.addEventListener("submit", async (event) => {
     state.quote = [];
     renderQuote();
     requestForm.reset();
+    requestFormReadyAt = Date.now();
     markRequestSent();
   } catch (error) {
     console.error("Request submit error:", error);
@@ -2954,16 +3110,25 @@ requestForm.addEventListener("submit", async (event) => {
     } else {
       formStatus.textContent = "Не удалось отправить заявку. Попробуй еще раз или проверь настройки базы.";
     }
+  } finally {
+    isSubmittingRequest = false;
+    requestForm.removeAttribute("aria-busy");
+    if (requestSubmitButton) {
+      requestSubmitButton.disabled = false;
+      requestSubmitButton.textContent = REQUEST_SUBMIT_DEFAULT_LABEL;
+    }
   }
 });
 
 products = products.map(secureProduct).filter((product) => product.id);
+restoreCatalogState();
 restoreQuote();
 setupRevealAnimations();
 render();
 renderQuote();
 restoreAuthSession();
 loadProductsFromSupabase();
+updateScrollChrome();
 
 if (window.location.hash === "#catalog") {
   window.setTimeout(animateCatalogArrival, 260);
