@@ -26,7 +26,7 @@
     <link rel="canonical" href="https://centralasiaenergetics.kz/">
     <link rel="icon" type="image/png" href="assets/centralasia-logo-mark.png">
     <link rel="apple-touch-icon" href="assets/centralasia-logo-mark.png">
-    <link rel="stylesheet" href="styles.css?v=20260616-header-contact">
+    <link rel="stylesheet" href="styles.css?v=20260616-project-upload">
     <script type="application/ld+json" nonce="cae-seo-20260616">
       {
         "@context": "https://schema.org",
@@ -265,7 +265,7 @@
           <h2 id="request-title">Собери список позиций</h2>
           <p>
             Добавляй кабели, шкафы, щиты, розетки, выключатели, коробки, лотки, трубы и крепеж из каталога, укажи контакты и комментарий. Сейчас
-            форма сохраняет заявки и помогает быстро передать список позиций менеджеру.
+            форма сохраняет заявки и помогает быстро передать список позиций менеджеру. Если есть проект, его тоже можно приложить.
           </p>
         </div>
 
@@ -292,6 +292,11 @@
               <span>Комментарий</span>
               <textarea name="comment" rows="5" placeholder="Метраж, сроки, объект, город"></textarea>
             </label>
+            <label class="field">
+              <span>Проект</span>
+              <input name="project" type="file">
+              <small class="field-hint">Необязательно. Можно приложить проект, смету или ТЗ в любом формате.</small>
+            </label>
             <button class="primary-button full-width" type="submit">Подготовить заявку</button>
             <p class="auth-note" id="requestAuthNote">Для отправки заявки войдите или зарегистрируйтесь. Заявка будет привязана к вашему аккаунту.</p>
             <p class="form-status" id="formStatus" role="status"></p>
@@ -309,6 +314,6 @@
       <span>Розетки / выключатели / коробки</span>
     </footer>
 
-    <script src="app.js?v=20260615-formsubmit-final" defer></script>
+    <script src="app.js?v=20260616-project-upload" defer></script>
   </body>
 </html>
