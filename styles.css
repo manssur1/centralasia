@@ -150,6 +150,10 @@ button {
   line-height: 1.35;
 }
 
+.trust-strip-callout {
+  color: var(--teal-dark);
+}
+
 .trust-strip-inner a {
   color: var(--teal-dark);
   justify-self: end;
