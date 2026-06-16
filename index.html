@@ -26,7 +26,7 @@
     <link rel="canonical" href="https://centralasiaenergetics.kz/">
     <link rel="icon" type="image/png" href="assets/centralasia-logo-mark.png">
     <link rel="apple-touch-icon" href="assets/centralasia-logo-mark.png">
-    <link rel="stylesheet" href="styles.css?v=20260616-header-proof">
+    <link rel="stylesheet" href="styles.css?v=20260616-experience-secure">
     <script type="application/ld+json" nonce="cae-seo-20260616">
       {
         "@context": "https://schema.org",
@@ -250,7 +250,11 @@
             <div class="catalog-toolbar">
               <label class="field catalog-search">
                 <span>Поиск</span>
-                <input id="searchInput" type="search" placeholder="Например, ВВГ, СИП, розетка, выключатель, коробка или щит">
+                <div class="catalog-search-row">
+                  <input id="searchInput" type="search" placeholder="Например, ВВГ, СИП, розетка, выключатель, коробка или щит">
+                  <button class="search-clear" type="button" id="searchClear" aria-label="Очистить поиск" hidden>x</button>
+                </div>
+                <small class="field-hint">Нажми `/`, чтобы быстро перейти к поиску.</small>
               </label>
               <div class="catalog-toolbar-actions">
                 <p id="resultCount" aria-live="polite">0 позиций</p>
@@ -284,6 +288,12 @@
           </div>
 
           <form class="request-form" id="requestForm" novalidate>
+            <div class="bot-field" aria-hidden="true">
+              <label class="field">
+                <span>Сайт компании</span>
+                <input name="company_website" type="text" tabindex="-1" autocomplete="off">
+              </label>
+            </div>
             <label class="field">
               <span>Имя</span>
               <input name="name" type="text" placeholder="Как к вам обращаться" required>
@@ -318,6 +328,7 @@
       <span>Розетки / выключатели / коробки</span>
     </footer>
 
-    <script src="app.js?v=20260616-project-upload" defer></script>
+    <script src="app-helpers.js?v=20260616-experience-secure" defer></script>
+    <script src="app.js?v=20260616-experience-secure" defer></script>
   </body>
 </html>
