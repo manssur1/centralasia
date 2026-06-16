@@ -19,6 +19,11 @@
   box-sizing: border-box;
 }
 
+:focus-visible {
+  outline: 3px solid rgba(118, 226, 215, 0.58);
+  outline-offset: 2px;
+}
+
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 92px;
@@ -79,6 +84,15 @@ button {
   }
   100% {
     box-shadow: 0 10px 24px rgba(20, 27, 35, 0.08);
+  }
+}
+
+@keyframes softPulse {
+  0%, 100% {
+    box-shadow: 0 18px 42px rgba(17, 21, 28, 0.22);
+  }
+  50% {
+    box-shadow: 0 22px 50px rgba(11, 145, 135, 0.24);
   }
 }
 
@@ -248,6 +262,14 @@ button {
 .primary-button:hover {
   border-color: var(--teal-dark);
   background: var(--teal-dark);
+}
+
+.primary-button:disabled,
+.auth-button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+  transform: none;
+  box-shadow: none;
 }
 
 .ghost-button {
@@ -630,6 +652,28 @@ button {
   padding: 10px 12px;
 }
 
+.field input[type="file"]::file-selector-button {
+  min-height: 34px;
+  margin-right: 10px;
+  border: 1px solid rgba(11, 145, 135, 0.22);
+  border-radius: var(--radius);
+  background: rgba(11, 145, 135, 0.08);
+  color: var(--teal-dark);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.bot-field {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .field textarea {
   resize: vertical;
   padding: 12px;
@@ -738,6 +782,35 @@ button {
   max-width: 560px;
 }
 
+.catalog-search-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.catalog-search input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
+
+.search-clear {
+  min-width: 42px;
+  min-height: 42px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--white);
+  color: var(--muted);
+  font-weight: 900;
+}
+
+.search-clear:hover {
+  border-color: rgba(191, 97, 50, 0.35);
+  background: rgba(191, 97, 50, 0.08);
+  color: var(--copper);
+}
+
 .catalog-toolbar-actions {
   display: inline-flex;
   align-items: center;
@@ -808,6 +881,13 @@ button {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transform: scale(1.001);
+  transition: transform 680ms cubic-bezier(0.2, 0.82, 0.2, 1), filter 280ms ease;
+}
+
+.product-card:hover .product-media img {
+  transform: scale(1.045);
+  filter: saturate(1.03);
 }
 
 .product-badge {
@@ -1035,6 +1115,10 @@ button {
   gap: 14px;
 }
 
+.request-form[aria-busy="true"] {
+  opacity: 0.96;
+}
+
 .full-width {
   width: 100%;
 }
@@ -1062,6 +1146,8 @@ button {
   color: var(--white);
   box-shadow: 0 18px 42px rgba(17, 21, 28, 0.22);
   font-weight: 900;
+  animation: softPulse 5.6s ease-in-out infinite;
+  transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
 }
 
 .floating-quote strong {
@@ -1073,6 +1159,51 @@ button {
 
 .floating-quote:hover {
   transform: translateY(-2px);
+}
+
+.scroll-progress {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 48;
+  height: 3px;
+  pointer-events: none;
+  background: transparent;
+}
+
+.scroll-progress::after {
+  content: "";
+  display: block;
+  width: calc(var(--scroll-progress, 0) * 100%);
+  height: 100%;
+  background: linear-gradient(90deg, var(--teal), #3bc9bb 70%, #87f7ea);
+  box-shadow: 0 0 18px rgba(59, 201, 187, 0.4);
+  transition: width 120ms linear;
+}
+
+.back-to-top {
+  position: fixed;
+  right: clamp(16px, 3vw, 36px);
+  bottom: clamp(84px, 8vw, 108px);
+  z-index: 39;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  border: 1px solid rgba(11, 145, 135, 0.18);
+  border-radius: 999px;
+  padding: 0 14px;
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--teal-dark);
+  box-shadow: 0 14px 30px rgba(20, 27, 35, 0.14);
+  font-weight: 800;
+  backdrop-filter: blur(10px);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.back-to-top:hover {
+  transform: translateY(-2px);
+  border-color: rgba(11, 145, 135, 0.3);
+  box-shadow: 0 18px 34px rgba(20, 27, 35, 0.18);
 }
 
 .toast {
@@ -1484,6 +1615,19 @@ button {
     bottom: 14px;
     left: 14px;
     justify-content: center;
+  }
+
+  .back-to-top {
+    right: 14px;
+    bottom: 82px;
+    width: 44px;
+    min-width: 44px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  .back-to-top span:last-child {
+    display: none;
   }
 
   .toast {
