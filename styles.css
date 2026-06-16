@@ -126,10 +126,10 @@ button {
 }
 
 .trust-strip {
-  border-bottom: 1px solid rgba(17, 21, 28, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   background:
-    linear-gradient(135deg, rgba(11, 145, 135, 0.08), rgba(191, 97, 50, 0.08)),
-    #fbfcfb;
+    linear-gradient(90deg, rgba(6, 100, 95, 0.96), rgba(17, 21, 28, 0.96) 52%, rgba(22, 30, 39, 0.98)),
+    var(--ink);
 }
 
 .trust-strip-inner {
@@ -144,18 +144,18 @@ button {
 
 .trust-strip-inner span,
 .trust-strip-inner a {
-  color: #37404a;
+  color: rgba(255, 255, 255, 0.92);
   font-size: 13px;
   font-weight: 800;
   line-height: 1.35;
 }
 
 .trust-strip-callout {
-  color: var(--teal-dark);
+  color: #ffffff;
 }
 
 .trust-strip-inner a {
-  color: var(--teal-dark);
+  color: #8ef0e5;
   justify-self: end;
   text-align: right;
   white-space: nowrap;
