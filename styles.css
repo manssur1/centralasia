@@ -125,6 +125,39 @@ button {
   object-fit: contain;
 }
 
+.header-contact {
+  display: grid;
+  gap: 2px;
+  min-width: 210px;
+  max-width: 320px;
+  margin-right: auto;
+  padding: 8px 14px;
+  border: 1px solid rgba(11, 145, 135, 0.18);
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(11, 145, 135, 0.08), rgba(191, 97, 50, 0.08));
+  color: var(--ink);
+  line-height: 1.1;
+}
+
+.header-contact span {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.header-contact strong {
+  color: var(--teal-dark);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.header-contact:hover {
+  border-color: rgba(11, 145, 135, 0.36);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px rgba(11, 145, 135, 0.12);
+}
+
 .nav-links {
   display: flex;
   flex-wrap: wrap;
@@ -133,6 +166,7 @@ button {
 }
 
 .nav-links a,
+.header-contact,
 .header-action,
 .auth-button,
 .text-button,
@@ -1088,6 +1122,26 @@ button {
   .brand-logo {
     height: 50px;
     max-width: min(330px, 86vw);
+  }
+
+  .header-contact {
+    width: 100%;
+    max-width: none;
+    margin-right: 0;
+    padding: 10px 12px;
+    grid-template-columns: auto 1fr;
+    gap: 8px;
+    align-items: center;
+    border-radius: 12px;
+  }
+
+  .header-contact span {
+    font-size: 11px;
+  }
+
+  .header-contact strong {
+    justify-self: end;
+    font-size: 14px;
   }
 
   .nav-links {
