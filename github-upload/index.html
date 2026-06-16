@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://dbyejxbkqzqcpkukfmcn.supabase.co https://formsubmit.co; form-action https://formsubmit.co; frame-src https://formsubmit.co; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; upgrade-insecure-requests">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>Каталог электрики и кабеля | CentralAsiaEnergetics</title>
+    <meta
+      name="description"
+      content="CentralAsiaEnergetics: каталог кабеля, провода, шкафов, щитов, розеток, выключателей, коробок и кабеленесущих систем с быстрым подбором."
+    >
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://centralasiaenergetics.kz/">
+    <link rel="stylesheet" href="styles.css?v=20260615-mobile-polish">
+  </head>
+  <body>
+    <header class="site-header" aria-label="Главная навигация">
+      <a class="brand" href="#top" aria-label="CentralAsiaEnergetics каталог">
+        <span class="brand-mark" aria-hidden="true">CAE</span>
+        <span>
+          <strong>CentralAsiaEnergetics</strong>
+          <small>кабель, щиты, розетки и системы прокладки</small>
+        </span>
+      </a>
+
+      <nav class="nav-links" aria-label="Разделы сайта">
+        <a href="#catalog">Каталог</a>
+        <a href="#selection">Подбор</a>
+        <a href="#request">Заявка</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="auth-button" type="button" id="authOpen">Войти</button>
+        <a class="header-action" href="#request">Получить счет</a>
+      </div>
+    </header>
+
+    <dialog class="auth-dialog" id="authDialog" aria-labelledby="authTitle">
+      <form class="auth-card" id="authForm" method="dialog">
+        <div class="auth-card-head">
+          <div>
+            <p class="eyebrow">защищенный доступ</p>
+            <h2 id="authTitle">Вход в аккаунт</h2>
+          </div>
+          <button class="icon-button" type="button" id="authClose" aria-label="Закрыть">×</button>
+        </div>
+
+        <div class="auth-tabs" role="tablist" aria-label="Режим авторизации">
+          <button type="button" class="auth-tab is-active" id="authLoginTab" data-auth-mode="login">Вход</button>
+          <button type="button" class="auth-tab" id="authRegisterTab" data-auth-mode="register">Регистрация</button>
+        </div>
+
+        <label class="field">
+          <span>Email</span>
+          <input name="email" type="email" autocomplete="email" placeholder="name@company.kz" required>
+        </label>
+        <label class="field">
+          <span>Пароль</span>
+          <input name="password" type="password" autocomplete="current-password" minlength="6" placeholder="Минимум 6 символов" required>
+        </label>
+        <button class="primary-button full-width" type="submit" id="authSubmit">Войти</button>
+        <p class="auth-note" id="authStatus" role="status"></p>
+      </form>
+    </dialog>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <img class="hero-image" src="assets/hero-cables.png" alt="Бухты кабеля и срезы медных жил на складе">
+        <div class="hero-shade" aria-hidden="true"></div>
+        <div class="hero-content">
+          <p class="eyebrow">электромонтаж, снабжение, проектные поставки</p>
+          <h1 id="hero-title">Кабель, щиты и электроустановочные изделия</h1>
+          <p class="hero-copy">
+            Быстрый подбор силовых кабелей, шкафов, щитов, розеток, выключателей, коробок, лотков, труб и крепежа
+            для объекта, склада или тендерной заявки.
+          </p>
+          <div class="hero-actions">
+            <a class="primary-button" href="#catalog">Открыть каталог</a>
+            <a class="ghost-button" href="#request">Собрать заявку</a>
+          </div>
+          <dl class="hero-metrics" aria-label="Ключевые параметры каталога">
+            <div>
+              <dt id="heroProductCount">113</dt>
+              <dd>позиций</dd>
+            </div>
+            <div>
+              <dt>43</dt>
+              <dd>групп</dd>
+            </div>
+            <div>
+              <dt>кабель + щиты + розетки</dt>
+              <dd>ассортимент</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+
+      <section class="quick-strip" id="selection" aria-label="Быстрые сценарии подбора">
+        <article>
+          <span>01</span>
+          <h2>Для электромонтажа</h2>
+          <p>ВВГнг, ПВС, ПВ-3, розетки, выключатели и коробки для внутренних сетей, щитов и подключений.</p>
+        </article>
+        <article>
+          <span>02</span>
+          <h2>Для улицы и трасс</h2>
+          <p>СИП, морозостойкий кабель, лотки, трубы и металлорукав для наружных и открытых линий.</p>
+        </article>
+        <article>
+          <span>03</span>
+          <h2>Для связи</h2>
+          <p>UTP, FTP, контрольные кабели, шкафы автоматики и телеком-оборудование для слаботочных систем.</p>
+        </article>
+      </section>
+
+      <section class="catalog-section" id="catalog" aria-labelledby="catalog-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">каталог CentralAsiaEnergetics</p>
+            <h2 id="catalog-title">Позиции в подборе</h2>
+          </div>
+          <p>
+            Фильтруй по назначению, материалу и запросу. В каталоге есть кабели,
+            провода, шкафы, щиты, розетки, выключатели, коробки, лотки, трубы, короба и монтажные элементы.
+          </p>
+        </div>
+
+        <div class="catalog-shell">
+          <aside class="filters" aria-label="Фильтры каталога">
+            <div class="filter-group" aria-label="Группа товаров">
+              <span class="filter-title">Раздел</span>
+              <div class="chip-row" id="sectionFilters"></div>
+            </div>
+
+            <div class="filter-group" aria-label="Подгруппа товаров">
+              <span class="filter-title">Подгруппа</span>
+              <div class="chip-row" id="categoryFilters"></div>
+            </div>
+
+            <div class="filter-group" aria-label="Материал жилы">
+              <span class="filter-title">Материал</span>
+              <div class="chip-row" id="conductorFilters"></div>
+            </div>
+
+            <label class="field">
+              <span>Сортировка</span>
+              <select id="sortSelect">
+                <option value="popular">Сначала популярные</option>
+                <option value="name">По названию</option>
+                <option value="voltage">По параметру</option>
+              </select>
+            </label>
+          </aside>
+
+          <div class="catalog-workspace">
+            <div class="catalog-toolbar">
+              <label class="field catalog-search">
+                <span>Поиск</span>
+                <input id="searchInput" type="search" placeholder="Например, ВВГ, СИП, розетка, выключатель, коробка или щит">
+              </label>
+              <div class="catalog-toolbar-actions">
+                <p id="resultCount" aria-live="polite">0 позиций</p>
+                <button class="text-button" type="button" id="resetFilters">Сбросить фильтры</button>
+              </div>
+            </div>
+            <div class="product-grid" id="productGrid"></div>
+            <p class="empty-state" id="emptyState" hidden>Ничего не найдено. Попробуй другой запрос.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="request-section" id="request" aria-labelledby="request-title">
+        <div class="request-copy">
+          <p class="eyebrow">быстрая заявка</p>
+          <h2 id="request-title">Собери список позиций</h2>
+          <p>
+            Добавляй кабели, шкафы, щиты, розетки, выключатели, коробки, лотки, трубы и крепеж из каталога, укажи контакты и комментарий. Сейчас
+            форма сохраняет заявки и помогает быстро передать список позиций менеджеру.
+          </p>
+        </div>
+
+        <div class="request-layout">
+          <div class="quote-panel" aria-live="polite">
+            <div class="quote-panel-head">
+              <h3>В заявке</h3>
+              <button class="text-button" type="button" id="clearQuote">Очистить</button>
+            </div>
+            <ul class="quote-list" id="quoteList"></ul>
+            <p class="quote-empty" id="quoteEmpty">Пока пусто. Добавь нужные позиции из каталога.</p>
+          </div>
+
+          <form class="request-form" id="requestForm" novalidate>
+            <label class="field">
+              <span>Имя</span>
+              <input name="name" type="text" placeholder="Как к вам обращаться" required>
+            </label>
+            <label class="field">
+              <span>Телефон или email</span>
+              <input name="contact" type="text" placeholder="+7 или почта" required>
+            </label>
+            <label class="field">
+              <span>Комментарий</span>
+              <textarea name="comment" rows="5" placeholder="Метраж, сроки, объект, город"></textarea>
+            </label>
+            <button class="primary-button full-width" type="submit">Подготовить заявку</button>
+            <p class="auth-note" id="requestAuthNote">Для отправки заявки войдите или зарегистрируйтесь. Заявка будет привязана к вашему аккаунту.</p>
+            <p class="form-status" id="formStatus" role="status"></p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>CentralAsiaEnergetics cable catalog concept</span>
+      <span>Кабель / провод</span>
+      <span>Кабеленесущие системы</span>
+      <span>Шкафы / щиты</span>
+      <span>Розетки / выключатели / коробки</span>
+    </footer>
+
+    <script src="app.js?v=20260615-formsubmit-fix" defer></script>
+  </body>
+</html>
