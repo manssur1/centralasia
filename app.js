@@ -1569,7 +1569,7 @@ const EMAIL_CONFIG = {
 };
 
 const helperApi = window.CAEHelpers || {};
-const ASSET_VERSION = "20260613-ekt-wiring-series";
+const ASSET_VERSION = "20260617-loading-secure";
 const AUTH_STORAGE_KEY = "cae_supabase_session";
 const QUOTE_STORAGE_KEY = "cae_quote_items";
 const CATALOG_STATE_KEY = "cae_catalog_state";
@@ -1584,6 +1584,25 @@ const MAX_CONTACT_LENGTH = 120;
 const MAX_COMMENT_LENGTH = 800;
 const MAX_PROJECT_FILE_SIZE_BYTES = helperApi.MAX_PROJECT_FILE_SIZE_BYTES || 15 * 1024 * 1024;
 const MIN_REQUEST_FILL_TIME_MS = helperApi.MIN_REQUEST_FILL_TIME_MS || 2500;
+const getSkeletonCardCount = helperApi.getSkeletonCardCount || ((viewportWidth) => {
+  const width = Number(viewportWidth || 0);
+  if (width <= 620) return 3;
+  if (width <= 1040) return 4;
+  return 6;
+});
+const sanitizeQuoteItems = helperApi.sanitizeQuoteItems || ((items) => {
+  if (!Array.isArray(items)) return [];
+  return items
+    .slice(0, MAX_QUOTE_ITEMS)
+    .map((item) => {
+      const rawId = String(item?.id ?? "");
+      const id = rawId.replace(/[^a-z0-9_-]/gi, "").slice(0, 80);
+      const qty = Math.max(1, Math.min(MAX_ITEM_QTY, Number(item?.qty) || 1));
+      if (!id || id !== rawId) return null;
+      return { id, qty };
+    })
+    .filter(Boolean);
+});
 const sanitizeCatalogState = helperApi.sanitizeCatalogState || ((rawState, defaults) => ({ ...defaults, ...(rawState || {}) }));
 const shouldTrapBotSubmission = helperApi.shouldTrapBotSubmission || (({ honeypotValue, elapsedMs }) => {
   return Boolean(String(honeypotValue || "").trim()) || Number(elapsedMs || 0) < MIN_REQUEST_FILL_TIME_MS;
@@ -1605,6 +1624,7 @@ const state = {
   conductor: "Все",
   search: "",
   sort: "popular",
+  loadingProducts: isSupabaseConfigured(),
   quote: [],
   auth: {
     mode: "login",
@@ -1743,10 +1763,7 @@ function getQuoteTotals() {
 
 function saveQuote() {
   try {
-    const items = state.quote.map((item) => ({
-      id: safeProductId(item.id),
-      qty: Math.max(1, Math.min(MAX_ITEM_QTY, Number(item.qty) || 1))
-    }));
+    const items = sanitizeQuoteItems(state.quote);
     localStorage.setItem(QUOTE_STORAGE_KEY, JSON.stringify(items));
   } catch (error) {
     console.warn("Quote save failed:", error);
@@ -1755,11 +1772,8 @@ function saveQuote() {
 
 function restoreQuote() {
   try {
-    const saved = JSON.parse(localStorage.getItem(QUOTE_STORAGE_KEY) || "[]");
-    if (!Array.isArray(saved)) return;
-
+    const saved = sanitizeQuoteItems(JSON.parse(localStorage.getItem(QUOTE_STORAGE_KEY) || "[]"));
     state.quote = saved
-      .slice(0, MAX_QUOTE_ITEMS)
       .map((entry) => {
         const product = products.find((item) => item.id === safeProductId(entry.id));
         if (!product) return null;
@@ -2535,6 +2549,8 @@ function getProductGroup(product) {
 
 async function loadProductsFromSupabase() {
   if (!isSupabaseConfigured()) return;
+  state.loadingProducts = true;
+  renderProducts();
 
   try {
     const rows = await supabaseRequest(
@@ -2562,6 +2578,9 @@ async function loadProductsFromSupabase() {
     }
   } catch (error) {
     console.warn("Supabase products fallback:", error);
+  } finally {
+    state.loadingProducts = false;
+    renderProducts();
   }
 }
 
@@ -2629,7 +2648,7 @@ function createProductCard(product) {
   card.className = "product-card product-card-enter";
   card.innerHTML = `
     <div class="product-media">
-      <img src="${assetUrl(product.image)}" alt="${escapeAttribute(product.title)}" loading="lazy" decoding="async">
+      <img class="is-pending" src="${assetUrl(product.image)}" alt="${escapeAttribute(product.title)}" loading="lazy" decoding="async">
       <span class="product-badge">${escapeHtml(product.badge)}</span>
     </div>
     <div class="product-body">
@@ -2647,6 +2666,47 @@ function createProductCard(product) {
         ${product.tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}
       </div>
       <button class="card-action${quoteQty ? " is-added" : ""}" type="button" data-product-id="${escapeAttribute(product.id)}">${quoteQty ? `В заявке: ${escapeHtml(quoteQty)}` : "В заявку"}</button>
+    </div>
+  `;
+  const image = card.querySelector("img");
+  if (image) {
+    const markLoaded = () => {
+      image.classList.remove("is-pending");
+      image.classList.add("is-loaded");
+    };
+
+    if (image.complete) {
+      markLoaded();
+    } else {
+      image.addEventListener("load", markLoaded, { once: true });
+      image.addEventListener("error", markLoaded, { once: true });
+    }
+  }
+  return card;
+}
+
+function createSkeletonCard() {
+  const card = document.createElement("article");
+  card.className = "product-card product-card-enter product-card-skeleton";
+  card.setAttribute("aria-hidden", "true");
+  card.innerHTML = `
+    <div class="product-media product-media-skeleton"></div>
+    <div class="product-body">
+      <div class="skeleton-line skeleton-line-top"></div>
+      <div class="skeleton-line skeleton-line-title"></div>
+      <div class="skeleton-line skeleton-line-title short"></div>
+      <div class="skeleton-line skeleton-line-copy"></div>
+      <div class="skeleton-line skeleton-line-copy short"></div>
+      <div class="spec-list spec-list-skeleton">
+        <div><span class="skeleton-line skeleton-line-label"></span><span class="skeleton-line skeleton-line-value"></span></div>
+        <div><span class="skeleton-line skeleton-line-label"></span><span class="skeleton-line skeleton-line-value short"></span></div>
+      </div>
+      <div class="tag-row skeleton-tag-row">
+        <span class="skeleton-pill"></span>
+        <span class="skeleton-pill"></span>
+        <span class="skeleton-pill short"></span>
+      </div>
+      <div class="card-action skeleton-action"></div>
     </div>
   `;
   return card;
@@ -2676,15 +2736,26 @@ function pluralize(count) {
 }
 
 function renderProducts() {
-  const filteredProducts = getFilteredProducts();
   productGrid.innerHTML = "";
   heroProductCount.textContent = products.length;
-  resultCount.textContent = pluralize(filteredProducts.length);
-  emptyState.hidden = filteredProducts.length > 0;
   searchInput.value = state.search;
   sortSelect.value = state.sort;
   refreshSearchClear();
 
+  if (state.loadingProducts) {
+    resultCount.textContent = "Загрузка...";
+    emptyState.hidden = true;
+    const skeletonCount = getSkeletonCardCount(window.innerWidth);
+    for (let index = 0; index < skeletonCount; index += 1) {
+      productGrid.append(createSkeletonCard());
+    }
+    animateProductCards();
+    return;
+  }
+
+  const filteredProducts = getFilteredProducts();
+  resultCount.textContent = pluralize(filteredProducts.length);
+  emptyState.hidden = filteredProducts.length > 0;
   filteredProducts.forEach((product) => productGrid.append(createProductCard(product)));
   animateProductCards();
 }
@@ -3033,20 +3104,39 @@ requestForm.addEventListener("submit", async (event) => {
     return;
   }
 
+  const safeQuoteItems = sanitizeQuoteItems(state.quote);
+  const requestItems = safeQuoteItems
+    .map((item) => {
+      const product = products.find((entry) => entry.id === item.id);
+      if (!product) return null;
+      return {
+        id: item.id,
+        title: normalizeWhitespace(product.title, 140),
+        category: normalizeWhitespace(product.category, 80),
+        type: normalizeWhitespace(product.type, 80),
+        conductor: normalizeWhitespace(product.conductor, 80),
+        voltage: normalizeWhitespace(product.voltage, 80),
+        cores: normalizeWhitespace(product.cores, 80),
+        qty: item.qty
+      };
+    })
+    .filter(Boolean);
+
+  if (requestItems.length === 0) {
+    formStatus.textContent = "Список заявки нужно обновить. Добавь товары заново и отправь еще раз.";
+    state.quote = [];
+    saveQuote();
+    renderQuote();
+    updateProductActionStates();
+    renderFloatingQuote();
+    return;
+  }
+
   const request = {
     customer_name: customerName,
     customer_contact: customerContact,
     comment,
-    items: state.quote.map((item) => ({
-      id: safeProductId(item.id),
-      title: normalizeWhitespace(item.title, 140),
-      category: normalizeWhitespace(item.category, 80),
-      type: normalizeWhitespace(item.type, 80),
-      conductor: normalizeWhitespace(item.conductor, 80),
-      voltage: normalizeWhitespace(item.voltage, 80),
-      cores: normalizeWhitespace(item.cores, 80),
-      qty: Math.max(1, Math.min(MAX_ITEM_QTY, Number(item.qty) || 1))
-    })),
+    items: requestItems,
     source: "catalog-site"
   };
 
