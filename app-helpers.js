@@ -2,6 +2,8 @@
   const MAX_SEARCH_LENGTH = 80;
   const MAX_PROJECT_FILE_SIZE_BYTES = 15 * 1024 * 1024;
   const MIN_REQUEST_FILL_TIME_MS = 2500;
+  const MAX_QUOTE_ITEMS = 40;
+  const MAX_ITEM_QTY = 999;
   const ALLOWED_SORTS = new Set(["popular", "name", "voltage"]);
 
   function normalizeText(value, maxLength) {
@@ -54,9 +56,35 @@
     return { ok: true, reason: "" };
   }
 
+  function sanitizeQuoteItems(items) {
+    if (!Array.isArray(items)) return [];
+
+    return items
+      .slice(0, MAX_QUOTE_ITEMS)
+      .map((item) => {
+        const rawId = String(item?.id ?? "");
+        const id = rawId.replace(/[^a-z0-9_-]/gi, "").slice(0, 80);
+        const qty = Math.max(1, Math.min(MAX_ITEM_QTY, Number(item?.qty) || 1));
+        if (!id || id !== rawId) return null;
+        return { id, qty };
+      })
+      .filter(Boolean);
+  }
+
+  function getSkeletonCardCount(viewportWidth) {
+    const width = Number(viewportWidth || 0);
+    if (width <= 620) return 3;
+    if (width <= 1040) return 4;
+    return 6;
+  }
+
   const helpers = {
     MAX_PROJECT_FILE_SIZE_BYTES,
     MIN_REQUEST_FILL_TIME_MS,
+    MAX_QUOTE_ITEMS,
+    MAX_ITEM_QTY,
+    sanitizeQuoteItems,
+    getSkeletonCardCount,
     sanitizeCatalogState,
     shouldTrapBotSubmission,
     validateProjectFile
