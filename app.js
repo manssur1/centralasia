@@ -1921,7 +1921,9 @@ function setupRevealAnimations() {
     ".section-heading",
     ".catalog-shell",
     ".request-copy",
-    ".request-layout"
+    ".request-layout",
+    ".contacts-heading",
+    ".contact-card"
   ].join(","));
 
   revealNodes.forEach((node) => node.classList.add("reveal-on-scroll"));
