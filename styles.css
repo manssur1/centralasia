@@ -881,8 +881,17 @@ button {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  opacity: 1;
   transform: scale(1.001);
-  transition: transform 680ms cubic-bezier(0.2, 0.82, 0.2, 1), filter 280ms ease;
+  transition: opacity 320ms ease, transform 680ms cubic-bezier(0.2, 0.82, 0.2, 1), filter 280ms ease;
+}
+
+.product-media img.is-pending {
+  opacity: 0;
+}
+
+.product-media img.is-loaded {
+  opacity: 1;
 }
 
 .product-card:hover .product-media img {
@@ -900,6 +909,93 @@ button {
   padding: 7px 9px;
   font-size: 12px;
   font-weight: 800;
+}
+
+.product-card-skeleton {
+  pointer-events: none;
+}
+
+.product-media-skeleton,
+.skeleton-line,
+.skeleton-pill,
+.skeleton-action {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(90deg, #edf2f4 0%, #f7fafb 48%, #edf2f4 100%);
+  background-size: 220% 100%;
+  animation: skeleton-shimmer 1.45s linear infinite;
+}
+
+.product-media-skeleton {
+  min-height: 0;
+}
+
+.skeleton-line {
+  border-radius: 999px;
+}
+
+.skeleton-line-top {
+  width: 58%;
+  height: 14px;
+}
+
+.skeleton-line-title {
+  width: 90%;
+  height: 18px;
+  margin-top: 16px;
+}
+
+.skeleton-line-copy {
+  width: 100%;
+  height: 12px;
+  margin-top: 14px;
+}
+
+.skeleton-line-label {
+  width: 34%;
+  height: 11px;
+}
+
+.skeleton-line-value {
+  width: 42%;
+  height: 12px;
+  margin-left: auto;
+}
+
+.skeleton-line.short,
+.skeleton-pill.short {
+  width: 44%;
+}
+
+.spec-list-skeleton div {
+  align-items: center;
+}
+
+.skeleton-tag-row {
+  margin-top: auto;
+}
+
+.skeleton-pill {
+  width: 78px;
+  height: 28px;
+  border-radius: 999px;
+}
+
+.skeleton-action {
+  width: 100%;
+  min-height: 42px;
+  margin-top: 16px;
+  border-radius: var(--radius);
+}
+
+@keyframes skeleton-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -20% 0;
+  }
 }
 
 .product-body {
@@ -1411,24 +1507,26 @@ button {
   }
 
   .hero {
-    min-height: 560px;
+    min-height: 0;
   }
 
   .hero-content {
     width: min(100% - 28px, var(--max));
-    min-height: 560px;
-    padding: 46px 0 64px;
+    min-height: 0;
+    padding: 40px 0 46px;
   }
 
   .hero h1 {
-    font-size: clamp(34px, 12vw, 52px);
-    line-height: 1;
+    max-width: 10ch;
+    font-size: clamp(24px, 10.2vw, 42px);
+    line-height: 0.98;
   }
 
   .hero-copy {
+    max-width: 100%;
     margin-top: 18px;
-    font-size: 16px;
-    line-height: 1.48;
+    font-size: 15px;
+    line-height: 1.5;
   }
 
   .hero-actions {
@@ -1445,7 +1543,7 @@ button {
   .hero-metrics {
     grid-template-columns: 1fr 1fr;
     gap: 10px;
-    margin-top: 34px;
+    margin-top: 28px;
   }
 
   .hero-metrics div {
