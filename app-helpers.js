@@ -5,7 +5,7 @@
   const MAX_QUOTE_ITEMS = 40;
   const MAX_ITEM_QTY = 999;
   const ALLOWED_SORTS = new Set(["popular", "name", "voltage"]);
-  const ALLOWED_LANGUAGES = new Set(["ru", "kz", "en"]);
+  const ALLOWED_LANGUAGES = new Set(["ru", "kz"]);
   const ALLOWED_THEMES = new Set(["light", "dark"]);
 
   function normalizeText(value, maxLength) {
