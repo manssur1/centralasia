@@ -1569,7 +1569,7 @@ const EMAIL_CONFIG = {
 };
 
 const helperApi = window.CAEHelpers || {};
-const ASSET_VERSION = "20260618-i18n-theme";
+const ASSET_VERSION = "20260618-product-i18n";
 const AUTH_STORAGE_KEY = "cae_supabase_session";
 const QUOTE_STORAGE_KEY = "cae_quote_items";
 const CATALOG_STATE_KEY = "cae_catalog_state";
@@ -1753,6 +1753,12 @@ const I18N = {
     "seo.eyebrow": "CentralAsiaEnergetics",
     "seo.title": "Каталог кабеля и электрики для объектов в Казахстане",
     "seo.copy": "CentralAsiaEnergetics помогает быстро собрать заявку на кабель, провод, СИП, силовой кабель, кабеленесущие системы, шкафы, щиты, розетки, выключатели и монтажные коробки. Каталог сделан для электромонтажа, снабжения, проектных поставок и подбора материалов по объекту.",
+    "seo.keyword.1": "кабель и провод",
+    "seo.keyword.2": "силовой кабель",
+    "seo.keyword.3": "самонесущий СИП",
+    "seo.keyword.4": "лотки и кабель-каналы",
+    "seo.keyword.5": "шкафы и щиты",
+    "seo.keyword.6": "розетки, выключатели, коробки",
     "catalog.eyebrow": "каталог CentralAsiaEnergetics",
     "catalog.title": "Каталог кабеля, щитов и электрики",
     "catalog.copy": "Фильтруй по назначению, материалу и запросу. В каталоге есть кабели, провод, шкафы, щиты, розетки, выключатели, коробки, лотки, трубы, короба и монтажные элементы.",
@@ -1861,6 +1867,12 @@ const I18N = {
     "seo.eyebrow": "CentralAsiaEnergetics",
     "seo.title": "Қазақстандағы нысандарға арналған кабель және электр каталогы",
     "seo.copy": "CentralAsiaEnergetics кабель, сым, СИП, күштік кабель, кабель жүргізу жүйелері, шкафтар, қалқандар, розеткалар, ажыратқыштар және монтаж қораптары бойынша өтінімді тез жинауға көмектеседі.",
+    "seo.keyword.1": "кабель және сым",
+    "seo.keyword.2": "күштік кабель",
+    "seo.keyword.3": "өзін-өзі ұстайтын СИП",
+    "seo.keyword.4": "лотоктар және кабель-каналдар",
+    "seo.keyword.5": "шкафтар және қалқандар",
+    "seo.keyword.6": "розеткалар, ажыратқыштар, қораптар",
     "catalog.eyebrow": "CentralAsiaEnergetics каталогы",
     "catalog.title": "Кабель, қалқан және электр каталогы",
     "catalog.copy": "Мақсаты, материалы және іздеу сұранысы бойынша сүзгілеңіз. Каталогта кабель, сым, шкаф, қалқан, розетка, ажыратқыш, қорап, лоток, құбыр және монтаж элементтері бар.",
@@ -1969,6 +1981,12 @@ const I18N = {
     "seo.eyebrow": "CentralAsiaEnergetics",
     "seo.title": "Cable and electrical catalog for projects in Kazakhstan",
     "seo.copy": "CentralAsiaEnergetics helps quickly assemble requests for cables, wires, SIP, power cable, cable support systems, cabinets, panels, sockets, switches and installation boxes.",
+    "seo.keyword.1": "cables and wires",
+    "seo.keyword.2": "power cable",
+    "seo.keyword.3": "self-supporting SIP",
+    "seo.keyword.4": "trays and cable ducts",
+    "seo.keyword.5": "cabinets and panels",
+    "seo.keyword.6": "sockets, switches, boxes",
     "catalog.eyebrow": "CentralAsiaEnergetics catalog",
     "catalog.title": "Cable, panel and electrical catalog",
     "catalog.copy": "Filter by purpose, material and search. The catalog includes cables, wires, cabinets, panels, sockets, switches, boxes, trays, pipes and mounting elements.",
@@ -2064,12 +2082,163 @@ const VALUE_LABELS = {
   "Серия UNIT": { kz: "UNIT сериясы", en: "UNIT series" },
   "Монтажные коробки": { kz: "Монтаж қораптары", en: "Installation boxes" },
   "Разъемы и вилки": { kz: "Қосқыштар және айырлар", en: "Connectors and plugs" },
+  "ВРУ": { kz: "ВРУ", en: "VRU" },
   "Медь": { kz: "Мыс", en: "Copper" },
   "Алюминий": { kz: "Алюминий", en: "Aluminum" },
   "Сталь": { kz: "Болат", en: "Steel" },
   "ПВХ": { kz: "ПВХ", en: "PVC" },
   "Пластик": { kz: "Пластик", en: "Plastic" },
+  "Металл": { kz: "Металл", en: "Metal" },
   "Пластик / металл": { kz: "Пластик / металл", en: "Plastic / metal" }
+};
+
+const PRODUCT_TEXT_LABELS = {
+  "ВВГнг(А)-LS 3x2,5": { kz: "VVGng(A)-LS 3x2,5", en: "VVGng(A)-LS 3x2.5" },
+  "ПВС 3x1,5": { kz: "PVS 3x1,5", en: "PVS 3x1.5" },
+  "Вводно-распределительное устройство ВРУ": {
+    kz: "ВРУ кіріс-тарату құрылғысы",
+    en: "VRU input distribution unit"
+  },
+  "Медный силовой кабель для групп освещения, розеточных линий и распределительных щитов.": {
+    kz: "Жарықтандыру топтары, розетка желілері және тарату қалқандары үшін мыс күштік кабель.",
+    en: "Copper power cable for lighting groups, socket lines and distribution panels."
+  },
+  "Провод для удлинителей, подключения бытового и монтажного оборудования.": {
+    kz: "Ұзартқыштарға, тұрмыстық және монтаж жабдықтарын қосуға арналған сым.",
+    en: "Wire for extension cords and connecting household or installation equipment."
+  },
+  "ВРУ для приема, учета и распределения электроэнергии в жилых, коммерческих и промышленных зданиях.": {
+    kz: "Тұрғын, коммерциялық және өндірістік ғимараттарда электр энергиясын қабылдау, есепке алу және таратуға арналған ВРУ.",
+    en: "VRU for receiving, metering and distributing power in residential, commercial and industrial buildings."
+  },
+  "Хит": { kz: "Таңдаулы", en: "Popular" },
+  "Популярно": { kz: "Танымал", en: "Popular" },
+  "Ввод": { kz: "Кіріс", en: "Input" },
+  "Трасса": { kz: "Трасса", en: "Route" },
+  "Офис": { kz: "Кеңсе", en: "Office" },
+  "Автоматика": { kz: "Автоматика", en: "Automation" },
+  "внутренний": { kz: "ішкі", en: "indoor" },
+  "медь": { kz: "мыс", en: "copper" },
+  "подключение": { kz: "қосу", en: "connection" },
+  "ввод": { kz: "кіріс", en: "input" },
+  "учет": { kz: "есеп", en: "metering" },
+  "по проекту": { kz: "жоба бойынша", en: "by project" }
+};
+
+const PRODUCT_TERM_REPLACEMENTS = {
+  en: [
+    ["Вводно-распределительное устройство", "Input distribution unit"],
+    ["Алюминиевый самонесущий изолированный", "Aluminum self-supporting insulated"],
+    ["Алюминиевый неизолированный со стальным сердечником", "Aluminum bare with steel core"],
+    ["Алюминиевый неизолированный", "Aluminum bare"],
+    ["Медный силовой кабель", "Copper power cable"],
+    ["Алюминиевый силовой кабель", "Aluminum power cable"],
+    ["контрольный кабель", "control cable"],
+    ["Контрольный кабель", "Control cable"],
+    ["самонесущий провод", "self-supporting wire"],
+    ["Самонесущий провод", "Self-supporting wire"],
+    ["кабельный лоток", "cable tray"],
+    ["Кабельный лоток", "Cable tray"],
+    ["кабель-канал", "cable duct"],
+    ["Кабель-канал", "Cable duct"],
+    ["распределительный щит", "distribution panel"],
+    ["Распределительный щит", "Distribution panel"],
+    ["групповой щит", "group panel"],
+    ["Групповой щит", "Group panel"],
+    ["розетки", "sockets"],
+    ["Розетки", "Sockets"],
+    ["выключатели", "switches"],
+    ["Выключатели", "Switches"],
+    ["коробки", "boxes"],
+    ["Коробки", "Boxes"],
+    ["для групп освещения", "for lighting groups"],
+    ["розеточных линий", "socket lines"],
+    ["распределительных щитов", "distribution panels"],
+    ["для удлинителей", "for extension cords"],
+    ["подключения бытового", "connecting household"],
+    ["монтажного оборудования", "installation equipment"],
+    ["для приема, учета и распределения электроэнергии", "for receiving, metering and distributing power"],
+    ["в жилых, коммерческих и промышленных зданиях", "in residential, commercial and industrial buildings"],
+    ["по запросу", "on request"],
+    ["по проекту", "by project"],
+    ["кВ", "kV"],
+    [" В", " V"],
+    ["жила", "core"],
+    ["жилы", "cores"],
+    ["жил", "cores"],
+    ["Медь", "Copper"],
+    ["медь", "copper"],
+    ["Алюминий", "Aluminum"],
+    ["алюминий", "aluminum"],
+    ["Сталь", "Steel"],
+    ["сталь", "steel"],
+    ["Пластик", "Plastic"],
+    ["Металл", "Metal"],
+    ["металл", "metal"],
+    ["ВРУ", "VRU"],
+    ["СИП", "SIP"],
+    ["ПВС", "PVS"],
+    ["ВВГнг", "VVGng"],
+    ["ПВХ", "PVC"],
+    ["нг-LS", "ng-LS"],
+    ["внутренний", "indoor"],
+    ["наружный", "outdoor"],
+    ["питание", "power"],
+    ["объект", "project"],
+    ["фасад", "facade"],
+    ["щит", "panel"],
+    ["монтаж", "installation"],
+    ["сеть", "network"],
+    ["данные", "data"],
+    ["экран", "shield"],
+    ["ввод", "input"],
+    ["учет", "metering"],
+    ["офис", "office"],
+    ["Трасса", "Route"],
+    ["Хит", "Popular"]
+  ],
+  kz: [
+    ["Вводно-распределительное устройство", "Кіріс-тарату құрылғысы"],
+    ["Медный силовой кабель", "Мыс күштік кабель"],
+    ["Алюминиевый силовой кабель", "Алюминий күштік кабель"],
+    ["для групп освещения", "жарықтандыру топтары үшін"],
+    ["розеточных линий", "розетка желілері"],
+    ["распределительных щитов", "тарату қалқандары"],
+    ["для удлинителей", "ұзартқыштар үшін"],
+    ["подключения бытового", "тұрмыстық жабдықты қосу"],
+    ["монтажного оборудования", "монтаж жабдығы"],
+    ["для приема, учета и распределения электроэнергии", "электр энергиясын қабылдау, есепке алу және тарату үшін"],
+    ["в жилых, коммерческих и промышленных зданиях", "тұрғын, коммерциялық және өндірістік ғимараттарда"],
+    ["по запросу", "сұраныс бойынша"],
+    ["по проекту", "жоба бойынша"],
+    ["кВ", "кВ"],
+    [" В", " В"],
+    ["жила", "жила"],
+    ["жилы", "жила"],
+    ["жил", "жила"],
+    ["Медь", "Мыс"],
+    ["медь", "мыс"],
+    ["Алюминий", "Алюминий"],
+    ["алюминий", "алюминий"],
+    ["Сталь", "Болат"],
+    ["сталь", "болат"],
+    ["Пластик", "Пластик"],
+    ["Металл", "Металл"],
+    ["металл", "металл"],
+    ["внутренний", "ішкі"],
+    ["наружный", "сыртқы"],
+    ["питание", "қуат"],
+    ["объект", "нысан"],
+    ["фасад", "фасад"],
+    ["щит", "қалқан"],
+    ["монтаж", "монтаж"],
+    ["сеть", "желі"],
+    ["данные", "деректер"],
+    ["экран", "экран"],
+    ["ввод", "кіріс"],
+    ["учет", "есеп"],
+    ["офис", "кеңсе"]
+  ]
 };
 
 function t(key, values = {}) {
@@ -2082,6 +2251,18 @@ function translateValue(value) {
   const label = VALUE_LABELS[value];
   if (!label) return value;
   return label[state.language] || value;
+}
+
+function translateProductText(value) {
+  const text = String(value ?? "");
+  if (state.language === "ru" || !text) return text;
+
+  const exact = PRODUCT_TEXT_LABELS[text]?.[state.language];
+  if (exact) return exact;
+
+  return (PRODUCT_TERM_REPLACEMENTS[state.language] || []).reduce((current, [from, to]) => {
+    return current.split(from).join(to);
+  }, text);
 }
 
 function updateText(selector, key, root = document) {
@@ -2170,6 +2351,9 @@ function renderStaticText() {
   updateText(".brand-seo .eyebrow", "seo.eyebrow");
   updateText("#brand-seo-title", "seo.title");
   updateText(".brand-seo-copy p", "seo.copy");
+  document.querySelectorAll(".keyword-list li").forEach((node, index) => {
+    node.textContent = t(`seo.keyword.${index + 1}`);
+  });
 
   updateText("#catalog .section-heading .eyebrow", "catalog.eyebrow");
   updateText("#catalog-title", "catalog.title");
@@ -3180,13 +3364,18 @@ function getFilteredProducts() {
         getProductSection(product),
         getProductGroup(product),
         product.title,
+        translateProductText(product.title),
         product.category,
         product.type,
         product.conductor,
         product.description,
+        translateProductText(product.description),
         product.voltage,
+        translateProductText(product.voltage),
         product.cores,
-        ...product.tags
+        translateProductText(product.cores),
+        ...product.tags,
+        ...product.tags.map(translateProductText)
       ]
         .join(" ")
         .toLowerCase();
@@ -3202,25 +3391,35 @@ function getFilteredProducts() {
 function createProductCard(product) {
   const card = document.createElement("article");
   const quoteQty = getQuoteQty(product.id);
+  const productTitle = translateProductText(product.title);
+  const productBadge = translateProductText(product.badge);
+  const productDescription = translateProductText(product.description);
+  const productVoltage = translateProductText(product.voltage);
+  const productCores = translateProductText(product.cores);
+  const productGroup = translateValue(getProductGroup(product));
+  let productType = product.type ? translateProductText(translateValue(product.type)) : "";
+  if (productType === productGroup) productType = "";
+  const productConductor = translateProductText(translateValue(product.conductor));
+  const productTags = product.tags.map(translateProductText);
   card.className = "product-card product-card-enter";
   card.innerHTML = `
     <div class="product-media">
-      <img class="is-pending" src="${assetUrl(product.image)}" alt="${escapeAttribute(product.title)}" loading="lazy" decoding="async">
-      <span class="product-badge">${escapeHtml(product.badge)}</span>
+      <img class="is-pending" src="${assetUrl(product.image)}" alt="${escapeAttribute(productTitle)}" loading="lazy" decoding="async">
+      <span class="product-badge">${escapeHtml(productBadge)}</span>
     </div>
-    <div class="product-body">
-      <div class="product-topline">
-        <span>${escapeHtml(translateValue(getProductSection(product)))} / ${escapeHtml(translateValue(getProductGroup(product)))}</span>
-        <span>${product.type ? `${escapeHtml(translateValue(product.type))} / ` : ""}${escapeHtml(translateValue(product.conductor))}</span>
+      <div class="product-body">
+        <div class="product-topline">
+        <span>${escapeHtml(translateValue(getProductSection(product)))} / ${escapeHtml(productGroup)}</span>
+        <span>${productType ? `${escapeHtml(productType)} / ` : ""}${escapeHtml(productConductor)}</span>
       </div>
-      <h3 class="product-title">${escapeHtml(product.title)}</h3>
-      <p class="product-desc">${escapeHtml(product.description)}</p>
+      <h3 class="product-title">${escapeHtml(productTitle)}</h3>
+      <p class="product-desc">${escapeHtml(productDescription)}</p>
       <dl class="spec-list">
-        <div><dt>${escapeHtml(t("product.parameter"))}</dt><dd>${escapeHtml(product.voltage)}</dd></div>
-        <div><dt>${escapeHtml(t("product.execution"))}</dt><dd>${escapeHtml(product.cores)}</dd></div>
+        <div><dt>${escapeHtml(t("product.parameter"))}</dt><dd>${escapeHtml(productVoltage)}</dd></div>
+        <div><dt>${escapeHtml(t("product.execution"))}</dt><dd>${escapeHtml(productCores)}</dd></div>
       </dl>
       <div class="tag-row">
-        ${product.tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}
+        ${productTags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}
       </div>
       <button class="card-action${quoteQty ? " is-added" : ""}" type="button" data-product-id="${escapeAttribute(product.id)}">${quoteQty ? escapeHtml(t("product.inQuote", { qty: quoteQty })) : escapeHtml(t("product.add"))}</button>
     </div>
@@ -3402,22 +3601,23 @@ function renderQuote() {
 
   state.quote.forEach((item) => {
     const row = document.createElement("li");
+    const itemTitle = translateProductText(item.title);
     row.className = "quote-item";
     row.innerHTML = `
       <div>
-        <strong>${escapeHtml(item.title)}</strong>
+        <strong>${escapeHtml(itemTitle)}</strong>
         <span>${escapeHtml(t("quote.meta", {
           section: translateValue(getProductSection(item)),
           group: translateValue(getProductGroup(item)),
-          cores: item.cores,
+          cores: translateProductText(item.cores),
           qty: item.qty
         }))}</span>
       </div>
-      <div class="quote-controls" aria-label="${escapeAttribute(t("quote.qtyLabel", { title: item.title }))}">
-        <button class="quote-step" type="button" aria-label="${escapeAttribute(t("quote.decrease", { title: item.title }))}" data-qty-id="${escapeAttribute(item.id)}" data-qty-delta="-1">-</button>
+      <div class="quote-controls" aria-label="${escapeAttribute(t("quote.qtyLabel", { title: itemTitle }))}">
+        <button class="quote-step" type="button" aria-label="${escapeAttribute(t("quote.decrease", { title: itemTitle }))}" data-qty-id="${escapeAttribute(item.id)}" data-qty-delta="-1">-</button>
         <strong class="quote-qty">${escapeHtml(item.qty)}</strong>
-        <button class="quote-step" type="button" aria-label="${escapeAttribute(t("quote.increase", { title: item.title }))}" data-qty-id="${escapeAttribute(item.id)}" data-qty-delta="1">+</button>
-        <button class="quote-remove" type="button" aria-label="${escapeAttribute(t("quote.remove", { title: item.title }))}" data-remove-id="${escapeAttribute(item.id)}">x</button>
+        <button class="quote-step" type="button" aria-label="${escapeAttribute(t("quote.increase", { title: itemTitle }))}" data-qty-id="${escapeAttribute(item.id)}" data-qty-delta="1">+</button>
+        <button class="quote-remove" type="button" aria-label="${escapeAttribute(t("quote.remove", { title: itemTitle }))}" data-remove-id="${escapeAttribute(item.id)}">x</button>
       </div>
     `;
     quoteList.append(row);
