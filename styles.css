@@ -153,12 +153,7 @@ button {
   align-items: center;
   min-width: 0;
   border-radius: var(--radius);
-  transition: background 180ms ease, padding 180ms ease;
-}
-
-[data-theme="dark"] .brand {
-  background: rgba(255, 255, 255, 0.94);
-  padding: 4px 10px 4px 4px;
+  transition: filter 180ms ease, opacity 180ms ease, transform 180ms ease;
 }
 
 .brand-logo {
@@ -166,6 +161,12 @@ button {
   height: 56px;
   max-width: min(360px, 42vw);
   object-fit: contain;
+}
+
+[data-theme="dark"] .brand-logo {
+  content: url("assets/centralasia-logo-header-dark.png");
+  filter:
+    drop-shadow(0 8px 18px rgba(0, 0, 0, 0.34));
 }
 
 .trust-strip {
