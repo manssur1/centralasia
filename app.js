@@ -1569,7 +1569,7 @@ const EMAIL_CONFIG = {
 };
 
 const helperApi = window.CAEHelpers || {};
-const ASSET_VERSION = "20260618-product-i18n";
+const ASSET_VERSION = "20260618-ru-kz-only";
 const AUTH_STORAGE_KEY = "cae_supabase_session";
 const QUOTE_STORAGE_KEY = "cae_quote_items";
 const CATALOG_STATE_KEY = "cae_catalog_state";
@@ -1616,7 +1616,7 @@ const validateProjectFile = helperApi.validateProjectFile || ((file) => {
   }
   return { ok: true, reason: "" };
 });
-const normalizeLanguage = helperApi.normalizeLanguage || ((value) => (["ru", "kz", "en"].includes(value) ? value : "ru"));
+const normalizeLanguage = helperApi.normalizeLanguage || ((value) => (["ru", "kz"].includes(value) ? value : "ru"));
 const normalizeTheme = helperApi.normalizeTheme || ((value) => (["light", "dark"].includes(value) ? value : "light"));
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 let requestFormReadyAt = Date.now();
@@ -1703,8 +1703,7 @@ document.body.append(scrollProgress, backToTop, floatingQuote, toast);
 
 const LANGUAGE_META = {
   ru: { htmlLang: "ru", label: "RU" },
-  kz: { htmlLang: "kk", label: "KZ" },
-  en: { htmlLang: "en", label: "EN" }
+  kz: { htmlLang: "kk", label: "KZ" }
 };
 
 const I18N = {
@@ -2292,6 +2291,7 @@ function applyTheme() {
 function renderPreferenceControls() {
   const meta = LANGUAGE_META[state.language] || LANGUAGE_META.ru;
   document.documentElement.lang = meta.htmlLang;
+  savePreference(LANGUAGE_STORAGE_KEY, state.language);
 
   languageButtons.forEach((button) => {
     const isActive = button.dataset.lang === state.language;
