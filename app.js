@@ -1569,11 +1569,13 @@ const EMAIL_CONFIG = {
 };
 
 const helperApi = window.CAEHelpers || {};
-const ASSET_VERSION = "20260617-loading-secure";
+const ASSET_VERSION = "20260618-i18n-theme";
 const AUTH_STORAGE_KEY = "cae_supabase_session";
 const QUOTE_STORAGE_KEY = "cae_quote_items";
 const CATALOG_STATE_KEY = "cae_catalog_state";
 const REQUEST_RATE_KEY = "cae_request_rate";
+const LANGUAGE_STORAGE_KEY = "cae_language";
+const THEME_STORAGE_KEY = "cae_theme";
 const SESSION_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
 const REQUEST_COOLDOWN_MS = 30 * 1000;
 const MAX_QUOTE_ITEMS = 40;
@@ -1614,9 +1616,19 @@ const validateProjectFile = helperApi.validateProjectFile || ((file) => {
   }
   return { ok: true, reason: "" };
 });
+const normalizeLanguage = helperApi.normalizeLanguage || ((value) => (["ru", "kz", "en"].includes(value) ? value : "ru"));
+const normalizeTheme = helperApi.normalizeTheme || ((value) => (["light", "dark"].includes(value) ? value : "light"));
 const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 let requestFormReadyAt = Date.now();
 let isSubmittingRequest = false;
+
+function readStoredPreference(key) {
+  try {
+    return localStorage.getItem(key) || "";
+  } catch {
+    return "";
+  }
+}
 
 const state = {
   section: "Все",
@@ -1624,6 +1636,8 @@ const state = {
   conductor: "Все",
   search: "",
   sort: "popular",
+  language: normalizeLanguage(readStoredPreference(LANGUAGE_STORAGE_KEY) || "ru"),
+  theme: normalizeTheme(readStoredPreference(THEME_STORAGE_KEY) || "light"),
   loadingProducts: isSupabaseConfigured(),
   quote: [],
   auth: {
@@ -1659,6 +1673,8 @@ const authLoginTab = document.querySelector("#authLoginTab");
 const authRegisterTab = document.querySelector("#authRegisterTab");
 const requestAuthNote = document.querySelector("#requestAuthNote");
 const requestSubmitButton = requestForm?.querySelector('button[type="submit"]');
+const languageButtons = document.querySelectorAll("[data-lang]");
+const themeToggle = document.querySelector("#themeToggle");
 const REQUEST_SUBMIT_DEFAULT_LABEL = requestSubmitButton?.textContent || "Подготовить заявку";
 const backToTop = document.createElement("button");
 const scrollProgress = document.createElement("div");
@@ -1684,6 +1700,545 @@ toast.setAttribute("role", "status");
 toast.setAttribute("aria-live", "polite");
 toast.hidden = true;
 document.body.append(scrollProgress, backToTop, floatingQuote, toast);
+
+const LANGUAGE_META = {
+  ru: { htmlLang: "ru", label: "RU" },
+  kz: { htmlLang: "kk", label: "KZ" },
+  en: { htmlLang: "en", label: "EN" }
+};
+
+const I18N = {
+  ru: {
+    "nav.catalog": "Каталог",
+    "nav.selection": "Подбор",
+    "nav.request": "Заявка",
+    "nav.contacts": "Контакты",
+    "theme.light": "Светлая",
+    "theme.dark": "Темная",
+    "theme.toLight": "Включить светлую тему",
+    "theme.toDark": "Включить темную тему",
+    "trust.warranty": "Гарантия до 12 месяцев",
+    "trust.gost": "Имеется сертификат качества ГОСТ",
+    "trust.whatsapp": "Устная заявка в WhatsApp",
+    "trust.write": "Пишите: 8 702 945 53 44",
+    "auth.eyebrow": "защищенный доступ",
+    "auth.title": "Вход в аккаунт",
+    "auth.close": "Закрыть",
+    "auth.loginTab": "Вход",
+    "auth.registerTab": "Регистрация",
+    "auth.password": "Пароль",
+    "auth.passwordPlaceholder": "Минимум 6 символов",
+    "auth.login": "Войти",
+    "auth.logout": "Выйти",
+    "auth.register": "Зарегистрироваться",
+    "auth.openTitle": "Войти или зарегистрироваться",
+    "auth.logoutTitle": "Выйти из {email}",
+    "auth.noteIn": "Заявка будет отправлена из аккаунта {email}.",
+    "auth.noteOut": "Для отправки заявки войдите или зарегистрируйтесь. Заявка будет привязана к вашему аккаунту.",
+    "hero.eyebrow": "электромонтаж, снабжение, проектные поставки",
+    "hero.title": "Кабель, щиты и электроустановочные изделия",
+    "hero.copy": "Быстрый подбор силовых кабелей, шкафов, щитов, розеток, выключателей, коробок, лотков, труб и крепежа для объекта, склада или тендерной заявки.",
+    "hero.catalog": "Открыть каталог",
+    "hero.request": "Собрать заявку",
+    "hero.positions": "позиций",
+    "hero.groups": "групп",
+    "hero.assortment": "ассортимент",
+    "hero.assortmentValue": "кабель + щиты + розетки",
+    "quick.1.title": "Для электромонтажа",
+    "quick.1.copy": "ВВГнг, ПВС, ПВ-3, розетки, выключатели и коробки для внутренних сетей, щитов и подключений.",
+    "quick.2.title": "Для улицы и трасс",
+    "quick.2.copy": "СИП, морозостойкий кабель, лотки, трубы и металлорукав для наружных и открытых линий.",
+    "quick.3.title": "Для связи",
+    "quick.3.copy": "UTP, FTP, контрольные кабели, шкафы автоматики и телеком-оборудование для слаботочных систем.",
+    "seo.eyebrow": "CentralAsiaEnergetics",
+    "seo.title": "Каталог кабеля и электрики для объектов в Казахстане",
+    "seo.copy": "CentralAsiaEnergetics помогает быстро собрать заявку на кабель, провод, СИП, силовой кабель, кабеленесущие системы, шкафы, щиты, розетки, выключатели и монтажные коробки. Каталог сделан для электромонтажа, снабжения, проектных поставок и подбора материалов по объекту.",
+    "catalog.eyebrow": "каталог CentralAsiaEnergetics",
+    "catalog.title": "Каталог кабеля, щитов и электрики",
+    "catalog.copy": "Фильтруй по назначению, материалу и запросу. В каталоге есть кабели, провод, шкафы, щиты, розетки, выключатели, коробки, лотки, трубы, короба и монтажные элементы.",
+    "filter.section": "Раздел",
+    "filter.group": "Подгруппа",
+    "filter.material": "Материал",
+    "filter.sort": "Сортировка",
+    "sort.popular": "Сначала популярные",
+    "sort.name": "По названию",
+    "sort.voltage": "По параметру",
+    "search.label": "Поиск",
+    "search.placeholder": "Например, ВВГ, СИП, розетка, выключатель, коробка или щит",
+    "search.clear": "Очистить поиск",
+    "search.hint": "Нажми `/`, чтобы быстро перейти к поиску.",
+    "catalog.reset": "Сбросить фильтры",
+    "catalog.empty": "Ничего не найдено. Попробуй другой запрос.",
+    "catalog.loading": "Загрузка...",
+    "product.parameter": "Параметр",
+    "product.execution": "Исполнение",
+    "product.add": "В заявку",
+    "product.inQuote": "В заявке: {qty}",
+    "request.eyebrow": "быстрая заявка",
+    "request.title": "Собери список позиций",
+    "request.copy": "Добавляй кабели, шкафы, щиты, розетки, выключатели, коробки, лотки, трубы и крепеж из каталога, укажи контакты и комментарий. Форма сохраняет заявки и помогает быстро передать список позиций менеджеру. Если есть проект, его тоже можно приложить.",
+    "quote.title": "В заявке",
+    "quote.clear": "Очистить",
+    "quote.empty": "Пока пусто. Добавь нужные позиции из каталога.",
+    "quote.qtyLabel": "Количество {title}",
+    "quote.decrease": "Уменьшить {title}",
+    "quote.increase": "Увеличить {title}",
+    "quote.remove": "Удалить {title}",
+    "quote.meta": "{section} / {group}, {cores}, {qty} шт.",
+    "quote.float": "Заявка",
+    "quote.unit": "шт.",
+    "request.name": "Имя",
+    "request.namePlaceholder": "Как к вам обращаться",
+    "request.contact": "Телефон или email",
+    "request.contactPlaceholder": "+7 или почта",
+    "request.comment": "Комментарий",
+    "request.commentPlaceholder": "Метраж, сроки, объект, город",
+    "request.project": "Проект",
+    "request.projectHint": "Необязательно. Можно приложить проект, смету или ТЗ в любом формате.",
+    "request.submit": "Подготовить заявку",
+    "contacts.eyebrow": "Контакты CentralAsiaEnergetics",
+    "contacts.title": "Связаться быстро и без лишних шагов",
+    "contacts.copy": "Если удобнее обсудить позиции голосом или сразу написать в WhatsApp, используй нужный контакт ниже. Оба канала связи работают круглосуточно.",
+    "contacts.badge.request": "Устная заявка",
+    "contacts.badge.tech": "Тех. связь",
+    "contacts.shift": "Круглосуточно",
+    "contacts.requestTitle": "Прием заявок и быстрый устный подбор",
+    "contacts.requestCopy": "Для срочного запроса по кабелю, щитам, розеткам, коробкам и монтажным позициям. Можно сразу продиктовать список или объект.",
+    "contacts.techTitle": "Технический куратор и digital-поддержка проекта",
+    "contacts.techCopy": "По вопросам сайта, каталога, структуры заявок и доработок. Если нужно что-то улучшить, ускорить или автоматизировать, можно писать сюда напрямую.",
+    "contacts.call": "Позвонить",
+    "footer.title": "CentralAsiaEnergetics - каталог кабеля и электрики",
+    "footer.contacts": "Контакты",
+    "form.sending": "Отправляем...",
+    "toast.cleared": "Заявка очищена",
+    "toast.added": "{title} добавлен в заявку",
+    "toast.language": "Язык переключен",
+    "toast.themeDark": "Темная тема включена",
+    "toast.themeLight": "Светлая тема включена"
+  },
+  kz: {
+    "nav.catalog": "Каталог",
+    "nav.selection": "Таңдау",
+    "nav.request": "Өтінім",
+    "nav.contacts": "Байланыс",
+    "theme.light": "Жарық",
+    "theme.dark": "Қараңғы",
+    "theme.toLight": "Жарық тақырыпты қосу",
+    "theme.toDark": "Қараңғы тақырыпты қосу",
+    "trust.warranty": "Кепілдік 12 айға дейін",
+    "trust.gost": "ГОСТ сапа сертификаты бар",
+    "trust.whatsapp": "WhatsApp арқылы ауызша өтінім",
+    "trust.write": "Жазыңыз: 8 702 945 53 44",
+    "auth.eyebrow": "қорғалған қолжетімділік",
+    "auth.title": "Аккаунтқа кіру",
+    "auth.close": "Жабу",
+    "auth.loginTab": "Кіру",
+    "auth.registerTab": "Тіркелу",
+    "auth.password": "Құпиясөз",
+    "auth.passwordPlaceholder": "Кемінде 6 таңба",
+    "auth.login": "Кіру",
+    "auth.logout": "Шығу",
+    "auth.register": "Тіркелу",
+    "auth.openTitle": "Кіру немесе тіркелу",
+    "auth.logoutTitle": "{email} аккаунтынан шығу",
+    "auth.noteIn": "Өтінім {email} аккаунтынан жіберіледі.",
+    "auth.noteOut": "Өтінім жіберу үшін кіріңіз немесе тіркеліңіз. Өтінім аккаунтыңызға байланысады.",
+    "hero.eyebrow": "электромонтаж, жабдықтау, жобалық жеткізілім",
+    "hero.title": "Кабель, қалқандар және электр бұйымдары",
+    "hero.copy": "Нысанға, қоймаға немесе тендерлік өтінімге күштік кабельдер, шкафтар, қалқандар, розеткалар, ажыратқыштар, қораптар, лотоктар, құбырлар мен бекітпелерді жылдам таңдаңыз.",
+    "hero.catalog": "Каталогты ашу",
+    "hero.request": "Өтінім жинау",
+    "hero.positions": "позиция",
+    "hero.groups": "топ",
+    "hero.assortment": "ассортимент",
+    "hero.assortmentValue": "кабель + қалқан + розетка",
+    "quick.1.title": "Электромонтаж үшін",
+    "quick.1.copy": "ВВГнг, ПВС, ПВ-3, розеткалар, ажыратқыштар және ішкі желілерге арналған қораптар.",
+    "quick.2.title": "Көше және трасса үшін",
+    "quick.2.copy": "СИП, аязға төзімді кабель, лотоктар, құбырлар және сыртқы желілерге арналған металлорукав.",
+    "quick.3.title": "Байланыс үшін",
+    "quick.3.copy": "UTP, FTP, бақылау кабельдері, автоматика шкафтары және әлсіз ток жүйелеріне арналған жабдық.",
+    "seo.eyebrow": "CentralAsiaEnergetics",
+    "seo.title": "Қазақстандағы нысандарға арналған кабель және электр каталогы",
+    "seo.copy": "CentralAsiaEnergetics кабель, сым, СИП, күштік кабель, кабель жүргізу жүйелері, шкафтар, қалқандар, розеткалар, ажыратқыштар және монтаж қораптары бойынша өтінімді тез жинауға көмектеседі.",
+    "catalog.eyebrow": "CentralAsiaEnergetics каталогы",
+    "catalog.title": "Кабель, қалқан және электр каталогы",
+    "catalog.copy": "Мақсаты, материалы және іздеу сұранысы бойынша сүзгілеңіз. Каталогта кабель, сым, шкаф, қалқан, розетка, ажыратқыш, қорап, лоток, құбыр және монтаж элементтері бар.",
+    "filter.section": "Бөлім",
+    "filter.group": "Ішкі топ",
+    "filter.material": "Материал",
+    "filter.sort": "Сұрыптау",
+    "sort.popular": "Алдымен танымал",
+    "sort.name": "Атауы бойынша",
+    "sort.voltage": "Параметр бойынша",
+    "search.label": "Іздеу",
+    "search.placeholder": "Мысалы: ВВГ, СИП, розетка, ажыратқыш, қорап немесе қалқан",
+    "search.clear": "Іздеуді тазалау",
+    "search.hint": "Іздеуге тез өту үшін `/` басыңыз.",
+    "catalog.reset": "Сүзгілерді тазалау",
+    "catalog.empty": "Ештеңе табылмады. Басқа сұраныс жасап көріңіз.",
+    "catalog.loading": "Жүктелуде...",
+    "product.parameter": "Параметр",
+    "product.execution": "Орындау",
+    "product.add": "Өтінімге",
+    "product.inQuote": "Өтінімде: {qty}",
+    "request.eyebrow": "жылдам өтінім",
+    "request.title": "Позициялар тізімін жинаңыз",
+    "request.copy": "Каталогтан кабель, шкаф, қалқан, розетка, ажыратқыш, қорап, лоток, құбыр және бекітпелерді қосып, байланыс деректерін жазыңыз. Жобаңыз болса, файлды да тіркей аласыз.",
+    "quote.title": "Өтінімде",
+    "quote.clear": "Тазалау",
+    "quote.empty": "Әзірге бос. Қажетті позицияларды каталогтан қосыңыз.",
+    "quote.qtyLabel": "{title} саны",
+    "quote.decrease": "{title} азайту",
+    "quote.increase": "{title} көбейту",
+    "quote.remove": "{title} жою",
+    "quote.meta": "{section} / {group}, {cores}, {qty} дана",
+    "quote.float": "Өтінім",
+    "quote.unit": "дана",
+    "request.name": "Аты-жөні",
+    "request.namePlaceholder": "Сізге қалай хабарласайық",
+    "request.contact": "Телефон немесе email",
+    "request.contactPlaceholder": "+7 немесе пошта",
+    "request.comment": "Пікір",
+    "request.commentPlaceholder": "Метраж, мерзім, нысан, қала",
+    "request.project": "Жоба",
+    "request.projectHint": "Міндетті емес. Жоба, смета немесе ТТ файлын кез келген форматта тіркеуге болады.",
+    "request.submit": "Өтінімді дайындау",
+    "contacts.eyebrow": "CentralAsiaEnergetics байланыстары",
+    "contacts.title": "Тез әрі артық қадамсыз байланысу",
+    "contacts.copy": "Позицияларды дауыспен талқылау немесе WhatsApp-қа жазу ыңғайлы болса, төмендегі контактіні таңдаңыз. Екі арна да тәулік бойы жұмыс істейді.",
+    "contacts.badge.request": "Ауызша өтінім",
+    "contacts.badge.tech": "Тех. байланыс",
+    "contacts.shift": "Тәулік бойы",
+    "contacts.requestTitle": "Өтінім қабылдау және жылдам ауызша таңдау",
+    "contacts.requestCopy": "Кабель, қалқан, розетка, қорап және монтаж позициялары бойынша шұғыл сұранысқа арналған.",
+    "contacts.techTitle": "Техникалық куратор және digital-қолдау",
+    "contacts.techCopy": "Сайт, каталог, өтінім құрылымы және жақсартулар бойынша сұрақтарға арналған байланыс.",
+    "contacts.call": "Қоңырау шалу",
+    "footer.title": "CentralAsiaEnergetics - кабель және электр каталогы",
+    "footer.contacts": "Байланыс",
+    "form.sending": "Жіберілуде...",
+    "toast.cleared": "Өтінім тазартылды",
+    "toast.added": "{title} өтінімге қосылды",
+    "toast.language": "Тіл ауыстырылды",
+    "toast.themeDark": "Қараңғы тақырып қосылды",
+    "toast.themeLight": "Жарық тақырып қосылды"
+  },
+  en: {
+    "nav.catalog": "Catalog",
+    "nav.selection": "Selection",
+    "nav.request": "Request",
+    "nav.contacts": "Contacts",
+    "theme.light": "Light",
+    "theme.dark": "Dark",
+    "theme.toLight": "Switch to light theme",
+    "theme.toDark": "Switch to dark theme",
+    "trust.warranty": "Warranty up to 12 months",
+    "trust.gost": "GOST quality certificate available",
+    "trust.whatsapp": "Verbal request via WhatsApp",
+    "trust.write": "Write: 8 702 945 53 44",
+    "auth.eyebrow": "secure access",
+    "auth.title": "Account sign in",
+    "auth.close": "Close",
+    "auth.loginTab": "Sign in",
+    "auth.registerTab": "Register",
+    "auth.password": "Password",
+    "auth.passwordPlaceholder": "At least 6 characters",
+    "auth.login": "Sign in",
+    "auth.logout": "Log out",
+    "auth.register": "Create account",
+    "auth.openTitle": "Sign in or create an account",
+    "auth.logoutTitle": "Log out of {email}",
+    "auth.noteIn": "The request will be sent from {email}.",
+    "auth.noteOut": "Sign in or register to send a request. The request will be linked to your account.",
+    "hero.eyebrow": "electrical installation, supply, project deliveries",
+    "hero.title": "Cables, panels and electrical installation products",
+    "hero.copy": "Quick selection of power cables, cabinets, panels, sockets, switches, boxes, trays, pipes and fasteners for projects, warehouses or tender requests.",
+    "hero.catalog": "Open catalog",
+    "hero.request": "Build request",
+    "hero.positions": "items",
+    "hero.groups": "groups",
+    "hero.assortment": "assortment",
+    "hero.assortmentValue": "cables + panels + sockets",
+    "quick.1.title": "For electrical installation",
+    "quick.1.copy": "VVGng, PVS, PV-3, sockets, switches and boxes for indoor networks, panels and connections.",
+    "quick.2.title": "For outdoor lines",
+    "quick.2.copy": "SIP, frost-resistant cable, trays, pipes and metal conduit for outdoor and open routes.",
+    "quick.3.title": "For communications",
+    "quick.3.copy": "UTP, FTP, control cables, automation cabinets and telecom equipment for low-current systems.",
+    "seo.eyebrow": "CentralAsiaEnergetics",
+    "seo.title": "Cable and electrical catalog for projects in Kazakhstan",
+    "seo.copy": "CentralAsiaEnergetics helps quickly assemble requests for cables, wires, SIP, power cable, cable support systems, cabinets, panels, sockets, switches and installation boxes.",
+    "catalog.eyebrow": "CentralAsiaEnergetics catalog",
+    "catalog.title": "Cable, panel and electrical catalog",
+    "catalog.copy": "Filter by purpose, material and search. The catalog includes cables, wires, cabinets, panels, sockets, switches, boxes, trays, pipes and mounting elements.",
+    "filter.section": "Section",
+    "filter.group": "Subgroup",
+    "filter.material": "Material",
+    "filter.sort": "Sort",
+    "sort.popular": "Most popular first",
+    "sort.name": "By name",
+    "sort.voltage": "By parameter",
+    "search.label": "Search",
+    "search.placeholder": "For example: VVG, SIP, socket, switch, box or panel",
+    "search.clear": "Clear search",
+    "search.hint": "Press `/` to jump to search.",
+    "catalog.reset": "Reset filters",
+    "catalog.empty": "Nothing found. Try another query.",
+    "catalog.loading": "Loading...",
+    "product.parameter": "Parameter",
+    "product.execution": "Configuration",
+    "product.add": "Add to request",
+    "product.inQuote": "In request: {qty}",
+    "request.eyebrow": "quick request",
+    "request.title": "Build a list of items",
+    "request.copy": "Add cables, cabinets, panels, sockets, switches, boxes, trays, pipes and fasteners from the catalog, then leave contacts and comments. You can also attach a project file.",
+    "quote.title": "In request",
+    "quote.clear": "Clear",
+    "quote.empty": "Empty for now. Add the required items from the catalog.",
+    "quote.qtyLabel": "Quantity for {title}",
+    "quote.decrease": "Decrease {title}",
+    "quote.increase": "Increase {title}",
+    "quote.remove": "Remove {title}",
+    "quote.meta": "{section} / {group}, {cores}, {qty} pcs.",
+    "quote.float": "Request",
+    "quote.unit": "pcs.",
+    "request.name": "Name",
+    "request.namePlaceholder": "How should we address you",
+    "request.contact": "Phone or email",
+    "request.contactPlaceholder": "+7 or email",
+    "request.comment": "Comment",
+    "request.commentPlaceholder": "Length, deadline, project, city",
+    "request.project": "Project",
+    "request.projectHint": "Optional. Attach a project, estimate or technical brief in any format.",
+    "request.submit": "Prepare request",
+    "contacts.eyebrow": "CentralAsiaEnergetics contacts",
+    "contacts.title": "Get in touch quickly",
+    "contacts.copy": "If it is easier to discuss items by voice or write directly on WhatsApp, use the contact below. Both channels work 24/7.",
+    "contacts.badge.request": "Verbal request",
+    "contacts.badge.tech": "Tech contact",
+    "contacts.shift": "24/7",
+    "contacts.requestTitle": "Request intake and quick verbal selection",
+    "contacts.requestCopy": "For urgent requests about cables, panels, sockets, boxes and installation items. You can dictate the list or project right away.",
+    "contacts.techTitle": "Technical curator and digital project support",
+    "contacts.techCopy": "For questions about the site, catalog, request structure and improvements.",
+    "contacts.call": "Call",
+    "footer.title": "CentralAsiaEnergetics - cable and electrical catalog",
+    "footer.contacts": "Contacts",
+    "form.sending": "Sending...",
+    "toast.cleared": "Request cleared",
+    "toast.added": "{title} added to request",
+    "toast.language": "Language changed",
+    "toast.themeDark": "Dark theme enabled",
+    "toast.themeLight": "Light theme enabled"
+  }
+};
+
+const VALUE_LABELS = {
+  "Все": { kz: "Барлығы", en: "All" },
+  "Кабели": { kz: "Кабельдер", en: "Cables" },
+  "Кабеленесущие системы": { kz: "Кабель жүргізу жүйелері", en: "Cable support systems" },
+  "Шкафы / щиты": { kz: "Шкафтар / қалқандар", en: "Cabinets / panels" },
+  "Розетки / выключатели / коробки": { kz: "Розеткалар / ажыратқыштар / қораптар", en: "Sockets / switches / boxes" },
+  "Силовой": { kz: "Күштік", en: "Power" },
+  "Гибкий": { kz: "Иілгіш", en: "Flexible" },
+  "Самонесущий": { kz: "Өзін-өзі ұстайтын", en: "Self-supporting" },
+  "Связь": { kz: "Байланыс", en: "Communication" },
+  "Контрольный": { kz: "Бақылау", en: "Control" },
+  "Установочный": { kz: "Монтаждық", en: "Installation" },
+  "Специальный": { kz: "Арнайы", en: "Special" },
+  "Листовые лотки": { kz: "Табақ лотоктар", en: "Sheet trays" },
+  "Проволочные лотки": { kz: "Сым лотоктар", en: "Wire trays" },
+  "Лестничные лотки": { kz: "Сатылы лотоктар", en: "Ladder trays" },
+  "Кабель-каналы": { kz: "Кабель-каналдар", en: "Cable ducts" },
+  "Трубы и металлорукав": { kz: "Құбырлар және металлорукав", en: "Pipes and metal conduit" },
+  "Крепеж и аксессуары": { kz: "Бекітпе және аксессуарлар", en: "Fasteners and accessories" },
+  "Щиты освещения": { kz: "Жарықтандыру қалқандары", en: "Lighting panels" },
+  "Управление и автоматика": { kz: "Басқару және автоматика", en: "Control and automation" },
+  "Корпуса и боксы": { kz: "Корпустар және бокстар", en: "Enclosures and boxes" },
+  "Силовые шкафы": { kz: "Күштік шкафтар", en: "Power cabinets" },
+  "Модульные щиты": { kz: "Модульдік қалқандар", en: "Modular panels" },
+  "Уличные шкафы": { kz: "Сыртқы шкафтар", en: "Outdoor cabinets" },
+  "Серия Legrand": { kz: "Legrand сериясы", en: "Legrand series" },
+  "Серия Schneider": { kz: "Schneider сериясы", en: "Schneider series" },
+  "Серия UNIT": { kz: "UNIT сериясы", en: "UNIT series" },
+  "Монтажные коробки": { kz: "Монтаж қораптары", en: "Installation boxes" },
+  "Разъемы и вилки": { kz: "Қосқыштар және айырлар", en: "Connectors and plugs" },
+  "Медь": { kz: "Мыс", en: "Copper" },
+  "Алюминий": { kz: "Алюминий", en: "Aluminum" },
+  "Сталь": { kz: "Болат", en: "Steel" },
+  "ПВХ": { kz: "ПВХ", en: "PVC" },
+  "Пластик": { kz: "Пластик", en: "Plastic" },
+  "Пластик / металл": { kz: "Пластик / металл", en: "Plastic / metal" }
+};
+
+function t(key, values = {}) {
+  const dictionary = I18N[state.language] || I18N.ru;
+  const template = dictionary[key] || I18N.ru[key] || key;
+  return template.replace(/\{(\w+)\}/g, (_, name) => String(values[name] ?? ""));
+}
+
+function translateValue(value) {
+  const label = VALUE_LABELS[value];
+  if (!label) return value;
+  return label[state.language] || value;
+}
+
+function updateText(selector, key, root = document) {
+  const node = root.querySelector(selector);
+  if (node) node.textContent = t(key);
+}
+
+function updateAttr(selector, attr, key, root = document) {
+  const node = root.querySelector(selector);
+  if (node) node.setAttribute(attr, t(key));
+}
+
+function savePreference(key, value) {
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // Preferences are non-critical and can fail in strict private modes.
+  }
+}
+
+function applyTheme() {
+  document.documentElement.dataset.theme = state.theme;
+  const metaTheme = document.querySelector('meta[name="theme-color"]');
+  if (metaTheme) metaTheme.setAttribute("content", state.theme === "dark" ? "#0d1117" : "#0b9187");
+}
+
+function renderPreferenceControls() {
+  const meta = LANGUAGE_META[state.language] || LANGUAGE_META.ru;
+  document.documentElement.lang = meta.htmlLang;
+
+  languageButtons.forEach((button) => {
+    const isActive = button.dataset.lang === state.language;
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+  });
+
+  if (!themeToggle) return;
+  const isDark = state.theme === "dark";
+  themeToggle.setAttribute("aria-pressed", String(isDark));
+  themeToggle.setAttribute("aria-label", isDark ? t("theme.toLight") : t("theme.toDark"));
+  const themeText = themeToggle.querySelector(".theme-toggle-text");
+  const themeIcon = themeToggle.querySelector(".theme-toggle-icon");
+  if (themeText) themeText.textContent = isDark ? t("theme.light") : t("theme.dark");
+  if (themeIcon) themeIcon.textContent = isDark ? "☀" : "◐";
+}
+
+function renderStaticText() {
+  renderPreferenceControls();
+
+  updateText(".nav-links a[href='#catalog']", "nav.catalog");
+  updateText(".nav-links a[href='#selection']", "nav.selection");
+  updateText(".nav-links a[href='#request']", "nav.request");
+  updateText(".nav-links a[href='#contacts']", "nav.contacts");
+  updateText(".header-action", "hero.request");
+
+  updateText(".trust-strip-inner span:nth-child(1)", "trust.warranty");
+  updateText(".trust-strip-inner span:nth-child(2)", "trust.gost");
+  updateText(".trust-strip-callout", "trust.whatsapp");
+  updateText(".trust-strip-inner a", "trust.write");
+
+  updateText(".auth-card-head .eyebrow", "auth.eyebrow");
+  updateText("#authTitle", "auth.title");
+  updateAttr("#authClose", "aria-label", "auth.close");
+  updateText("#authLoginTab", "auth.loginTab");
+  updateText("#authRegisterTab", "auth.registerTab");
+  updateText(".auth-card label:nth-of-type(2) span", "auth.password");
+  updateAttr(".auth-card label:nth-of-type(2) input", "placeholder", "auth.passwordPlaceholder");
+
+  updateText(".hero .eyebrow", "hero.eyebrow");
+  updateText("#hero-title", "hero.title");
+  updateText(".hero-copy", "hero.copy");
+  updateText(".hero-actions .primary-button", "hero.catalog");
+  updateText(".hero-actions .ghost-button", "hero.request");
+  updateText(".hero-metrics div:nth-child(1) dd", "hero.positions");
+  updateText(".hero-metrics div:nth-child(2) dd", "hero.groups");
+  updateText(".hero-metrics div:nth-child(3) dt", "hero.assortmentValue");
+  updateText(".hero-metrics div:nth-child(3) dd", "hero.assortment");
+
+  updateText(".quick-strip article:nth-child(1) h2", "quick.1.title");
+  updateText(".quick-strip article:nth-child(1) p", "quick.1.copy");
+  updateText(".quick-strip article:nth-child(2) h2", "quick.2.title");
+  updateText(".quick-strip article:nth-child(2) p", "quick.2.copy");
+  updateText(".quick-strip article:nth-child(3) h2", "quick.3.title");
+  updateText(".quick-strip article:nth-child(3) p", "quick.3.copy");
+
+  updateText(".brand-seo .eyebrow", "seo.eyebrow");
+  updateText("#brand-seo-title", "seo.title");
+  updateText(".brand-seo-copy p", "seo.copy");
+
+  updateText("#catalog .section-heading .eyebrow", "catalog.eyebrow");
+  updateText("#catalog-title", "catalog.title");
+  updateText("#catalog .section-heading > p", "catalog.copy");
+  updateText(".filter-group:nth-child(1) .filter-title", "filter.section");
+  updateText(".filter-group:nth-child(2) .filter-title", "filter.group");
+  updateText(".filter-group:nth-child(3) .filter-title", "filter.material");
+  updateText(".filters .field span", "filter.sort");
+  updateText("#sortSelect option[value='popular']", "sort.popular");
+  updateText("#sortSelect option[value='name']", "sort.name");
+  updateText("#sortSelect option[value='voltage']", "sort.voltage");
+  updateText(".catalog-search > span", "search.label");
+  updateAttr("#searchInput", "placeholder", "search.placeholder");
+  updateAttr("#searchClear", "aria-label", "search.clear");
+  updateText(".catalog-search .field-hint", "search.hint");
+  updateText("#resetFilters", "catalog.reset");
+  updateText("#emptyState", "catalog.empty");
+
+  updateText("#request .request-copy .eyebrow", "request.eyebrow");
+  updateText("#request-title", "request.title");
+  updateText(".request-copy > p:not(.eyebrow)", "request.copy");
+  updateText(".quote-panel-head h3", "quote.title");
+  updateText("#clearQuote", "quote.clear");
+  updateText("#quoteEmpty", "quote.empty");
+  updateText(".request-form > label:nth-of-type(1) span", "request.name");
+  updateAttr(".request-form > label:nth-of-type(1) input", "placeholder", "request.namePlaceholder");
+  updateText(".request-form > label:nth-of-type(2) span", "request.contact");
+  updateAttr(".request-form > label:nth-of-type(2) input", "placeholder", "request.contactPlaceholder");
+  updateText(".request-form > label:nth-of-type(3) span", "request.comment");
+  updateAttr(".request-form > label:nth-of-type(3) textarea", "placeholder", "request.commentPlaceholder");
+  updateText(".request-form > label:nth-of-type(4) span", "request.project");
+  updateText(".request-form > label:nth-of-type(4) .field-hint", "request.projectHint");
+  if (requestSubmitButton && !requestSubmitButton.disabled) requestSubmitButton.textContent = t("request.submit");
+
+  updateText("#contacts .eyebrow", "contacts.eyebrow");
+  updateText("#contacts-title", "contacts.title");
+  updateText("#contacts .section-heading > p", "contacts.copy");
+  document.querySelectorAll(".contact-shift").forEach((node) => { node.textContent = t("contacts.shift"); });
+  updateText(".contact-card:nth-child(1) .contact-badge", "contacts.badge.request");
+  updateText(".contact-card:nth-child(1) h3", "contacts.requestTitle");
+  updateText(".contact-card:nth-child(1) p", "contacts.requestCopy");
+  updateText(".contact-card:nth-child(2) .contact-badge", "contacts.badge.tech");
+  updateText(".contact-card:nth-child(2) h3", "contacts.techTitle");
+  updateText(".contact-card:nth-child(2) p", "contacts.techCopy");
+  document.querySelectorAll(".ghost-contact-button").forEach((node) => { node.textContent = t("contacts.call"); });
+
+  updateText(".site-footer span:nth-child(1)", "footer.title");
+  updateText(".site-footer a[href='#contacts']", "footer.contacts");
+  renderAuthState();
+}
+
+function setLanguage(language) {
+  const nextLanguage = normalizeLanguage(language);
+  if (nextLanguage === state.language) return;
+  state.language = nextLanguage;
+  savePreference(LANGUAGE_STORAGE_KEY, state.language);
+  renderStaticText();
+  render();
+  renderQuote();
+  showToast(t("toast.language"));
+}
+
+function setTheme(theme) {
+  const nextTheme = normalizeTheme(theme);
+  state.theme = nextTheme;
+  savePreference(THEME_STORAGE_KEY, state.theme);
+  applyTheme();
+  renderPreferenceControls();
+}
 
 function isSupabaseConfigured() {
   return /^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(SUPABASE_CONFIG.url);
@@ -2143,21 +2698,21 @@ function renderAuthState() {
   const isAuthenticated = Boolean(state.auth.session?.access_token);
   const email = state.auth.user?.email || "аккаунт";
 
-  authOpen.textContent = isAuthenticated ? "Выйти" : "Войти";
-  authOpen.title = isAuthenticated ? `Выйти из ${email}` : "Войти или зарегистрироваться";
+  authOpen.textContent = isAuthenticated ? t("auth.logout") : t("auth.login");
+  authOpen.title = isAuthenticated ? t("auth.logoutTitle", { email }) : t("auth.openTitle");
   authOpen.classList.toggle("is-authenticated", isAuthenticated);
 
   if (requestAuthNote) {
     requestAuthNote.textContent = isAuthenticated
-      ? `Заявка будет отправлена из аккаунта ${email}.`
-      : "Для отправки заявки войдите или зарегистрируйтесь. Заявка будет привязана к вашему аккаунту.";
+      ? t("auth.noteIn", { email })
+      : t("auth.noteOut");
   }
 }
 
 function setAuthMode(mode) {
   state.auth.mode = mode;
   const isRegister = mode === "register";
-  authSubmit.textContent = isRegister ? "Зарегистрироваться" : "Войти";
+  authSubmit.textContent = isRegister ? t("auth.register") : t("auth.login");
   authLoginTab.classList.toggle("is-active", !isRegister);
   authRegisterTab.classList.toggle("is-active", isRegister);
   authStatus.textContent = "";
@@ -2605,7 +3160,7 @@ function renderChipGroup(node, values, activeValue, onSelect) {
     const button = document.createElement("button");
     button.className = "chip";
     button.type = "button";
-    button.textContent = value;
+    button.textContent = translateValue(value);
     button.setAttribute("aria-pressed", String(value === activeValue));
     button.addEventListener("click", () => onSelect(value));
     node.append(button);
@@ -2655,19 +3210,19 @@ function createProductCard(product) {
     </div>
     <div class="product-body">
       <div class="product-topline">
-        <span>${escapeHtml(getProductSection(product))} / ${escapeHtml(getProductGroup(product))}</span>
-        <span>${product.type ? `${escapeHtml(product.type)} / ` : ""}${escapeHtml(product.conductor)}</span>
+        <span>${escapeHtml(translateValue(getProductSection(product)))} / ${escapeHtml(translateValue(getProductGroup(product)))}</span>
+        <span>${product.type ? `${escapeHtml(translateValue(product.type))} / ` : ""}${escapeHtml(translateValue(product.conductor))}</span>
       </div>
       <h3 class="product-title">${escapeHtml(product.title)}</h3>
       <p class="product-desc">${escapeHtml(product.description)}</p>
       <dl class="spec-list">
-        <div><dt>Параметр</dt><dd>${escapeHtml(product.voltage)}</dd></div>
-        <div><dt>Исполнение</dt><dd>${escapeHtml(product.cores)}</dd></div>
+        <div><dt>${escapeHtml(t("product.parameter"))}</dt><dd>${escapeHtml(product.voltage)}</dd></div>
+        <div><dt>${escapeHtml(t("product.execution"))}</dt><dd>${escapeHtml(product.cores)}</dd></div>
       </dl>
       <div class="tag-row">
         ${product.tags.map((tag) => `<span>${escapeHtml(tag)}</span>`).join("")}
       </div>
-      <button class="card-action${quoteQty ? " is-added" : ""}" type="button" data-product-id="${escapeAttribute(product.id)}">${quoteQty ? `В заявке: ${escapeHtml(quoteQty)}` : "В заявку"}</button>
+      <button class="card-action${quoteQty ? " is-added" : ""}" type="button" data-product-id="${escapeAttribute(product.id)}">${quoteQty ? escapeHtml(t("product.inQuote", { qty: quoteQty })) : escapeHtml(t("product.add"))}</button>
     </div>
   `;
   const image = card.querySelector("img");
@@ -2729,6 +3284,9 @@ function animateProductCards() {
 }
 
 function pluralize(count) {
+  if (state.language === "kz") return `${count} позиция`;
+  if (state.language === "en") return `${count} ${count === 1 ? "item" : "items"}`;
+
   const mod10 = count % 10;
   const mod100 = count % 100;
 
@@ -2745,7 +3303,7 @@ function renderProducts() {
   refreshSearchClear();
 
   if (state.loadingProducts) {
-    resultCount.textContent = "Загрузка...";
+    resultCount.textContent = t("catalog.loading");
     emptyState.hidden = true;
     const skeletonCount = getSkeletonCardCount(window.innerWidth);
     for (let index = 0; index < skeletonCount; index += 1) {
@@ -2766,7 +3324,7 @@ function updateProductActionStates() {
   productGrid.querySelectorAll("[data-product-id]").forEach((button) => {
     const qty = getQuoteQty(button.dataset.productId);
     button.classList.toggle("is-added", qty > 0);
-    button.textContent = qty > 0 ? `В заявке: ${qty}` : "В заявку";
+    button.textContent = qty > 0 ? t("product.inQuote", { qty }) : t("product.add");
   });
 }
 
@@ -2774,8 +3332,8 @@ function renderFloatingQuote() {
   const totals = getQuoteTotals();
   floatingQuote.hidden = totals.items === 0;
   floatingQuote.innerHTML = `
-    <span>Заявка</span>
-    <strong>${escapeHtml(totals.qty)} шт.</strong>
+    <span>${escapeHtml(t("quote.float"))}</span>
+    <strong>${escapeHtml(totals.qty)} ${escapeHtml(t("quote.unit"))}</strong>
   `;
 }
 
@@ -2815,7 +3373,7 @@ function addToQuote(productId) {
   }
 
   renderQuote();
-  showToast(`${product.title} добавлен в заявку`);
+  showToast(t("toast.added", { title: product.title }));
 }
 
 function removeFromQuote(productId) {
@@ -2848,13 +3406,18 @@ function renderQuote() {
     row.innerHTML = `
       <div>
         <strong>${escapeHtml(item.title)}</strong>
-        <span>${escapeHtml(getProductSection(item))} / ${escapeHtml(getProductGroup(item))}, ${escapeHtml(item.cores)}, ${escapeHtml(item.qty)} шт.</span>
+        <span>${escapeHtml(t("quote.meta", {
+          section: translateValue(getProductSection(item)),
+          group: translateValue(getProductGroup(item)),
+          cores: item.cores,
+          qty: item.qty
+        }))}</span>
       </div>
-      <div class="quote-controls" aria-label="Количество ${escapeAttribute(item.title)}">
-        <button class="quote-step" type="button" aria-label="Уменьшить ${escapeAttribute(item.title)}" data-qty-id="${escapeAttribute(item.id)}" data-qty-delta="-1">-</button>
+      <div class="quote-controls" aria-label="${escapeAttribute(t("quote.qtyLabel", { title: item.title }))}">
+        <button class="quote-step" type="button" aria-label="${escapeAttribute(t("quote.decrease", { title: item.title }))}" data-qty-id="${escapeAttribute(item.id)}" data-qty-delta="-1">-</button>
         <strong class="quote-qty">${escapeHtml(item.qty)}</strong>
-        <button class="quote-step" type="button" aria-label="Увеличить ${escapeAttribute(item.title)}" data-qty-id="${escapeAttribute(item.id)}" data-qty-delta="1">+</button>
-        <button class="quote-remove" type="button" aria-label="Удалить ${escapeAttribute(item.title)}" data-remove-id="${escapeAttribute(item.id)}">x</button>
+        <button class="quote-step" type="button" aria-label="${escapeAttribute(t("quote.increase", { title: item.title }))}" data-qty-id="${escapeAttribute(item.id)}" data-qty-delta="1">+</button>
+        <button class="quote-remove" type="button" aria-label="${escapeAttribute(t("quote.remove", { title: item.title }))}" data-remove-id="${escapeAttribute(item.id)}">x</button>
       </div>
     `;
     quoteList.append(row);
@@ -2903,6 +3466,16 @@ resetFilters.addEventListener("click", () => {
   render();
 });
 
+languageButtons.forEach((button) => {
+  button.addEventListener("click", () => setLanguage(button.dataset.lang));
+});
+
+themeToggle?.addEventListener("click", () => {
+  const nextTheme = state.theme === "dark" ? "light" : "dark";
+  setTheme(nextTheme);
+  showToast(t(nextTheme === "dark" ? "toast.themeDark" : "toast.themeLight"));
+});
+
 productGrid.addEventListener("click", (event) => {
   const button = event.target.closest("[data-product-id]");
   if (!button) return;
@@ -2924,7 +3497,7 @@ quoteList.addEventListener("click", (event) => {
 clearQuote.addEventListener("click", () => {
   state.quote = [];
   renderQuote();
-  showToast("Заявка очищена");
+  showToast(t("toast.cleared"));
 });
 
 floatingQuote.addEventListener("click", () => {
@@ -3161,7 +3734,7 @@ requestForm.addEventListener("submit", async (event) => {
   requestForm.setAttribute("aria-busy", "true");
   if (requestSubmitButton) {
     requestSubmitButton.disabled = true;
-    requestSubmitButton.textContent = "Отправляем...";
+    requestSubmitButton.textContent = t("form.sending");
   }
 
   try {
@@ -3207,7 +3780,7 @@ requestForm.addEventListener("submit", async (event) => {
     requestForm.removeAttribute("aria-busy");
     if (requestSubmitButton) {
       requestSubmitButton.disabled = false;
-      requestSubmitButton.textContent = REQUEST_SUBMIT_DEFAULT_LABEL;
+      requestSubmitButton.textContent = t("request.submit") || REQUEST_SUBMIT_DEFAULT_LABEL;
     }
   }
 });
@@ -3216,6 +3789,8 @@ products = products.map(secureProduct).filter((product) => product.id);
 restoreCatalogState();
 restoreQuote();
 setupRevealAnimations();
+applyTheme();
+renderStaticText();
 render();
 renderQuote();
 restoreAuthSession();
