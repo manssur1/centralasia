@@ -5,6 +5,8 @@
   const MAX_QUOTE_ITEMS = 40;
   const MAX_ITEM_QTY = 999;
   const ALLOWED_SORTS = new Set(["popular", "name", "voltage"]);
+  const ALLOWED_LANGUAGES = new Set(["ru", "kz", "en"]);
+  const ALLOWED_THEMES = new Set(["light", "dark"]);
 
   function normalizeText(value, maxLength) {
     return String(value ?? "")
@@ -78,11 +80,21 @@
     return 6;
   }
 
+  function normalizeLanguage(value) {
+    return ALLOWED_LANGUAGES.has(value) ? value : "ru";
+  }
+
+  function normalizeTheme(value) {
+    return ALLOWED_THEMES.has(value) ? value : "light";
+  }
+
   const helpers = {
     MAX_PROJECT_FILE_SIZE_BYTES,
     MIN_REQUEST_FILL_TIME_MS,
     MAX_QUOTE_ITEMS,
     MAX_ITEM_QTY,
+    normalizeLanguage,
+    normalizeTheme,
     sanitizeQuoteItems,
     getSkeletonCardCount,
     sanitizeCatalogState,
