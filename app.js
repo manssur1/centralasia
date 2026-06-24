@@ -2173,7 +2173,7 @@ const EMAIL_CONFIG = {
 };
 
 const helperApi = window.CAEHelpers || {};
-const ASSET_VERSION = "20260624-cable-systems";
+const ASSET_VERSION = "20260624-grouped-catalog";
 const AUTH_STORAGE_KEY = "cae_supabase_session";
 const QUOTE_STORAGE_KEY = "cae_quote_items";
 const CATALOG_STATE_KEY = "cae_catalog_state";
@@ -4012,6 +4012,95 @@ function getFilteredProducts() {
     });
 }
 
+function shouldGroupCatalogResults(filteredProducts) {
+  return filteredProducts.length > 0 && state.group === "Все";
+}
+
+const CATALOG_GROUP_ORDER = {
+  "Кабели": [
+    "Силовой",
+    "Гибкий",
+    "Самонесущий",
+    "Связь",
+    "Контрольный",
+    "Установочный",
+    "Специальный",
+    "Прочие кабели"
+  ],
+  "Кабеленесущие системы": [
+    "Прямой монтаж",
+    "Багет потолочный",
+    "Напольные системы",
+    "Металлорукав",
+    "Лоток металлический",
+    "Листовые лотки",
+    "Проволочные лотки",
+    "Лестничные лотки",
+    "Кабель-каналы",
+    "Аксессуары к лоткам",
+    "Аксессуары к кабель-каналам",
+    "Аксессуары для труб",
+    "Трубы",
+    "Крепеж и аксессуары"
+  ],
+  "Шкафы / щиты": [
+    "ВРУ",
+    "Распределительные шкафы",
+    "Щиты освещения",
+    "Управление и автоматика",
+    "Модульные щиты",
+    "Силовые шкафы",
+    "Уличные шкафы",
+    "Корпуса и аксессуары"
+  ],
+  "Розетки / выключатели / коробки": [
+    "Серии Legrand",
+    "Серии IEK",
+    "Серии UNIT",
+    "Schneider / Systeme Electric",
+    "Розетки",
+    "Выключатели",
+    "Монтажные коробки",
+    "Распределительные коробки",
+    "Удлинители и фильтры",
+    "Силовые разъёмы",
+    "Колодки, вилки и адаптеры",
+    "Звонки и кнопки",
+    "Слаботочные розетки",
+    "Рамки и механизмы",
+    "Электроустановочные изделия"
+  ]
+};
+
+function getCatalogGroupOrder() {
+  const visibleGroups = uniqueValues("group").filter((group) => group !== "Все");
+  const sectionOrder = CATALOG_GROUP_ORDER[state.section] || [];
+  const ordered = sectionOrder.filter((group) => visibleGroups.includes(group));
+  visibleGroups.forEach((group) => {
+    if (!ordered.includes(group)) ordered.push(group);
+  });
+  return ordered;
+}
+
+function groupProductsForCatalog(filteredProducts) {
+  const grouped = new Map();
+  filteredProducts.forEach((product) => {
+    const group = getProductGroup(product);
+    if (!grouped.has(group)) grouped.set(group, []);
+    grouped.get(group).push(product);
+  });
+
+  const orderedGroups = getCatalogGroupOrder().filter((group) => grouped.has(group));
+  grouped.forEach((_items, group) => {
+    if (!orderedGroups.includes(group)) orderedGroups.push(group);
+  });
+
+  return orderedGroups.map((group) => ({
+    group,
+    products: grouped.get(group)
+  }));
+}
+
 function createProductCard(product) {
   const card = document.createElement("article");
   const quoteQty = getQuoteQty(product.id);
@@ -4063,6 +4152,26 @@ function createProductCard(product) {
     }
   }
   return card;
+}
+
+function createProductGroupSection(group, groupProducts) {
+  const section = document.createElement("section");
+  section.className = "catalog-product-group product-card-enter";
+  section.dataset.catalogGroup = group;
+  section.innerHTML = `
+    <header class="catalog-product-group-head">
+      <div>
+        <span>${escapeHtml(translateValue(getProductSection(groupProducts[0])))} / ${escapeHtml(t("filter.group"))}</span>
+        <h3>${escapeHtml(translateValue(group))}</h3>
+      </div>
+      <strong>${escapeHtml(pluralize(groupProducts.length))}</strong>
+    </header>
+    <div class="catalog-product-group-grid"></div>
+  `;
+
+  const grid = section.querySelector(".catalog-product-group-grid");
+  groupProducts.forEach((product) => grid.append(createProductCard(product)));
+  return section;
 }
 
 function createSkeletonCard() {
@@ -4120,6 +4229,7 @@ function pluralize(count) {
 
 function renderProducts() {
   productGrid.innerHTML = "";
+  productGrid.classList.remove("has-groups");
   heroProductCount.textContent = products.length;
   searchInput.value = state.search;
   sortSelect.value = state.sort;
@@ -4139,7 +4249,16 @@ function renderProducts() {
   const filteredProducts = getFilteredProducts();
   resultCount.textContent = pluralize(filteredProducts.length);
   emptyState.hidden = filteredProducts.length > 0;
-  filteredProducts.forEach((product) => productGrid.append(createProductCard(product)));
+
+  if (shouldGroupCatalogResults(filteredProducts)) {
+    productGrid.classList.add("has-groups");
+    groupProductsForCatalog(filteredProducts).forEach(({ group, products: groupProducts }) => {
+      productGrid.append(createProductGroupSection(group, groupProducts));
+    });
+  } else {
+    filteredProducts.forEach((product) => productGrid.append(createProductCard(product)));
+  }
+
   animateProductCards();
 }
 
