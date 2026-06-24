@@ -1551,7 +1551,611 @@ const wiringDeviceSeriesProducts = [
   }
 ];
 
-products = [...products, ...wiringDeviceSeriesProducts];
+const cableSupportCatalogProducts = [
+  {
+    id: "direct-mount-cable-holders",
+    title: "Держатели кабельные для прямого монтажа",
+    type: "Прямой монтаж",
+    conductor: "Пластик",
+    voltage: "для кабеля и трубы",
+    cores: "крепление к стене / потолку",
+    badge: "Монтаж",
+    image: "assets/fasteners.png",
+    description: "Кабельные держатели для аккуратного прямого монтажа кабеля, гофры и небольших трасс без лотка.",
+    tags: ["держатели", "прямой монтаж", "Промрукав"],
+    popularity: 88
+  },
+  {
+    id: "direct-mount-corrugation-clips",
+    title: "Клипсы под гофру",
+    type: "Прямой монтаж",
+    conductor: "Пластик",
+    voltage: "под гофрированную трубу",
+    cores: "диаметр по запросу",
+    badge: "Клипсы",
+    image: "assets/fasteners.png",
+    description: "Клипсы для фиксации гофрированных труб ПВХ и ПНД на стенах, потолках и монтажных поверхностях.",
+    tags: ["клипса", "гофра", "труба"],
+    popularity: 87
+  },
+  {
+    id: "direct-mount-gun-pads",
+    title: "Площадки под пистолет",
+    type: "Прямой монтаж",
+    conductor: "Пластик",
+    voltage: "для монтажного пистолета",
+    cores: "быстрая фиксация",
+    badge: "Пистолет",
+    image: "assets/fasteners.png",
+    description: "Площадки для быстрого крепления кабеля и труб монтажным пистолетом на строительных объектах.",
+    tags: ["площадка", "монтажный пистолет", "крепеж"],
+    popularity: 82
+  },
+  {
+    id: "direct-mount-reinforced-clamps",
+    title: "Скобы усиленные",
+    type: "Прямой монтаж",
+    conductor: "Пластик / металл",
+    voltage: "усиленная фиксация",
+    cores: "размер по запросу",
+    badge: "Скоба",
+    image: "assets/fasteners.png",
+    description: "Усиленные скобы для надежной фиксации кабеля, труб и легких трасс на несущих поверхностях.",
+    tags: ["скоба", "усиленная", "крепеж"],
+    popularity: 81
+  },
+  {
+    id: "ceiling-baguette",
+    title: "Багет потолочный",
+    type: "Багет потолочный",
+    conductor: "ПВХ",
+    voltage: "декоративная прокладка",
+    cores: "потолочный монтаж",
+    badge: "Багет",
+    image: "assets/cable-channel.png",
+    description: "Потолочный багет для скрытой и аккуратной прокладки кабеля вдоль потолка и стен.",
+    tags: ["багет", "потолочный", "ПВХ"],
+    popularity: 78
+  },
+  {
+    id: "floor-boxes-components",
+    title: "Коробки напольные и комплектующие",
+    type: "Напольные системы",
+    conductor: "Пластик / металл",
+    voltage: "напольный монтаж",
+    cores: "коробки и комплектующие",
+    badge: "Пол",
+    image: "assets/floor-channel.png",
+    description: "Напольные коробки и комплектующие для организации кабельных линий в офисах, торговых залах и рабочих местах.",
+    tags: ["напольная коробка", "пол", "комплектующие"],
+    popularity: 84
+  },
+  {
+    id: "floor-sockets",
+    title: "Напольные розетки",
+    type: "Напольные системы",
+    conductor: "Пластик / металл",
+    voltage: "220 В",
+    cores: "силовые и слаботочные точки",
+    badge: "Розетки",
+    image: "assets/floor-outlet-block.png",
+    description: "Напольные розетки для рабочих зон, переговорных, залов и мест, где питание нужно вывести из пола.",
+    tags: ["напольная розетка", "питание", "офис"],
+    popularity: 86
+  },
+  {
+    id: "metal-hose-insulated-broach",
+    title: "Металлорукав изолированный с протяжкой",
+    type: "Металлорукав",
+    conductor: "Оцинкованная сталь",
+    voltage: "механическая защита",
+    cores: "с протяжкой",
+    badge: "Защита",
+    image: "assets/metal-hose.png",
+    description: "Изолированный металлорукав с протяжкой для защиты кабеля и быстрого монтажа на сложных участках трассы.",
+    tags: ["металлорукав", "изолированный", "протяжка"],
+    popularity: 90
+  },
+  {
+    id: "metal-hose-noninsulated-broach",
+    title: "Металлорукав неизолированный с протяжкой",
+    type: "Металлорукав",
+    conductor: "Оцинкованная сталь",
+    voltage: "механическая защита",
+    cores: "с протяжкой",
+    badge: "Металл",
+    image: "assets/metal-hose.png",
+    description: "Неизолированный металлорукав с протяжкой для защиты кабеля от ударов, истирания и внешних воздействий.",
+    tags: ["металлорукав", "неизолированный", "протяжка"],
+    popularity: 88
+  },
+  {
+    id: "metal-hose-clamp",
+    title: "Скоба к металлорукаву",
+    type: "Металлорукав",
+    conductor: "Сталь",
+    voltage: "крепление металлорукава",
+    cores: "диаметр по запросу",
+    badge: "Скоба",
+    image: "assets/fasteners.png",
+    description: "Скоба для надежного крепления металлорукава к стенам, потолкам и монтажным конструкциям.",
+    tags: ["скоба", "металлорукав", "крепеж"],
+    popularity: 80
+  },
+  {
+    id: "metal-hose-gun-clamp",
+    title: "Скоба для монтажного пистолета",
+    type: "Металлорукав",
+    conductor: "Сталь",
+    voltage: "быстрый монтаж",
+    cores: "под монтажный пистолет",
+    badge: "Пистолет",
+    image: "assets/fasteners.png",
+    description: "Скоба для фиксации металлорукава и труб при монтаже с использованием строительного пистолета.",
+    tags: ["скоба", "монтажный пистолет", "металлорукав"],
+    popularity: 79
+  },
+  {
+    id: "metal-tray-perforated-nonperforated",
+    title: "Лоток металлический перфорированный / неперфорированный",
+    type: "Лоток металлический",
+    conductor: "Оцинкованная сталь",
+    voltage: "перфорация / без перфорации",
+    cores: "размер по запросу",
+    badge: "Лоток",
+    image: "assets/tray-sheet.png",
+    description: "Металлический перфорированный или неперфорированный лоток для открытой прокладки силовых и слаботочных трасс.",
+    tags: ["лоток", "перфорированный", "неперфорированный"],
+    popularity: 94
+  },
+  {
+    id: "metal-tray-ladder",
+    title: "Лоток металлический лестничный",
+    type: "Лоток металлический",
+    conductor: "Сталь",
+    voltage: "высокая несущая способность",
+    cores: "лестничный",
+    badge: "Нагрузка",
+    image: "assets/ladder-tray.png",
+    description: "Лестничный металлический лоток для тяжелых кабельных линий, магистралей и промышленных трасс.",
+    tags: ["лоток", "лестничный", "магистраль"],
+    popularity: 89
+  },
+  {
+    id: "metal-tray-wire",
+    title: "Лоток металлический проволочный",
+    type: "Лоток металлический",
+    conductor: "Оцинкованная сталь",
+    voltage: "проволочная конструкция",
+    cores: "размер по запросу",
+    badge: "Проволочный",
+    image: "assets/wire-tray.png",
+    description: "Проволочный металлический лоток для легких и удобных в обслуживании кабельных трасс.",
+    tags: ["лоток", "проволочный", "кабельная трасса"],
+    popularity: 87
+  },
+  {
+    id: "cable-channel-perforated-iek",
+    title: "Кабель-канал перфорированный IEK",
+    type: "Кабель-канал",
+    conductor: "ПВХ",
+    voltage: "перфорированный",
+    cores: "размер по запросу",
+    badge: "IEK",
+    image: "assets/cable-channel.png",
+    description: "Перфорированный кабель-канал IEK для щитов, шкафов автоматики и аккуратной разводки проводов.",
+    tags: ["кабель-канал", "перфорированный", "IEK"],
+    popularity: 89
+  },
+  {
+    id: "cable-channel-mainline",
+    title: "Кабель-канал магистральный",
+    type: "Кабель-канал",
+    conductor: "ПВХ",
+    voltage: "магистральная прокладка",
+    cores: "размер по запросу",
+    badge: "Магистраль",
+    image: "assets/cable-channel.png",
+    description: "Магистральный кабель-канал для прокладки основных линий по стенам, офисам и техническим помещениям.",
+    tags: ["кабель-канал", "магистральный", "ПВХ"],
+    popularity: 86
+  },
+  {
+    id: "cable-channel-floor-primer",
+    title: "Напольный кабель-канал Праймер",
+    type: "Кабель-канал",
+    conductor: "ПВХ / резина",
+    voltage: "защита проходов",
+    cores: "напольный",
+    badge: "Праймер",
+    image: "assets/floor-channel.png",
+    description: "Напольный кабель-канал Праймер для защиты кабеля в проходных зонах, офисах и временных трассах.",
+    tags: ["кабель-канал", "напольный", "Праймер"],
+    popularity: 84
+  },
+  {
+    id: "tray-accessories-nuts-anchors-hardware",
+    title: "Гайки / анкера / метизы для лотков",
+    type: "Аксессуары к лоткам",
+    conductor: "Сталь",
+    voltage: "крепеж трассы",
+    cores: "М6-М8 и другие",
+    badge: "Метизы",
+    image: "assets/fasteners.png",
+    description: "Метизы, гайки и анкера для соединения, подвеса и крепления кабельных лотков.",
+    tags: ["метизы", "анкера", "гайки"],
+    popularity: 82
+  },
+  {
+    id: "tray-accessories-hangers-clamps",
+    title: "Держатели / подвесы / скобы потолочные",
+    type: "Аксессуары к лоткам",
+    conductor: "Сталь",
+    voltage: "потолочный подвес",
+    cores: "для кабельных лотков",
+    badge: "Подвес",
+    image: "assets/console-bracket.png",
+    description: "Держатели, подвесы и потолочные скобы для крепления лотков к перекрытиям и конструкциям.",
+    tags: ["держатель", "подвес", "скоба"],
+    popularity: 83
+  },
+  {
+    id: "tray-accessories-end-caps",
+    title: "Заглушки для лотков",
+    type: "Аксессуары к лоткам",
+    conductor: "Сталь",
+    voltage: "закрытие торца",
+    cores: "размер по запросу",
+    badge: "Заглушка",
+    image: "assets/tray-cover.png",
+    description: "Заглушки для закрытия торцев кабельных лотков и аккуратного завершения трассы.",
+    tags: ["заглушка", "лоток", "аксессуар"],
+    popularity: 78
+  },
+  {
+    id: "tray-accessories-crosses",
+    title: "Крестовины для лотков",
+    type: "Аксессуары к лоткам",
+    conductor: "Оцинкованная сталь",
+    voltage: "разветвление трассы",
+    cores: "крестовое соединение",
+    badge: "Крестовина",
+    image: "assets/tray-sheet.png",
+    description: "Крестовины для организации пересечений и ответвлений кабельных трасс на базе лотков.",
+    tags: ["крестовина", "разветвление", "лоток"],
+    popularity: 77
+  },
+  {
+    id: "tray-accessories-brackets",
+    title: "Кронштейны для лотков",
+    type: "Аксессуары к лоткам",
+    conductor: "Сталь",
+    voltage: "настенный монтаж",
+    cores: "длина по запросу",
+    badge: "Кронштейн",
+    image: "assets/console-bracket.png",
+    description: "Кронштейны для настенного и опорного крепления кабельных лотков.",
+    tags: ["кронштейн", "лоток", "опора"],
+    popularity: 81
+  },
+  {
+    id: "tray-accessories-covers",
+    title: "Крышки на лотки и аксессуары",
+    type: "Аксессуары к лоткам",
+    conductor: "Оцинкованная сталь",
+    voltage: "защита трассы",
+    cores: "ширина по запросу",
+    badge: "Крышка",
+    image: "assets/tray-cover.png",
+    description: "Крышки и аксессуары для защиты открытых кабельных лотков от пыли, контакта и механического воздействия.",
+    tags: ["крышка", "лоток", "защита"],
+    popularity: 82
+  },
+  {
+    id: "tray-accessories-reducers",
+    title: "Переходники для лотков",
+    type: "Аксессуары к лоткам",
+    conductor: "Оцинкованная сталь",
+    voltage: "переход ширины",
+    cores: "размер по запросу",
+    badge: "Переход",
+    image: "assets/tray-sheet.png",
+    description: "Переходники для изменения ширины или направления кабельной трассы из металлических лотков.",
+    tags: ["переходник", "лоток", "трасса"],
+    popularity: 76
+  },
+  {
+    id: "tray-accessories-connection-plate",
+    title: "Пластина соединительная для лотков",
+    type: "Аксессуары к лоткам",
+    conductor: "Сталь",
+    voltage: "соединение секций",
+    cores: "h 50 / h 80 и другие",
+    badge: "Соединение",
+    image: "assets/mounting-profile.png",
+    description: "Соединительная пластина для надежного стыка секций кабельных лотков.",
+    tags: ["пластина", "соединительная", "лоток"],
+    popularity: 79
+  },
+  {
+    id: "cable-channel-accessory-outside-corner-kmn",
+    title: "Внешний угол КМН",
+    type: "Аксессуары к кабель-каналам",
+    conductor: "ПВХ",
+    voltage: "наружный поворот",
+    cores: "для кабель-канала",
+    badge: "Угол",
+    image: "assets/cable-channel.png",
+    description: "Внешний угол КМН для аккуратного наружного поворота кабель-канала.",
+    tags: ["КМН", "внешний угол", "кабель-канал"],
+    popularity: 76
+  },
+  {
+    id: "cable-channel-accessory-inside-corner-kmv",
+    title: "Внутренний угол КМВ",
+    type: "Аксессуары к кабель-каналам",
+    conductor: "ПВХ",
+    voltage: "внутренний поворот",
+    cores: "для кабель-канала",
+    badge: "Угол",
+    image: "assets/cable-channel.png",
+    description: "Внутренний угол КМВ для аккуратного прохождения кабель-канала по внутренним углам.",
+    tags: ["КМВ", "внутренний угол", "кабель-канал"],
+    popularity: 76
+  },
+  {
+    id: "cable-channel-accessory-end-cap-kmz",
+    title: "Заглушка КМЗ",
+    type: "Аксессуары к кабель-каналам",
+    conductor: "ПВХ",
+    voltage: "закрытие торца",
+    cores: "для кабель-канала",
+    badge: "Заглушка",
+    image: "assets/cable-channel.png",
+    description: "Заглушка КМЗ для закрытия торца кабель-канала и завершения линии.",
+    tags: ["КМЗ", "заглушка", "кабель-канал"],
+    popularity: 75
+  },
+  {
+    id: "cable-channel-accessory-turn-90-kmp",
+    title: "Поворот 90 КМП",
+    type: "Аксессуары к кабель-каналам",
+    conductor: "ПВХ",
+    voltage: "поворот 90 градусов",
+    cores: "для кабель-канала",
+    badge: "Поворот",
+    image: "assets/cable-channel.png",
+    description: "Поворот 90 КМП для изменения направления кабель-канала без грубых стыков.",
+    tags: ["КМП", "поворот 90", "кабель-канал"],
+    popularity: 77
+  },
+  {
+    id: "cable-channel-accessory-joint-kms",
+    title: "Соединитель на стык КМС",
+    type: "Аксессуары к кабель-каналам",
+    conductor: "ПВХ",
+    voltage: "стыковое соединение",
+    cores: "для кабель-канала",
+    badge: "Стык",
+    image: "assets/cable-channel.png",
+    description: "Соединитель КМС закрывает стык между секциями кабель-канала и делает линию аккуратной.",
+    tags: ["КМС", "соединитель", "стык"],
+    popularity: 76
+  },
+  {
+    id: "cable-channel-accessory-t-corner-kmt",
+    title: "Т-образный угол КМТ",
+    type: "Аксессуары к кабель-каналам",
+    conductor: "ПВХ",
+    voltage: "Т-образное ответвление",
+    cores: "для кабель-канала",
+    badge: "Т-угол",
+    image: "assets/cable-channel.png",
+    description: "Т-образный угол КМТ для ответвления кабель-канала в дополнительном направлении.",
+    tags: ["КМТ", "Т-образный", "ответвление"],
+    popularity: 76
+  },
+  {
+    id: "cable-channel-accessory-modules-inserts",
+    title: "Модули / Вставки для кабель-каналов",
+    type: "Аксессуары к кабель-каналам",
+    conductor: "Пластик",
+    voltage: "комплектация канала",
+    cores: "модули и вставки",
+    badge: "Модули",
+    image: "assets/cable-channel.png",
+    description: "Модули и вставки для комплектации кабель-каналов, установки точек подключения и аккуратной разводки.",
+    tags: ["модули", "вставки", "кабель-канал"],
+    popularity: 78
+  },
+  {
+    id: "dlp-legrand-cable-channel-accessories",
+    title: "Аксессуары и комплектующие для кабель-каналов DLP Legrand",
+    type: "Аксессуары к кабель-каналам",
+    conductor: "Пластик",
+    voltage: "DLP Legrand",
+    cores: "аксессуары и комплектующие",
+    badge: "Legrand",
+    image: "assets/cable-channel.png",
+    description: "Аксессуары и комплектующие DLP Legrand для сборки кабель-каналов и рабочих мест.",
+    tags: ["DLP", "Legrand", "кабель-канал"],
+    popularity: 82
+  },
+  {
+    id: "pipe-clip-fastener",
+    title: "Крепеж-клипса для труб",
+    type: "Аксессуары для труб ПНД / ПВХ",
+    conductor: "Пластик",
+    voltage: "крепление труб",
+    cores: "диаметр по запросу",
+    badge: "Клипса",
+    image: "assets/fasteners.png",
+    description: "Крепеж-клипса для фиксации труб ПВХ и ПНД на стенах, потолках и монтажных поверхностях.",
+    tags: ["клипса", "труба", "ПВХ"],
+    popularity: 84
+  },
+  {
+    id: "pipe-entry-coupling",
+    title: "Муфта вводная для трубы",
+    type: "Аксессуары для труб ПНД / ПВХ",
+    conductor: "Пластик",
+    voltage: "ввод трубы",
+    cores: "ПНД / ПВХ",
+    badge: "Муфта",
+    image: "assets/pvc-corrugated.png",
+    description: "Вводная муфта для аккуратного ввода трубы в коробку, шкаф или монтажный узел.",
+    tags: ["муфта", "ввод", "труба"],
+    popularity: 82
+  },
+  {
+    id: "pipe-connection-coupling",
+    title: "Муфта соединительная для трубы",
+    type: "Аксессуары для труб ПНД / ПВХ",
+    conductor: "Пластик",
+    voltage: "соединение труб",
+    cores: "ПНД / ПВХ",
+    badge: "Муфта",
+    image: "assets/pvc-corrugated.png",
+    description: "Соединительная муфта для стыковки труб ПНД и ПВХ при прокладке кабельной трассы.",
+    tags: ["муфта", "соединительная", "труба"],
+    popularity: 82
+  },
+  {
+    id: "pipe-tee-connector",
+    title: "Тройник соединительный для трубы",
+    type: "Аксессуары для труб ПНД / ПВХ",
+    conductor: "Пластик",
+    voltage: "разветвление трубы",
+    cores: "Т-образный",
+    badge: "Тройник",
+    image: "assets/pvc-corrugated.png",
+    description: "Соединительный тройник для разветвления трубной кабельной трассы.",
+    tags: ["тройник", "соединительный", "труба"],
+    popularity: 80
+  },
+  {
+    id: "pipe-90-angle-connector",
+    title: "Угол 90 соединительный для трубы",
+    type: "Аксессуары для труб ПНД / ПВХ",
+    conductor: "Пластик",
+    voltage: "поворот трубы 90 градусов",
+    cores: "ПНД / ПВХ",
+    badge: "Угол 90",
+    image: "assets/pvc-corrugated.png",
+    description: "Угол 90 для соединения труб ПНД и ПВХ с аккуратным поворотом трассы.",
+    tags: ["угол 90", "труба", "соединитель"],
+    popularity: 80
+  },
+  {
+    id: "pipe-corrugated-pvc-broach",
+    title: "Гофрированная труба ПВХ с протяжкой",
+    type: "Трубы",
+    conductor: "ПВХ",
+    voltage: "гибкая прокладка",
+    cores: "с протяжкой",
+    badge: "ПВХ",
+    image: "assets/pvc-corrugated.png",
+    description: "Гофрированная труба ПВХ с протяжкой для защиты кабеля и удобной протяжки проводов.",
+    tags: ["гофра", "ПВХ", "протяжка"],
+    popularity: 90
+  },
+  {
+    id: "pipe-corrugated-pnd-broach",
+    title: "Гофрированная труба ПНД с протяжкой",
+    type: "Трубы",
+    conductor: "ПНД",
+    voltage: "гибкая прокладка",
+    cores: "с протяжкой",
+    badge: "ПНД",
+    image: "assets/pvc-corrugated.png",
+    description: "Гофрированная труба ПНД с протяжкой для наружной и внутренней кабельной прокладки.",
+    tags: ["гофра", "ПНД", "протяжка"],
+    popularity: 89
+  },
+  {
+    id: "pipe-double-wall-pnd-broach",
+    title: "Гофрированная двустенная труба ПНД с протяжкой",
+    type: "Трубы",
+    conductor: "ПНД",
+    voltage: "усиленная защита",
+    cores: "двустенная, с протяжкой",
+    badge: "Двустенная",
+    image: "assets/pvc-corrugated.png",
+    description: "Двустенная гофрированная труба ПНД с протяжкой для защищенных наружных и подземных трасс.",
+    tags: ["двустенная", "ПНД", "протяжка"],
+    popularity: 88
+  },
+  {
+    id: "pipe-rigid-smooth-pvc",
+    title: "Жесткая гладкая труба ПВХ",
+    type: "Трубы",
+    conductor: "ПВХ",
+    voltage: "жесткая прокладка",
+    cores: "гладкая",
+    badge: "Жесткая",
+    image: "assets/pvc-corrugated.png",
+    description: "Жесткая гладкая труба ПВХ для прямых участков кабельных трасс внутри помещений.",
+    tags: ["жесткая", "гладкая", "ПВХ"],
+    popularity: 86
+  },
+  {
+    id: "pipe-rigid-smooth-pnd",
+    title: "Жесткая гладкая труба ПНД",
+    type: "Трубы",
+    conductor: "ПНД",
+    voltage: "жесткая прокладка",
+    cores: "гладкая",
+    badge: "Жесткая",
+    image: "assets/pvc-corrugated.png",
+    description: "Жесткая гладкая труба ПНД для защищенной прокладки кабеля на прямых участках.",
+    tags: ["жесткая", "гладкая", "ПНД"],
+    popularity: 85
+  },
+  {
+    id: "heat-resistant-tut-tube",
+    title: "Термоустойчивая труба ТУТ",
+    type: "Трубы",
+    conductor: "Пластик",
+    voltage: "термозащита",
+    cores: "ТУТ",
+    badge: "ТУТ",
+    image: "assets/pvc-corrugated.png",
+    description: "Термоустойчивая труба ТУТ для защиты проводов и кабеля в местах с повышенной температурой.",
+    tags: ["ТУТ", "термостойкая", "труба"],
+    popularity: 82
+  },
+  {
+    id: "cambric-tube",
+    title: "Трубка кембрик",
+    type: "Трубы",
+    conductor: "Пластик",
+    voltage: "изоляция проводников",
+    cores: "диаметр по запросу",
+    badge: "Кембрик",
+    image: "assets/pvc-corrugated.png",
+    description: "Трубка кембрик для дополнительной изоляции, маркировки и защиты отдельных проводников.",
+    tags: ["кембрик", "изоляция", "провод"],
+    popularity: 78
+  },
+  {
+    id: "pipe-bandage",
+    title: "Бандаж для труб и кабельной трассы",
+    type: "Трубы",
+    conductor: "Пластик",
+    voltage: "фиксация трассы",
+    cores: "по запросу",
+    badge: "Бандаж",
+    image: "assets/fasteners.png",
+    description: "Бандаж для фиксации труб, кабеля и элементов кабельной трассы при монтаже.",
+    tags: ["бандаж", "труба", "фиксация"],
+    popularity: 76
+  }
+].map((product) => ({
+  category: "Кабеленесущие системы",
+  ...product
+}));
+
+products = [...products, ...wiringDeviceSeriesProducts, ...cableSupportCatalogProducts];
 
 const SUPABASE_CONFIG = {
   url: "https://dbyejxbkqzqcpkukfmcn.supabase.co",
@@ -1569,7 +2173,7 @@ const EMAIL_CONFIG = {
 };
 
 const helperApi = window.CAEHelpers || {};
-const ASSET_VERSION = "20260618-ru-kz-only";
+const ASSET_VERSION = "20260624-cable-systems";
 const AUTH_STORAGE_KEY = "cae_supabase_session";
 const QUOTE_STORAGE_KEY = "cae_quote_items";
 const CATALOG_STATE_KEY = "cae_catalog_state";
@@ -2067,8 +2671,17 @@ const VALUE_LABELS = {
   "Листовые лотки": { kz: "Табақ лотоктар", en: "Sheet trays" },
   "Проволочные лотки": { kz: "Сым лотоктар", en: "Wire trays" },
   "Лестничные лотки": { kz: "Сатылы лотоктар", en: "Ladder trays" },
+  "Прямой монтаж": { kz: "Тікелей монтаж", en: "Direct mounting" },
+  "Багет потолочный": { kz: "Төбелік багет", en: "Ceiling baguette" },
+  "Напольные системы": { kz: "Еден жүйелері", en: "Floor systems" },
+  "Металлорукав": { kz: "Металлорукав", en: "Metal conduit" },
+  "Лоток металлический": { kz: "Металл лоток", en: "Metal tray" },
   "Кабель-каналы": { kz: "Кабель-каналдар", en: "Cable ducts" },
   "Трубы и металлорукав": { kz: "Құбырлар және металлорукав", en: "Pipes and metal conduit" },
+  "Аксессуары к лоткам": { kz: "Лоток аксессуарлары", en: "Tray accessories" },
+  "Аксессуары к кабель-каналам": { kz: "Кабель-канал аксессуарлары", en: "Cable duct accessories" },
+  "Аксессуары для труб": { kz: "Құбыр аксессуарлары", en: "Pipe accessories" },
+  "Трубы": { kz: "Құбырлар", en: "Pipes" },
   "Крепеж и аксессуары": { kz: "Бекітпе және аксессуарлар", en: "Fasteners and accessories" },
   "Щиты освещения": { kz: "Жарықтандыру қалқандары", en: "Lighting panels" },
   "Управление и автоматика": { kz: "Басқару және автоматика", en: "Control and automation" },
@@ -2088,7 +2701,9 @@ const VALUE_LABELS = {
   "ПВХ": { kz: "ПВХ", en: "PVC" },
   "Пластик": { kz: "Пластик", en: "Plastic" },
   "Металл": { kz: "Металл", en: "Metal" },
-  "Пластик / металл": { kz: "Пластик / металл", en: "Plastic / metal" }
+  "Пластик / металл": { kz: "Пластик / металл", en: "Plastic / metal" },
+  "ПНД": { kz: "ПНД", en: "HDPE" },
+  "Оцинкованная сталь": { kz: "Мырышталған болат", en: "Galvanized steel" }
 };
 
 const PRODUCT_TEXT_LABELS = {
@@ -3209,6 +3824,15 @@ function getCableGroup(product) {
 function getSystemGroup(product) {
   const text = `${product.type || ""} ${product.title}`.toLowerCase();
 
+  if (text.includes("прямой монтаж") || text.includes("держател") || text.includes("клипсы под гофру") || text.includes("площадки под пистолет") || text.includes("скобы усиленные")) return "Прямой монтаж";
+  if (text.includes("багет")) return "Багет потолочный";
+  if (text.includes("напольн")) return "Напольные системы";
+  if (text.includes("аксессуары к лоткам") || text.includes("кронштейн") || text.includes("крышк") || text.includes("пластина соедин") || text.includes("переходник") || text.includes("крестовин")) return "Аксессуары к лоткам";
+  if (text.includes("аксессуары к кабель-каналам") || text.includes("кмн") || text.includes("кмв") || text.includes("кмз") || text.includes("кмп") || text.includes("кмс") || text.includes("кмт") || text.includes("dlp")) return "Аксессуары к кабель-каналам";
+  if (text.includes("аксессуары для труб") || text.includes("муфта") || text.includes("тройник") || text.includes("угол 90")) return "Аксессуары для труб";
+  if (text.includes("металлорукав")) return "Металлорукав";
+  if (text.includes("лоток металлический")) return "Лоток металлический";
+  if (text.includes("трубы") || text.includes("гофр") || text.includes("труба") || text.includes("тут") || text.includes("кембрик") || text.includes("бандаж")) return "Трубы";
   if (text.includes("листовой")) return "Листовые лотки";
   if (text.includes("проволочный")) return "Проволочные лотки";
   if (text.includes("лестничный")) return "Лестничные лотки";
